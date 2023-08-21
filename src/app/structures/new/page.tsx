@@ -11,7 +11,7 @@ export default async function NewStructure() {
         <>
             <main>
                 <p>New structure</p>
-                <div><Link href='../'>Back</Link></div>
+                <div><Link href='/structures'>Back</Link></div>
                 <FormNewStructure />
             </main>
         </>

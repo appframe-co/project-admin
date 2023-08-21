@@ -3,15 +3,15 @@ import { headers } from 'next/headers'
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Structures | AppFrame'
+  title: 'Structure | AppFrame'
 }
 
-async function getStructures() {
+async function getStructure(id: string) {
   try {
     const headersInstance = headers();
     const authorization = headersInstance.get('authorization') as string;
 
-    const res = await fetch(process.env.URL_PROJECT_ADMIN_API+'/api/structures', {
+    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/structures/${id}`, {
     method: 'GET',
         headers: { authorization}
     });
@@ -31,19 +31,19 @@ type Structure = {
   name: string;
 }
 
-export default async function Structures() {
-  const {structures=[]}:{structures:Structure[]} = await getStructures();
+export default async function Structures({ params }: { params: { id: string } }) {
+  const {structure}:{structure:Structure} = await getStructure(params.id);
 
   return (
       <>
           <main>
-              <p>Structures</p>
+              <p>Structure</p>
               <p>
-                  <Link href={'/structures/new'}>New structure</Link>
+                  <Link href={'/structures'}>Back</Link>
               </p>
-              {structures.map(structure => (
-                  <div key={structure.id}><Link href={'structures/'+structure.id}>{structure.name}</Link></div>
-              ))}
+              <div>
+                <h2>{structure.name}</h2>
+              </div>
           </main>
       </>
   )

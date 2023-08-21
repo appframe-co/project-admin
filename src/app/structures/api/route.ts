@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getToken } from '@/lib/token'
 import { cookies } from 'next/headers'
 
- export async function POST(req: Request) {
+export async function POST(req: Request) {
     try {
         const cookieStore = cookies()
 
