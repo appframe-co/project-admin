@@ -1,6 +1,4 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
-import styles from './page.module.css'
 
 export const metadata: Metadata = {
   title: 'Dashboard | AppFrame'

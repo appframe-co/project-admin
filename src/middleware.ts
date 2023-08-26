@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { isAuthenticated, getUser } from '@/lib/auth'
+import { getToken } from '@/lib/token'
 
 export const config = {
     matcher: [
@@ -9,18 +9,18 @@ export const config = {
 }
 
 export async function middleware(request: NextRequest) {
-    const accessToken = isAuthenticated(request);
+    const cipherTokenCookie = request.cookies.get(process.env.SESSION_COOKIE_NAME as string);
+    if (!cipherTokenCookie) {
+        throw new Error();
+    }
+
+    const accessToken = getToken(cipherTokenCookie.value);
     if (!accessToken) {
         return NextResponse.redirect(new URL(process.env.URL_ACCOUNT as string, request.url));
     }
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('authorization', accessToken);
-
-    const {data} = await getUser(accessToken);
-    if (data.error) {
-        return NextResponse.redirect(new URL(process.env.URL_ACCOUNT as string, request.url));
-    }
 
     return NextResponse.next({
         request: {

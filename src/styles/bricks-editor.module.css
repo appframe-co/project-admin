@@ -1,0 +1,28 @@
+.editor {
+    display: flex;
+    flex-direction: row;
+}
+.layers {
+    position: relative;
+}
+.schemaBricks {
+    display: flex;
+    flex-direction: column;
+    width: 330px;
+}
+.bricks {
+    display: flex;
+    flex-direction: column;
+    width: 330px;
+}
+.brick {
+    display: flex;
+    flex-direction: column;
+    width: 330px;
+}
+.brickSettings {
+    flex: 1;
+}
+.viewOfBricks {
+    flex: 1;
+}

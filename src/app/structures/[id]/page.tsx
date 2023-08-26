@@ -1,38 +1,14 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
 import Link from 'next/link';
+import { TStructure } from '@/types';
+import { getStructure } from '@/services/structures';
 
 export const metadata: Metadata = {
   title: 'Structure | AppFrame'
 }
 
-async function getStructure(id: string) {
-  try {
-    const headersInstance = headers();
-    const authorization = headersInstance.get('authorization') as string;
-
-    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/structures/${id}`, {
-    method: 'GET',
-        headers: { authorization}
-    });
-    if (!res.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    const {data} = await res.json();
-    return data;
-  } catch (e) {
-    return [];
-  }
-}
-
-type Structure = {
-  id: string;
-  name: string;
-}
-
 export default async function Structures({ params }: { params: { id: string } }) {
-  const {structure}:{structure:Structure} = await getStructure(params.id);
+  const {structure}: {structure: TStructure} = await getStructure(params.id);
 
   return (
       <>
@@ -41,8 +17,13 @@ export default async function Structures({ params }: { params: { id: string } })
               <p>
                   <Link href={'/structures'}>Back</Link>
               </p>
+              <p>
+                  <Link href={`/structures/${params.id}/edit`}>Edit schema layer</Link>
+              </p>
               <div>
                 <h2>{structure.name}</h2>
+
+                <p>DATA LAYER</p>
               </div>
           </main>
       </>

@@ -21,9 +21,36 @@ export async function POST(req: Request) {
             }, 
             body: JSON.stringify(body)
         });
-        const {status, data} = await res.json();
+        const data = await res.json();
 
-        return NextResponse.json(data, { status });
+        return NextResponse.json(data);
+    } catch (e) {
+        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+    }
+}
+
+export async function PUT(req: Request) {
+    try {
+        const cookieStore = cookies();
+
+        const cipherToken = cookieStore.get(process.env.SESSION_COOKIE_NAME as string);
+        if (!cipherToken) {
+            throw new Error();
+        }
+        const token = getToken(cipherToken.value);
+
+        const body = await req.json();
+        const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/structures', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: token || ''
+            }, 
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        return NextResponse.json(data);
     } catch (e) {
         NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
     }

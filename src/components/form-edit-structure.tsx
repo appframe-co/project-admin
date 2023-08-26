@@ -2,29 +2,29 @@
 
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { TStructure, FormValuesNewStructure } from '@/types'
+import { TStructure, FormValuesEditStructure } from '@/types'
 
 function isStructure(data: TErrorResponse | {structure: TStructure}): data is {structure: TStructure} {
     return (data as {structure: TStructure}).structure.id !== undefined;
 }
 
-export function FormNewStructure() {
+export function FormEditStructure({structure} : {structure: TStructure}) {
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValuesNewStructure>();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValuesEditStructure>({defaultValues: structure});
 
-    const onSubmit: SubmitHandler<FormValuesNewStructure> = async (data) => {
+    const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
         try {
             const res = await fetch('/structures/api', {
-                method: 'POST',  
+                method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'
-                },
+                }, 
                 body: JSON.stringify(data)
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: TErrorResponse | {structure: TStructure}  = await res.json();
+            const dataJson = await res.json();
             if (!isStructure(dataJson)) {
                 throw new Error('Fetch error');
             }
@@ -32,9 +32,9 @@ export function FormNewStructure() {
             const { structure } = dataJson;
 
             router.refresh();
-            router.push(`/structures/${structure.id}/edit/bricks`);
+            router.push(`/structures/${structure.id}`);
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
     }
 
@@ -52,7 +52,7 @@ export function FormNewStructure() {
                     {errors.code && <span>This field is required</span>}
                 </div>
 
-                <input type="submit" value="Create" />
+                <input type="submit" value="Update" />
             </form>
         </>
     )
