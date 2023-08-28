@@ -17,7 +17,7 @@ export default async function Bricks({ params }: { params: { id: string } }) {
   
   const {schemaBricks}: {schemaBricks: TSchemaBricks[]} = schemaBricksData;
   const {structure}: {structure: TStructure} = structureData;
-  
+
   return (
       <>
           <main>

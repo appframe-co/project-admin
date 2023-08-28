@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation'
 import styles from '@/styles/bricks-editor.module.css'
 import { TStructure, FormValuesManageBricks, TSchemaBricks } from '@/types'
 import { useState } from 'react'
+import { Bricks } from './layers/bricks'
+import { SchemaBricks } from './layers/schema-bricks'
+import { Brick } from './layers/brick'
 
 function isStructure(data: TErrorResponse | {structure: TStructure}): data is {structure: TStructure} {
     return (data as {structure: TStructure}).structure.id !== undefined;
 }
 
 export function FormManageBricks(
-    {schemaBricks, structure, structureId}: 
+    {schemaBricks, structure, structureId}:
     {schemaBricks: TSchemaBricks[], structure: TStructure, structureId: string}) 
 {
     const [layer, setLayer] = useState<string>('bricks');
@@ -29,6 +32,7 @@ export function FormManageBricks(
 
     const onSubmit: SubmitHandler<FormValuesManageBricks> = async (data) => {
         try {
+            console.log(data)
             const res = await fetch('/structures/api', {
                 method: 'PUT',
                 headers: {
@@ -53,7 +57,7 @@ export function FormManageBricks(
         }
     };
 
-    const selectSchemaBrick = (id: string):void => {
+    const selectSchemaBrick = (id: string): void => {
         const schemaBrick = schemaBricks.find(b => b.id === id);
         if (!schemaBrick) {
             return;
@@ -62,6 +66,7 @@ export function FormManageBricks(
         append({
             type: schemaBrick.type,
             name: schemaBrick.name,
+            code: schemaBrick.type,
             validation: schemaBrick.validation.map(v => ({code: v.code, value: v.value}))
         });
 
@@ -87,60 +92,11 @@ export function FormManageBricks(
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.editor}>
                 <div className={styles.layers}>
-                    {layer === 'bricks' && (
-                        <div className={styles.bricks}>
-                            <div>
-                                {watchBricks?.map((b, i) => {
-                                    return (
-                                        <div key={i}>
-                                            <div onClick={() => selectBrick(i)}>{b.name}</div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            <div>
-                                <div onClick={() => setLayer('schemaBricks')}>+ New Brick</div>
-                            </div>
-                        </div>
-                    )}
-
-                    {layer === 'schemaBricks' && (
-                        <div className={styles.schemaBricks}>
-                            {schemaBricks.map(schemaBrick => (
-                                <div key={schemaBrick.id}>
-                                    <div onClick={() => selectSchemaBrick(schemaBrick.id)}>{schemaBrick.name}</div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {layer === 'brick' && activeIndexBrick != undefined && (
-                        <div className={styles.brick}>
-                            <div>
-                                <label>Name</label>
-                                <input {...register(`bricks.${activeIndexBrick}.name`)} />
-                            </div>
-                            <div>
-                                <label>Code</label>
-                                <input {...register(`bricks.${activeIndexBrick}.code`)} />
-                            </div>
-                            <hr />
-                            <div>
-                                <p>Validation rules</p>
-                                <div>
-                                    {fields[activeIndexBrick].validation.map((v, i) => {
-                                        return (
-                                            <div key={i}>
-                                                <input {...register(`bricks.${activeIndexBrick}.validation.${i}.value`)} />
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                            <button type="button" onClick={deleteBrick}>Delete Brick</button>
-                            <button type="button" onClick={() => setLayer('bricks')}>Back</button>
-                        </div>
-                    )}
+                    {layer === 'bricks' && <Bricks bricks={watchBricks} selectBrick={selectBrick} setLayer={setLayer} />}
+                    {layer === 'schemaBricks' && <SchemaBricks schemaBricks={schemaBricks} selectSchemaBrick={selectSchemaBrick} />}
+                    {layer === 'brick' && activeIndexBrick != undefined && <Brick 
+                        register={register} fields={fields} setLayer={setLayer}
+                        deleteBrick={deleteBrick} activeIndexBrick={activeIndexBrick}/>}
                 </div>
                 <div className={styles.viewOfBricks}>
                     <div>
@@ -163,7 +119,6 @@ export function FormManageBricks(
                             );
                         })}
                     </div>
-
                     <div>
                         <input type="submit" />
                     </div>
