@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Topbar } from '@/components/topbar'
 
 export const metadata: Metadata = {
   title: 'Dashboard | AppFrame'
@@ -7,15 +7,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main>
-      <p>Dashboard</p>
-      
-      <ul>
-        <li><Link href='/structures'>Structures</Link></li>
-        <li><Link href='/storage'>Storage</Link></li>
-        <li><Link href='/users'>Users</Link></li>
-        <li><Link href='/settings'>Settings</Link></li>
-      </ul>
-    </main>
+    <div>
+      <Topbar title='Dashboard' />
+    </div>
   )
 }

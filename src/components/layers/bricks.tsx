@@ -2,6 +2,7 @@
 
 import styles from '@/styles/bricks-editor.module.css'
 import { TBrick } from '@/types'
+import { Button } from '@/ui/button'
 
 export function Bricks({bricks, selectBrick, setLayer}: {bricks: TBrick[], selectBrick: (i: number) => void, setLayer: (layer: string) => void}) {
     return (
@@ -16,7 +17,7 @@ export function Bricks({bricks, selectBrick, setLayer}: {bricks: TBrick[], selec
                 })}
             </div>
             <div>
-                <div onClick={() => setLayer('schemaBricks')}>+ New Brick</div>
+                <Button onClick={() => setLayer('schemaBricks')}>New Brick</Button>
             </div>
         </div>
     )

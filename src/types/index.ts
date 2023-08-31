@@ -26,7 +26,7 @@ export type TStructure = {
 export type FormValuesEditStructure = {
     id: string;
     name: string;
-    code: string
+    code: string;
 }
 
 export type FormValuesManageBricks = {

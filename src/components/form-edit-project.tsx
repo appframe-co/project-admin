@@ -1,16 +1,35 @@
 'use client'
 
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { FormValuesEditStructure, TProject } from '@/types'
+import { Button } from '@/ui/button';
+import { TextField } from '@/ui/text-field';
 
 function isProject(data: TErrorResponse | {project: TProject}): data is {project: TProject} {
     return (data as {project: TProject}).project.id !== undefined;
 }
 
-export function FormEditProject({project} : {project: TProject}) {
+function Input(props: UseControllerProps<FormValuesEditStructure> & {label?: string, helpText?: string, multiline?: boolean}) {
+    const { field, fieldState } = useController(props);
+
+    return (
+        <TextField 
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value}
+            name={field.name}
+            error={fieldState.error}
+            label={props.label}
+            helpText={props.helpText}
+            multiline={props.multiline}
+        />
+    )
+}
+
+export function FormEditProject({project, accessToken} : {project: TProject, accessToken: string}) {
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValuesEditStructure>({defaultValues: project});
+    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<FormValuesEditStructure>({defaultValues: project});
 
     const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
         try {
@@ -41,13 +60,11 @@ export function FormEditProject({project} : {project: TProject}) {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label>Name</label>
-                    <input {...register("name", {required: true})} />
-                    {errors.name && <span>This field is required</span>}
-                </div>
+                <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
+                <TextField value={project.projectNumber} label='Project Number' ronChange={() => {}} disabled />
+                <TextField value={accessToken} label='Token' ronChange={() => {}} disabled helpText='Use this token for Project API' />
 
-                <input type="submit" value="Update" />
+                <Button disabled={!isDirty} submit={true} primary>Update</Button>
             </form>
         </>
     )

@@ -1,0 +1,19 @@
+.topbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.heading {
+    flex: 1;
+}
+.controls {
+    color: var(--color-link);
+}
+.controls a {
+    margin-right: 21px;
+}
+.controls a:last-child {
+    margin-right: 0px;
+}

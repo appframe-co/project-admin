@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import { FormEditProject } from "@/components/form-edit-project";
 import { getProject, getAccessTokenProject } from "@/services/project"
 import { TProject } from "@/types";
+import { Topbar } from '@/components/topbar';
+
+export const metadata: Metadata = {
+    title: 'Settings | AppFrame'
+  }
 
 export default async function Settings() {
     const projectPromise = getProject();
@@ -12,19 +18,8 @@ export default async function Settings() {
 
     return (
         <div>
-            <h2>Settings</h2>
-
-            <p>Project name: {project.name}</p>
-            <p>Project number: {project.projectNumber}</p>
-
-            <div>
-                <p>Token: <strong>{accessToken}</strong></p>
-                <p>Use this token for Project API</p>
-            </div>
-            <hr />
-            <div>
-                <FormEditProject project={project} />
-            </div>
+            <Topbar title={'Settings'} />
+            <FormEditProject project={project} accessToken={accessToken} />
         </div>
     )
 }

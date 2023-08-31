@@ -1,0 +1,13 @@
+.links li:hover {
+    background-color: rgba(208, 215, 222, 0.32);
+    border-radius: 6px;
+}
+.links li a {
+    width: 100%;
+    position: relative;
+    min-height: 20px;
+    padding: 6px 8px;
+    display: block;
+    user-select: none;
+    text-align: left;
+}

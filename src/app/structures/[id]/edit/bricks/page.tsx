@@ -4,6 +4,7 @@ import { FormManageBricks } from '@/components/form-manage-bricks';
 import { TSchemaBricks, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getSchemaBricks } from '@/services/schema-bricks';
+import { Topbar } from '@/components/topbar';
 
 export const metadata: Metadata = {
   title: 'Manage bricks | AppFrame'
@@ -19,16 +20,9 @@ export default async function Bricks({ params }: { params: { id: string } }) {
   const {structure}: {structure: TStructure} = structureData;
 
   return (
-      <>
-          <main>
-              <p>Bricks</p>
-              <p>
-                  <Link href={`/structures/${params.id}/edit`}>Back</Link>
-              </p>
-              <div>
-                <FormManageBricks schemaBricks={schemaBricks} structure={structure} structureId={params.id} />
-              </div>
-          </main>
-      </>
+    <div>
+      <Topbar title={'Manage bricks of ' + structure.name} />
+      <FormManageBricks schemaBricks={schemaBricks} structure={structure} structureId={params.id} />
+    </div>
   )
 }

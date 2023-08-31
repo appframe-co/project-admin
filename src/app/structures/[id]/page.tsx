@@ -5,6 +5,8 @@ import { getStructure } from '@/services/structures';
 import { getDataList } from '@/services/data';
 import styles from '@/styles/structure.module.css'
 import { DeleteData } from '@/components/delete-data';
+import { Topbar } from '@/components/topbar';
+import { Button } from '@/ui/button';
 
 export const metadata: Metadata = {
   title: 'Structure | AppFrame'
@@ -24,41 +26,34 @@ export default async function Structures({ params }: { params: { id: string } })
   const values = data.map((d: any) => codes.map(c => d[c]));
 
   return (
-    <main>
-      <p>Structure</p>
-      <p>
-          <Link href={'/structures'}>Back</Link>
-      </p>
-      <p>
-          <Link href={`/structures/${params.id}/edit`}>Edit schema layer</Link>
-      </p>
-      <div>
-        <h2>{structure.name}</h2>
+    <div>
+      <Topbar title={structure.name}>
+        <Link href={`/structures/${params.id}/edit`}>Edit schema</Link>
+        <Link href={`/structures/${params.id}/new`}>Add data</Link>
+      </Topbar>
 
-        <div>
-          <Link href={`/structures/${params.id}/new`}>Add data</Link>
-          <table className={styles.structure}>
-            <thead>
-              <tr>
-                {names.map(name => (
-                  <th>{name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {values.map((value: any, i: number) => (
-                <tr>
-                  {value.map((v:any) => (
-                    <td>{v}</td>
-                  ))}
-                  <td><Link href={`/structures/${structure.id}/${data[i]['id']}/edit`}>Edit</Link></td>
-                  <td><DeleteData structureId={structure.id} id={data[i]['id']} /></td>
-                </tr>
+      <div>
+        <table className={styles.structure}>
+          <thead>
+            <tr>
+              {names.map(name => (
+                <th>{name}</th>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          </thead>
+          <tbody>
+            {values.map((value: any, i: number) => (
+              <tr>
+                {value.map((v:any) => (
+                  <td>{v}</td>
+                ))}
+                <td><Link href={`/structures/${structure.id}/${data[i]['id']}/edit`}>Edit</Link></td>
+                <td><DeleteData structureId={structure.id} id={data[i]['id']} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-  </main>
+    </div>
   )
 }

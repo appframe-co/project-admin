@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { Button } from '@/ui/button';
 
 function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
@@ -34,6 +35,6 @@ export function DeleteData({structureId, id}: {structureId: string, id: string})
     };
 
     return (
-        <button type='button' onClick={() => deleteData(id)}>Delete</button>
+        <Button plain onClick={() => deleteData(id)}>Delete</Button>
     )
 }

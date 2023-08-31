@@ -1,16 +1,40 @@
 'use client'
 
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { TStructure, FormValuesNewStructure } from '@/types'
+import { Button } from '@/ui/button'
+import { TextField } from '@/ui/text-field';
 
 function isStructure(data: TErrorResponse | {structure: TStructure}): data is {structure: TStructure} {
     return (data as {structure: TStructure}).structure.id !== undefined;
 }
 
+function Input(props: UseControllerProps<FormValuesNewStructure> & {label?: string, helpText?: string, multiline?: boolean}) {
+    const { field, fieldState } = useController(props);
+
+    return (
+        <TextField 
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value}
+            name={field.name}
+            error={fieldState.error}
+            label={props.label}
+            helpText={props.helpText}
+            multiline={props.multiline}
+        />
+    )
+}
+
 export function FormNewStructure() {
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValuesNewStructure>();
+    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<FormValuesNewStructure>({
+        defaultValues: {
+            name: '',
+            code: ''
+        }
+    });
 
     const onSubmit: SubmitHandler<FormValuesNewStructure> = async (data) => {
         try {
@@ -41,18 +65,10 @@ export function FormNewStructure() {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label>Name</label>
-                    <input {...register("name", {required: true})} />
-                    {errors.name && <span>This field is required</span>}
-                </div>
-                <div>
-                    <label>Code</label>
-                    <input {...register("code", {required: true})} />
-                    {errors.code && <span>This field is required</span>}
-                </div>
+                <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
+                <Input control={control} name='code' label='Code' helpText='Code will be used in API, e.g. /api/structures/[code]' rules={{ required: {message: 'is required', value: true} }}/>
 
-                <input type="submit" value="Create" />
+                <Button disabled={!isDirty} submit={true} primary>Create</Button>
             </form>
         </>
     )

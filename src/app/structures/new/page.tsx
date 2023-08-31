@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { FormNewStructure } from '@/components/form-new-structure'
 import Link from 'next/link'
+import { Topbar } from '@/components/topbar'
 
 export const metadata: Metadata = {
     title: 'New structure | AppFrame'
@@ -8,12 +9,9 @@ export const metadata: Metadata = {
 
 export default async function NewStructure() {
     return (
-        <>
-            <main>
-                <p>New structure</p>
-                <div><Link href='/structures'>Back</Link></div>
-                <FormNewStructure />
-            </main>
-        </>
+        <div>
+            <Topbar title='New structure' />
+            <FormNewStructure />
+        </div>
     )
 }

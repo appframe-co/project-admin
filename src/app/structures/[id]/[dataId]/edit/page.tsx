@@ -4,6 +4,7 @@ import { FormEditData } from '@/components/form-edit-data';
 import { TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getData } from '@/services/data';
+import { Topbar } from '@/components/topbar';
 
 export const metadata: Metadata = {
     title: 'Edit data | AppFrame'
@@ -19,12 +20,9 @@ export default async function EditData({ params }: {params: {id: string, dataId:
     const {data}: {data: any} = dataData;
 
     return (
-        <>
-            <main>
-                <p>Edit data</p>
-                <Link href={`/structures/${params.id}`}>Back</Link>
-                <FormEditData structure={structure} data={data} />
-            </main>
-        </>
+        <div>
+            <Topbar title={'Edit data of ' + structure.name} />
+            <FormEditData structure={structure} data={data} />
+        </div>
     )
 }

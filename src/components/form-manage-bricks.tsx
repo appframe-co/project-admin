@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { Bricks } from './layers/bricks'
 import { SchemaBricks } from './layers/schema-bricks'
 import { Brick } from './layers/brick'
+import { Button } from '@/ui/button'
+import { TextField } from '@/ui/text-field'
 
 function isStructure(data: TErrorResponse | {structure: TStructure}): data is {structure: TStructure} {
     return (data as {structure: TStructure}).structure.id !== undefined;
@@ -20,7 +22,7 @@ export function FormManageBricks(
     const [layer, setLayer] = useState<string>('bricks');
     const [activeIndexBrick, setActiveIndexBrick] = useState<number>();
     const router = useRouter();
-    const { register, handleSubmit, control, formState: { errors }, watch } = useForm<FormValuesManageBricks>({
+    const { register, handleSubmit, control, formState: { errors, isDirty }, watch } = useForm<FormValuesManageBricks>({
         defaultValues: {id: structureId, bricks: structure.bricks}
     });
     const { fields, append, remove } = useFieldArray({
@@ -92,7 +94,7 @@ export function FormManageBricks(
             <div className={styles.editor}>
                 <div className={styles.layers}>
                     {layer === 'bricks' && <Bricks bricks={watchBricks} selectBrick={selectBrick} setLayer={setLayer} />}
-                    {layer === 'schemaBricks' && <SchemaBricks schemaBricks={schemaBricks} selectSchemaBrick={selectSchemaBrick} />}
+                    {layer === 'schemaBricks' && <SchemaBricks setLayer={setLayer} schemaBricks={schemaBricks} selectSchemaBrick={selectSchemaBrick} />}
                     {layer === 'brick' && activeIndexBrick != undefined && <Brick 
                         register={register} fields={fields} setLayer={setLayer}
                         deleteBrick={deleteBrick} activeIndexBrick={activeIndexBrick}/>}
@@ -103,23 +105,17 @@ export function FormManageBricks(
                             return (
                                 <div key={i}>
                                     {b.type === 'text' && (
-                                        <div>
-                                            {b.name}
-                                            <input  />
-                                        </div>
+                                        <TextField label={b.name} onChange={()=>{}} />
                                     )}
                                     {b.type === 'rich_text' && (
-                                        <div>
-                                            {b.name}
-                                            <textarea  />
-                                        </div>
+                                        <TextField multiline label={b.name} onChange={()=>{}} />
                                     )}
                                 </div>
                             );
                         })}
                     </div>
                     <div>
-                        <input type="submit" />
+                        <Button disabled={!isDirty} submit={true} primary>Save</Button>
                     </div>
                 </div>
             </div>

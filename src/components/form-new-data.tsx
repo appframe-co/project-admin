@@ -1,16 +1,35 @@
 'use client'
 
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { TStructure } from '@/types';
+import { TextField } from '@/ui/text-field';
+import { Button } from '@/ui/button';
 
 function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
 }
 
+function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
+    const { field, fieldState } = useController(props);
+
+    return (
+        <TextField 
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value}
+            name={field.name}
+            error={fieldState.error}
+            label={props.label}
+            helpText={props.helpText}
+            multiline={props.multiline}
+        />
+    )
+}
+
 export function FormNewData({structure}: {structure: TStructure}) {
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<any>();
+    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<any>();
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
@@ -44,13 +63,11 @@ export function FormNewData({structure}: {structure: TStructure}) {
             <form onSubmit={handleSubmit(onSubmit)}>
                 {structure.bricks.map((brick, i) => (
                     <div key={i}>
-                        <label>{brick.name}</label>
-                        <input {...register(brick.code, {required: true})} />
-                        {errors.name && <span>This field is required</span>}
+                        <Input control={control} name={brick.code} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />
                     </div>
                 ))}
-
-                <input type="submit" value="Create" />
+                
+                <Button disabled={!isDirty} submit={true} primary>Create</Button>
             </form>
         </>
     )
