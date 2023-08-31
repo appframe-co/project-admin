@@ -32,7 +32,6 @@ export function FormManageBricks(
 
     const onSubmit: SubmitHandler<FormValuesManageBricks> = async (data) => {
         try {
-            console.log(data)
             const res = await fetch('/structures/api', {
                 method: 'PUT',
                 headers: {

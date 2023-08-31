@@ -46,3 +46,9 @@ export type TSchemaBricks = {
     icon: string;
     validation: TValidationSchemaBrick[];
 }
+
+export type TProject = {
+    id: string;
+    name: string;
+    projectNumber: number
+}

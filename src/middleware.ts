@@ -11,7 +11,7 @@ export const config = {
 export async function middleware(request: NextRequest) {
     const cipherTokenCookie = request.cookies.get(process.env.SESSION_COOKIE_NAME as string);
     if (!cipherTokenCookie) {
-        throw new Error();
+        return NextResponse.redirect(new URL(process.env.URL_ACCOUNT as string, request.url));
     }
 
     const accessToken = getToken(cipherTokenCookie.value);
