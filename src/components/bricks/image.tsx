@@ -8,7 +8,7 @@ import { resizeImg } from "@/utils/resize-img";
 export function ImageBrick(
     {brick, imagesFieldList, setImagesFieldList, uploadedImages, subjectId, setValue, structureId}: 
     {brick: TBrick, imagesFieldList: ImageField, setImagesFieldList: (fields: any) => void, uploadedImages: any, 
-        subjectId: string, setValue: any, structureId: string}) 
+        subjectId?: string, setValue: any, structureId: string}) 
 {
     const imageRef = useRef<HTMLInputElement>(null);
 

@@ -31,7 +31,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 
 export function FormNewData({structure}: {structure: TStructure}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<any>();
+    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>();
     const [imagesFieldList, setImagesFieldList] = useState({});
 
     const onSubmit: SubmitHandler<any> = async (data) => {
@@ -71,7 +71,8 @@ export function FormNewData({structure}: {structure: TStructure}) {
                         {brick.type === 'rich_text' && 
                             <Input control={control} name={brick.code} multiline={true} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
                         {brick.type === 'image' && (
-                            <ImageBrick brick={brick} imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
+                            <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} uploadedImages={watch(brick.code) ?? []} 
+                            imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
                         )}
                     </div>
                 ))}
