@@ -5,7 +5,7 @@ export function Sidebar() {
     return (
         <div>
             <ul className={styles.links}>
-                <li><Link href='/'>Dashboard</Link></li>
+                <li><Link href='/'>Overview</Link></li>
                 <li><Link href='/structures'>Structures</Link></li>
                 <li><Link href='/storage'>Storage</Link></li>
                 <li><Link href='/users'>Users</Link></li>

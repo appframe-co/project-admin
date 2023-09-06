@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react';
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { TStructure } from '@/types'
 import { TextField } from '@/ui/text-field'
 import { Button } from '@/ui/button'
+import { ImageBrick } from './bricks/image';
 
 function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
@@ -29,16 +31,17 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 
 export function FormEditData({structure, data} : {structure: TStructure, data: any}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<any>({defaultValues: data});
+    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>({defaultValues: data});
+    const [imagesFieldList, setImagesFieldList] = useState({});
 
-    const onSubmit: SubmitHandler<any> = async (data) => {
+    const onSubmit: SubmitHandler<any> = async (dataForm) => {
         try {
-            const res = await fetch('/data/api', {
+            const res = await fetch('/internal/api/data', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({...data, structureId: structure.id})
+                body: JSON.stringify({...dataForm, id: data.id, structureId: structure.id})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
@@ -63,10 +66,17 @@ export function FormEditData({structure, data} : {structure: TStructure, data: a
             <form onSubmit={handleSubmit(onSubmit)}>
                 {structure.bricks.map((brick, i) => (
                     <div key={i}>
-                        <Input control={control} name={brick.code} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />
+                        {brick.type === 'text' && 
+                            <Input control={control} name={brick.code} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
+                        {brick.type === 'rich_text' && 
+                            <Input control={control} name={brick.code} multiline={true} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
+                        {brick.type === 'image' && (
+                            <ImageBrick setValue={setValue} structureId={structure.id} subjectId={data.id} brick={brick} uploadedImages={watch(brick.code) ?? []} 
+                            imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
+                        )}
                     </div>
                 ))}
-                
+
                 <Button disabled={!isDirty} submit={true} primary>Update</Button>
             </form>
         </>

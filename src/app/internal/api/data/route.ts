@@ -40,7 +40,7 @@ export async function PUT(req: Request) {
         const token = getToken(cipherToken.value);
 
         const body = await req.json();
-        const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/data', {
+        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/data/${body.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

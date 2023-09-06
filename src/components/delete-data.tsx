@@ -12,7 +12,7 @@ export function DeleteData({structureId, id}: {structureId: string, id: string})
 
     const deleteData = async (id: string) => {
         try {
-            const res = await fetch('/data/api', {
+            const res = await fetch('/internal/api/data', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'

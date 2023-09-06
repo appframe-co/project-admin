@@ -1,0 +1,17 @@
+.image {
+    margin: 15px 0;
+}
+.list {
+    
+}
+.thumb {
+    display: inline-block;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+.thumb img {
+    background-color: #333;
+    object-fit: contain;
+    height: 105px;
+    width: 105px;
+}

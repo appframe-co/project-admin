@@ -38,7 +38,7 @@ export function FormNewStructure() {
 
     const onSubmit: SubmitHandler<FormValuesNewStructure> = async (data) => {
         try {
-            const res = await fetch('/structures/api', {
+            const res = await fetch('/internal/api/structures', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

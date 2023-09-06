@@ -50,5 +50,25 @@ export type TSchemaBricks = {
 export type TProject = {
     id: string;
     name: string;
-    projectNumber: number
+    projectNumber: number;
+}
+
+export type TStagedTarget = {
+    parameters: {name: string, value: string}[];
+    resourceUrl: string;
+    url: string;
+}
+
+export type TImage = {
+    mediaContentType: string;
+    originalSource: string;
+}
+
+export type TErrorValidateFile = {
+    file: File;
+    msg: string;
+}
+
+export type ImageField = {
+    [key: string]: TImage[]
 }

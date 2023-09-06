@@ -33,7 +33,7 @@ export function FormEditStructure({structure} : {structure: TStructure}) {
 
     const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
         try {
-            const res = await fetch('/structures/api', {
+            const res = await fetch('/internal/api/structures', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

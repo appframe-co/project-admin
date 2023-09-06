@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function EditData({ params }: {params: {id: string, dataId: string}}) {
     const structurePromise = getStructure(params.id);
-    const dataPromise = getData(params.dataId);
+    const dataPromise = getData(params.dataId, params.id);
 
     const [structureData, dataData] = await Promise.all([structurePromise, dataPromise]);
 
