@@ -72,3 +72,14 @@ export type TErrorValidateFile = {
 export type ImageField = {
     [key: string]: TImage[]
 }
+
+export type TData = {
+    id: string;
+    projectId: string;
+    structureId: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy: string;
+    updatedBy: string;
+    doc: any;
+  }

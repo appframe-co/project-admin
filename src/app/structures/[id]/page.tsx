@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TStructure } from '@/types';
+import { TStructure, TData } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getDataList } from '@/services/data';
 import styles from '@/styles/structure.module.css'
@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: 'Structure | AppFrame'
 }
 
+
 export default async function Structures({ params }: { params: { id: string } }) {
   const structurePromise = getStructure(params.id);
   const dataPromise = getDataList(params.id);
@@ -19,9 +20,9 @@ export default async function Structures({ params }: { params: { id: string } })
   const [structureData, dataData] = await Promise.all([structurePromise, dataPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
-  const {data, names, codes}: any = dataData;
+  const {data, names, codes}: {data: TData[], names: string[], codes: string[]} = dataData;
 
-  const values = data.map((d: any) => codes.map((c: string) => d[c]));
+  const values = data.map(d => codes.map(c => d.doc[c]));
 
   return (
     <div>

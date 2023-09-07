@@ -34,14 +34,14 @@ export function FormNewData({structure}: {structure: TStructure}) {
     const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>();
     const [imagesFieldList, setImagesFieldList] = useState({});
 
-    const onSubmit: SubmitHandler<any> = async (data) => {
+    const onSubmit: SubmitHandler<any> = async (dataDoc) => {
         try {
             const res = await fetch('/internal/api/data', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({doc: data, structureId: structure.id, images: imagesFieldList})
+                body: JSON.stringify({doc: dataDoc, structureId: structure.id, images: imagesFieldList})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');

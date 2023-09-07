@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FormEditData } from '@/components/form-edit-data';
-import { TStructure } from '@/types';
+import { TData, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getData } from '@/services/data';
 import { Topbar } from '@/components/topbar';
@@ -17,7 +17,7 @@ export default async function EditData({ params }: {params: {id: string, dataId:
     const [structureData, dataData] = await Promise.all([structurePromise, dataPromise]);
 
     const {structure}: {structure: TStructure} = structureData;
-    const {data}: {data: any} = dataData;
+    const {data}: {data: TData} = dataData;
 
     return (
         <div>

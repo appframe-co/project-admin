@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { TStructure } from '@/types'
+import { TData, TStructure } from '@/types'
 import { TextField } from '@/ui/text-field'
 import { Button } from '@/ui/button'
 import { ImageBrick } from './bricks/image';
@@ -29,19 +29,19 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
     )
 }
 
-export function FormEditData({structure, data} : {structure: TStructure, data: any}) {
+export function FormEditData({structure, data} : {structure: TStructure, data: TData}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>({defaultValues: data});
+    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<TData>({defaultValues: data.doc});
     const [imagesFieldList, setImagesFieldList] = useState({});
 
-    const onSubmit: SubmitHandler<any> = async (dataForm) => {
+    const onSubmit: SubmitHandler<any> = async (dataDoc) => {
         try {
             const res = await fetch('/internal/api/data', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({...dataForm, id: data.id, structureId: structure.id})
+                body: JSON.stringify({doc: dataDoc, id: data.id, structureId: structure.id})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
