@@ -72,7 +72,9 @@ export function ImageBrick(
                         }
                         const {media} = await res.json();
  
-                        setValue(brick.code, [...uploadedImages, ...media[brick.code]]);
+                        uploadedImages = [...uploadedImages, ...media[brick.code]];
+
+                        setValue(brick.code, uploadedImages);
                     }
                 }
 
@@ -153,16 +155,32 @@ export function ImageBrick(
         return {errors, images};
     };
 
-    const deleteTempImgField = (code: string, originalSource: string) => {
+    const deleteTempImgField = async (code: string, originalSource: string) => {
         setImagesFieldList((fields: ImageField) => {
             fields[code] = fields[code].filter(img => img.originalSource !== originalSource);
 
             return {...fields};
         });
+
+        fetch('/internal/api/delete_media_s3', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({ mediaS3Urls: [originalSource]})
+        });
     };
 
-    const deleteUploadedImgField = (code: string, id: string) => {
-        setValue(brick.code, uploadedImages.filter((img: any) => img.id !==id));
+    const deleteUploadedImgField = async (id: string) => {
+        fetch('/internal/api/data_delete_media', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({ dataId: subjectId, mediaIds: [id]})
+        });
+
+        setValue(brick.code, uploadedImages.filter((img: any) => img.id !== id));
     };
 
     return (
@@ -178,13 +196,13 @@ export function ImageBrick(
                 {uploadedImages?.map((img: any, i: number) => (
                     <div className={styles.thumb} key={i}>
                         <img src={resizeImg(img.src, {w:110,h:110})} />
-                        <button onClick={() => deleteUploadedImgField(brick.code, img.id)}>Delete</button>
+                        <div onClick={() => deleteUploadedImgField(img.id)}>Delete</div>
                     </div>
                 ))}
                 {imagesFieldList[brick.code]?.map((img, i) => (
                     <div className={styles.thumb} key={i}>
                         <img src={img.originalSource} />
-                        <button onClick={() => deleteTempImgField(brick.code, img.originalSource)}>Delete</button>
+                        <div onClick={() => deleteTempImgField(brick.code, img.originalSource)}>Delete</div>
                     </div>
                 ))}
             </div>
