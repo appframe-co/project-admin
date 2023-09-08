@@ -31,7 +31,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 
 export function FormEditData({structure, data} : {structure: TStructure, data: TData}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<TData>({defaultValues: data.doc});
+    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>({defaultValues: data.doc});
     const [imagesFieldList, setImagesFieldList] = useState({});
 
     const onSubmit: SubmitHandler<any> = async (dataDoc) => {
@@ -67,12 +67,14 @@ export function FormEditData({structure, data} : {structure: TStructure, data: T
                 {structure.bricks.map((brick, i) => (
                     <div key={i}>
                         {brick.type === 'text' && 
-                            <Input control={control} name={brick.code} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
+                            <Input control={control} name={brick.code} label={brick.name} 
+                            rules={{ required: {message: 'is required', value: true} }} />}
                         {brick.type === 'rich_text' && 
-                            <Input control={control} name={brick.code} multiline={true} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
+                            <Input control={control} name={brick.code} multiline={true} label={brick.name} 
+                            rules={{ required: {message: 'is required', value: true} }} />}
                         {brick.type === 'image' && (
-                            <ImageBrick setValue={setValue} structureId={structure.id} subjectId={data.id} brick={brick} uploadedImages={watch(brick.code) ?? []} 
-                            imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
+                            <ImageBrick setValue={setValue} structureId={structure.id} subjectId={data.id} brick={brick} 
+                            uploadedImages={watch(brick.code) ?? []} imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
                         )}
                     </div>
                 ))}

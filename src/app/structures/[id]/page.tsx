@@ -35,14 +35,14 @@ export default async function Structures({ params }: { params: { id: string } })
         <table className={styles.structure}>
           <thead>
             <tr>
-              {names.map((name: string) => (
-                <th>{name}</th>
+              {names.map((name: string, i: number) => (
+                <th key={i}>{name}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {values.map((value: any, i: number) => (
-              <tr>
+              <tr key={i}>
                 {value.map((v: any) => (
                   <td>
                     {Array.isArray(v) && <img src={resizeImg(v[0].src, {w: 65, h: 65})} />}

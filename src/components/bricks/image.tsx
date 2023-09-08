@@ -1,13 +1,13 @@
 'use client'
 import { useRef, useEffect } from "react";
 import { Button } from "@/ui/button";
-import { TBrick, TStagedTarget, TErrorValidateFile, ImageField} from "@/types";
+import { TBrick, TStagedTarget, TErrorValidateFile, ImageField, TStorage} from "@/types";
 import styles from '@/styles/bricks/image.module.css'
 import { resizeImg } from "@/utils/resize-img";
 
 export function ImageBrick(
     {brick, imagesFieldList, setImagesFieldList, uploadedImages, subjectId, setValue, structureId}: 
-    {brick: TBrick, imagesFieldList: ImageField, setImagesFieldList: (fields: any) => void, uploadedImages: any, 
+    {brick: TBrick, imagesFieldList: ImageField, setImagesFieldList: (fields: any) => void, uploadedImages: TStorage[], 
         subjectId?: string, setValue: any, structureId: string}) 
 {
     const imageRef = useRef<HTMLInputElement>(null);
@@ -70,7 +70,7 @@ export function ImageBrick(
                         if (!res.ok) {
                             throw new Error('Fetch error');
                         }
-                        const {media} = await res.json();
+                        const {media}: {media: {[key: string]: TStorage[]}} = await res.json();
  
                         uploadedImages = [...uploadedImages, ...media[brick.code]];
 
@@ -180,7 +180,7 @@ export function ImageBrick(
             body: JSON.stringify({ dataId: subjectId, mediaIds: [id]})
         });
 
-        setValue(brick.code, uploadedImages.filter((img: any) => img.id !== id));
+        setValue(brick.code, uploadedImages.filter(img => img.id !== id));
     };
 
     return (
@@ -193,8 +193,8 @@ export function ImageBrick(
             </div>
 
             <div className={styles.list}>
-                {uploadedImages?.map((img: any, i: number) => (
-                    <div className={styles.thumb} key={i}>
+                {uploadedImages.map(img => (
+                    <div className={styles.thumb} key={img.id}>
                         <img src={resizeImg(img.src, {w:110,h:110})} />
                         <div onClick={() => deleteUploadedImgField(img.id)}>Delete</div>
                     </div>

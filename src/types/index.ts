@@ -82,4 +82,17 @@ export type TData = {
     createdBy: string;
     updatedBy: string;
     doc: any;
-  }
+}
+
+export type TStorage = {
+    id: string;
+    subjectField: string;
+    filename: string;
+    uuidName: string;
+    width: number;
+    height: number;
+    size: number;
+    mimeType: string;
+    mediaContentType: string;
+    src: string;
+}

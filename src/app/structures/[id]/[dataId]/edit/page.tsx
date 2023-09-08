@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { FormEditData } from '@/components/form-edit-data';
 import { TData, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
