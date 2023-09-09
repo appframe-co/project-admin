@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { FormEditProject } from "@/components/form-edit-project";
+import { FormEditProject } from "@/components/forms/form-edit-project";
 import { getProject, getAccessTokenProject } from "@/services/project"
 import { TProject } from "@/types";
 import { Topbar } from '@/components/topbar';

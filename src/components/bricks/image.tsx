@@ -1,14 +1,13 @@
 'use client'
 import { useRef, useEffect } from "react";
 import { Button } from "@/ui/button";
-import { TBrick, TStagedTarget, TErrorValidateFile, ImageField, TStorage} from "@/types";
+import { TBrick, TStagedTarget, TErrorValidateFile, TFile, TStagedUploadFile, Resource} from "@/types";
 import styles from '@/styles/bricks/image.module.css'
 import { resizeImg } from "@/utils/resize-img";
 
 export function ImageBrick(
-    {brick, imagesFieldList, setImagesFieldList, uploadedImages, subjectId, setValue, structureId}: 
-    {brick: TBrick, imagesFieldList: ImageField, setImagesFieldList: (fields: any) => void, uploadedImages: TStorage[], 
-        subjectId?: string, setValue: any, structureId: string}) 
+    {brick, setValue, fileIdList=[], fileList=[], structureId, setFileList}: 
+    {brick: TBrick, fileIdList?: string[], setValue: any, fileList: TFile[], structureId: string, setFileList: any}) 
 {
     const imageRef = useRef<HTMLInputElement>(null);
 
@@ -31,13 +30,13 @@ export function ImageBrick(
                     return;
                 }
     
-                const files = images.map((image: any) => ({
-                    filename: image.name, mimeType: image.type, resource: 'image', fileSize: image.size, httpMethod: 'POST'
+                const files: TStagedUploadFile[] = images.map(image => ({
+                    filename: image.name, mimeType: image.type, resource: Resource.IMAGE, fileSize: image.size, httpMethod: 'POST'
                 }));
 
                 const stagedTargetHandler = (s: TStagedTarget) => ({
-                    mediaContentType: 'image',
-                    originalSource: s.resourceUrl
+                    originalSource: s.resourceUrl,
+                    contentType: 'image'
                 });
 
                 const res = await fetch('/internal/api/staged_uploads_create', {
@@ -55,39 +54,25 @@ export function ImageBrick(
                     const formData = new FormData();
 
                     stagedTarget.parameters.forEach(p => formData.append(p.name, p.value));
-                    formData.append('file', images[i]);
+                    formData.append('file', images[+i]);
 
                     await fetch(stagedTarget.url, {method: 'POST', body: formData});
 
-                    if (subjectId) {
-                        const res = await fetch('/internal/api/data_create_media', {
-                            method: 'POST',  
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }, 
-                            body: JSON.stringify({dataId: subjectId, structureId, media: {[brick.code]: stagedTargets.map(stagedTargetHandler)}})
-                        });
-                        if (!res.ok) {
-                            throw new Error('Fetch error');
-                        }
-                        const {media}: {media: {[key: string]: TStorage[]}} = await res.json();
- 
-                        uploadedImages = [...uploadedImages, ...media[brick.code]];
-
-                        setValue(brick.code, uploadedImages);
+                    const res = await fetch('/internal/api/create_file', {
+                        method: 'POST',  
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }, 
+                        body: JSON.stringify({structureId, files: stagedTargets.map(stagedTargetHandler)})
+                    });
+                    if (!res.ok) {
+                        throw new Error('Fetch error');
                     }
-                }
+                    const {files}: {files: TFile[]} = await res.json();
 
-                if (!subjectId) {
-                    setImagesFieldList((fields: ImageField) => {
-                        if (fields[brick.code]) {
-                            fields[brick.code] = fields[brick.code].concat(stagedTargets.map(stagedTargetHandler));
-                        } else {
-                            fields[brick.code] = stagedTargets.map(stagedTargetHandler);
-                        }
-
-                        return {...fields};
-                    });    
+                    const fileIds = files.map(file => file.id);
+                    setValue(brick.code, [...fileIdList, ...fileIds], { shouldDirty: true });
+                    setFileList((prevState: TFile[]) => prevState.concat(files));
                 }
             } catch (e) {
                 return;
@@ -103,13 +88,13 @@ export function ImageBrick(
         imageRef.current.click();
     }
 
-    const validateImages = async (files: FileList|null): Promise<{errors: TErrorValidateFile[], images: any}|void> => {
+    const validateImages = async (files: FileList|null): Promise<{errors: TErrorValidateFile[], images: File[]}|void> => {
         if (!files) {
             return;
         }
 
         const errors: TErrorValidateFile[] = [];
-        const images = [];
+        const images: File[] = [];
 
         for (const key of Object.keys(files)) {
             const file = files[+key];
@@ -119,10 +104,10 @@ export function ImageBrick(
                     file,
                     msg: 'The file is not an image'
                 });
-            } else if (file.size >= 15693887) {
+            } else if (file.size >= 5e+6) {
                 errors.push({
                     file,
-                    msg: 'Image size exceeds 15MB'
+                    msg: 'Image size exceeds 5MB'
                 });
             } else {
                 const img = new Image();
@@ -135,10 +120,10 @@ export function ImageBrick(
                             const width = loadedImage?.width;
                             const height = loadedImage?.height;
 
-                            if ((width > 5000 || height > 4000) && (width > 4000 || height > 5000)) {
+                            if (width > 4472 || height > 4472) {
                                 reject({
                                     file,
-                                    msg: 'Image resolution must not exceed 5000x4000px and 4000x5000px'
+                                    msg: 'Image resolution must not exceed 4472x4472px'
                                 });
                             }
 
@@ -155,32 +140,8 @@ export function ImageBrick(
         return {errors, images};
     };
 
-    const deleteTempImgField = async (code: string, originalSource: string) => {
-        setImagesFieldList((fields: ImageField) => {
-            fields[code] = fields[code].filter(img => img.originalSource !== originalSource);
-
-            return {...fields};
-        });
-
-        fetch('/internal/api/delete_media_s3', {
-            method: 'POST',  
-            headers: {
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify({ mediaS3Urls: [originalSource]})
-        });
-    };
-
     const deleteUploadedImgField = async (id: string) => {
-        fetch('/internal/api/data_delete_media', {
-            method: 'POST',  
-            headers: {
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify({ dataId: subjectId, mediaIds: [id]})
-        });
-
-        setValue(brick.code, uploadedImages.filter(img => img.id !== id));
+        setValue(brick.code, fileIdList.filter(fileId => fileId !== id), { shouldDirty: true });
     };
 
     return (
@@ -193,16 +154,10 @@ export function ImageBrick(
             </div>
 
             <div className={styles.list}>
-                {uploadedImages.map(img => (
-                    <div className={styles.thumb} key={img.id}>
-                        <img src={resizeImg(img.src, {w:110,h:110})} />
-                        <div onClick={() => deleteUploadedImgField(img.id)}>Delete</div>
-                    </div>
-                ))}
-                {imagesFieldList[brick.code]?.map((img, i) => (
-                    <div className={styles.thumb} key={i}>
-                        <img src={img.originalSource} />
-                        <div onClick={() => deleteTempImgField(brick.code, img.originalSource)}>Delete</div>
+                {fileList.filter(f => fileIdList && fileIdList.includes(f.id)).map(f => (
+                    <div className={styles.thumb} key={f.id}>
+                        <img src={resizeImg(f.src, {w:110,h:110})} />
+                        <div onClick={() => deleteUploadedImgField(f.id)}>Delete</div>
                     </div>
                 ))}
             </div>

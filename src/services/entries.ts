@@ -1,16 +1,16 @@
 import { headers } from 'next/headers'
 
-export async function getDataList(structureId: string) {
+export async function getEntries(structureId: string) {
   try {
     const headersInstance = headers();
     const authorization = headersInstance.get('authorization') as string;
 
-    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/data?structureId=${structureId}`, {
+    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries?structureId=${structureId}`, {
     method: 'GET',
       headers: { authorization}
     });
     if (!res.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to fetch entries');
     }
 
     return res.json();
@@ -19,17 +19,17 @@ export async function getDataList(structureId: string) {
   }
 }
 
-export async function getData(id: string, structureId: string) {
+export async function getEntry(id: string, structureId: string) {
   try {
     const headersInstance = headers();
     const authorization = headersInstance.get('authorization') as string;
 
-    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/data/${id}?structureId=${structureId}`, {
+    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${id}?structureId=${structureId}`, {
     method: 'GET',
       headers: { authorization}
     });
     if (!res.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to fetch entries');
     }
 
     return res.json();

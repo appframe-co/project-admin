@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TStructure, TData } from '@/types';
+import { TStructure, TEntry } from '@/types';
 import { getStructure } from '@/services/structures';
-import { getDataList } from '@/services/data';
+import { getEntries } from '@/services/entries';
 import styles from '@/styles/structure.module.css'
-import { DeleteData } from '@/components/delete-data';
+import { DeleteEntry } from '@/components/delete-entry';
 import { Topbar } from '@/components/topbar';
 import { resizeImg } from '@/utils/resize-img';
 
@@ -15,20 +15,20 @@ export const metadata: Metadata = {
 
 export default async function Structures({ params }: { params: { id: string } }) {
   const structurePromise = getStructure(params.id);
-  const dataPromise = getDataList(params.id);
+  const entriesPromise = getEntries(params.id);
 
-  const [structureData, dataData] = await Promise.all([structurePromise, dataPromise]);
+  const [structureData, entriesData] = await Promise.all([structurePromise, entriesPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
-  const {data, names, codes}: {data: TData[], names: string[], codes: string[]} = dataData;
+  const {entries, names, codes}: {entries: TEntry[], names: string[], codes: string[]} = entriesData;
 
-  const values = data.map(d => codes.map(c => d.doc[c]));
+  const values = entries.map(e => codes.map(c => e.doc[c]));
 
   return (
     <div>
       <Topbar title={structure.name}>
-        <Link href={`/structures/${params.id}/edit`}>Edit schema</Link>
-        <Link href={`/structures/${params.id}/new`}>Add data</Link>
+        <Link href={`/structures/${params.id}/edit`}>Edit structure</Link>
+        <Link href={`/structures/${params.id}/new`}>Add entry</Link>
       </Topbar>
 
       <div>
@@ -45,13 +45,13 @@ export default async function Structures({ params }: { params: { id: string } })
               <tr key={i}>
                 {value.map((v: any) => (
                   <td>
-                    {Array.isArray(v) && <img src={resizeImg(v[0].src, {w: 65, h: 65})} />}
+                    {Array.isArray(v) && v.length > 0 && <img src={resizeImg(v[0].src, {w: 65, h: 65})} />}
 
                     {!Array.isArray(v) && v}
                   </td>
                 ))}
-                <td><Link href={`/structures/${structure.id}/${data[i]['id']}/edit`}>Edit</Link></td>
-                <td><DeleteData structureId={structure.id} id={data[i]['id']} /></td>
+                <td><Link href={`/structures/${structure.id}/${entries[i]['id']}/edit`}>Edit</Link></td>
+                <td><DeleteEntry structureId={structure.id} id={entries[i]['id']} /></td>
               </tr>
             ))}
           </tbody>

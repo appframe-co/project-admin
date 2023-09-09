@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { FormNewStructure } from '@/components/form-new-structure'
-import Link from 'next/link'
+import { FormNewStructure } from '@/components/forms/form-new-structure'
 import { Topbar } from '@/components/topbar'
 
 export const metadata: Metadata = {

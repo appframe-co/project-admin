@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         const token = getToken(cipherToken.value);
 
         const body = await req.json();
-        const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/data', {
+        const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/entries', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }
 
@@ -41,7 +41,7 @@ export async function PUT(req: Request) {
 
         const body = await req.json();
 
-        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/data/${body.id}`, {
+        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${body.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function PUT(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }
 
@@ -68,7 +68,7 @@ export async function DELETE(req: Request) {
         const token = getToken(cipherToken.value);
 
         const {id} = await req.json();
-        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/data/${id}`, {
+        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -79,6 +79,6 @@ export async function DELETE(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }

@@ -73,18 +73,7 @@ export type ImageField = {
     [key: string]: TImage[]
 }
 
-export type TData = {
-    id: string;
-    projectId: string;
-    structureId: string;
-    createdAt?: string;
-    updatedAt?: string;
-    createdBy: string;
-    updatedBy: string;
-    doc: any;
-}
-
-export type TStorage = {
+export type TFile = {
     id: string;
     subjectField: string;
     filename: string;
@@ -95,4 +84,30 @@ export type TStorage = {
     mimeType: string;
     mediaContentType: string;
     src: string;
+}
+
+export enum Resource {
+    IMAGE = 'image',
+    VIDEO = 'video',
+    FILE = 'file'
+}
+export type TStagedUploadFile = {
+    filename: string;
+    mimeType: string;
+    resource: Resource;
+    fileSize: number;
+    httpMethod: string;
+}
+
+type TDoc = {[key: string]: any}
+
+export type TEntry = {
+    id: string;
+    projectId: string;
+    structureId: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy: string;
+    updatedBy: string;
+    doc: TDoc;
 }

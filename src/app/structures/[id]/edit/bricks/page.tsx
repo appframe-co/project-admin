@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FormManageBricks } from '@/components/form-manage-bricks';
+import { FormManageBricks } from '@/components/forms/form-manage-bricks';
 import { TSchemaBricks, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getSchemaBricks } from '@/services/schema-bricks';

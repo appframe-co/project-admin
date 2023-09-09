@@ -7,12 +7,12 @@ function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
 }
 
-export function DeleteData({structureId, id}: {structureId: string, id: string}) {
+export function DeleteEntry({structureId, id}: {structureId: string, id: string}) {
     const router = useRouter();
 
-    const deleteData = async (id: string) => {
+    const deleteEntry = async (id: string) => {
         try {
-            const res = await fetch('/internal/api/data', {
+            const res = await fetch('/internal/api/entries', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,6 +35,6 @@ export function DeleteData({structureId, id}: {structureId: string, id: string})
     };
 
     return (
-        <Button plain onClick={() => deleteData(id)}>Delete</Button>
+        <Button plain onClick={() => deleteEntry(id)}>Delete</Button>
     )
 }

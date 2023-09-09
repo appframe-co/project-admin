@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { TStructure, TImage } from '@/types';
+import { TStructure, TImage, TEntry } from '@/types';
 import { TextField } from '@/ui/text-field';
 import { Button } from '@/ui/button';
-import { ImageBrick } from './bricks/image';
+import { ImageBrick } from '@/components/bricks/image';
 
-function isError(data: TErrorResponse | any): data is TErrorResponse {
+function isError(data: TErrorResponse | {entry: TEntry}): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
 }
 
@@ -29,30 +29,30 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
     )
 }
 
-export function FormNewData({structure}: {structure: TStructure}) {
+export function FormNewEntry({structure}: {structure: TStructure}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty }, setValue, watch } = useForm<any>();
-    const [imagesFieldList, setImagesFieldList] = useState({});
+    const { control, handleSubmit, formState: { errors, isDirty }, setValue, getValues } = useForm<any>();
+    const [fileList, setFileList] = useState([]);
 
-    const onSubmit: SubmitHandler<any> = async (dataDoc) => {
+    const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/data', {
+            const res = await fetch('/internal/api/entries', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({doc: dataDoc, structureId: structure.id, images: imagesFieldList})
+                body: JSON.stringify({doc: data, structureId: structure.id})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: TErrorResponse | any  = await res.json();
+            const dataJson: TErrorResponse|{entry: TEntry}  = await res.json();
 
             if (isError(dataJson)) {
                 throw new Error('Fetch error');
             }
 
-            const { structureId } = dataJson.data;
+            const { structureId } = dataJson.entry;
 
             router.refresh();
             router.push(`/structures/${structureId}`);
@@ -71,8 +71,8 @@ export function FormNewData({structure}: {structure: TStructure}) {
                         {brick.type === 'rich_text' && 
                             <Input control={control} name={brick.code} multiline={true} label={brick.name} rules={{ required: {message: 'is required', value: true} }} />}
                         {brick.type === 'image' && (
-                            <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} uploadedImages={watch(brick.code) ?? []} 
-                            imagesFieldList={imagesFieldList} setImagesFieldList={setImagesFieldList} />
+                            <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} fileIdList={getValues(brick.code) ?? []} 
+                            fileList={fileList} setFileList={setFileList} />
                         )}
                     </div>
                 ))}
