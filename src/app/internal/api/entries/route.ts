@@ -4,20 +4,17 @@ import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
     try {
-        const cookieStore = cookies()
-
-        const cipherToken = cookieStore.get(process.env.SESSION_COOKIE_NAME as string);
-        if (!cipherToken) {
-            throw new Error();
+        const token = getToken();
+        if (!token) {
+            return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
-        const token = getToken(cipherToken.value);
 
         const body = await req.json();
         const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/entries', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                authorization: token || ''
+                'X-AppFrame-Access-Token': token
             }, 
             body: JSON.stringify(body)
         });
@@ -31,13 +28,10 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
     try {
-        const cookieStore = cookies();
-
-        const cipherToken = cookieStore.get(process.env.SESSION_COOKIE_NAME as string);
-        if (!cipherToken) {
-            throw new Error();
+        const token = getToken();
+        if (!token) {
+            return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
-        const token = getToken(cipherToken.value);
 
         const body = await req.json();
 
@@ -45,7 +39,7 @@ export async function PUT(req: Request) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                authorization: token || ''
+                'X-AppFrame-Access-Token': token
             }, 
             body: JSON.stringify(body)
         });
@@ -59,20 +53,17 @@ export async function PUT(req: Request) {
 
 export async function DELETE(req: Request) {
     try {
-        const cookieStore = cookies();
-
-        const cipherToken = cookieStore.get(process.env.SESSION_COOKIE_NAME as string);
-        if (!cipherToken) {
-            throw new Error();
+        const token = getToken();
+        if (!token) {
+            return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
-        const token = getToken(cipherToken.value);
 
         const {id} = await req.json();
         const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                authorization: token || ''
+                'X-AppFrame-Access-Token': token
             }
         });
         const data = await res.json();

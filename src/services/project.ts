@@ -2,12 +2,11 @@ import { headers } from 'next/headers'
 
 export async function getProject() {
   try {
-    const headersInstance = headers();
-    const authorization = headersInstance.get('authorization') as string;
+    const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
     const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/project/`, {
     method: 'GET',
-        headers: { authorization}
+    headers: { 'X-AppFrame-Access-Token': accessToken}
     });
     if (!res.ok) {
         throw new Error('Failed to fetch data');
@@ -21,12 +20,11 @@ export async function getProject() {
 
 export async function getAccessTokenProject() {
   try {
-    const headersInstance = headers();
-    const authorization = headersInstance.get('authorization') as string;
+    const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
     const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/access-token/`, {
     method: 'GET',
-        headers: { authorization}
+    headers: { 'X-AppFrame-Access-Token': accessToken}
     });
     if (!res.ok) {
         throw new Error('Failed to fetch data');

@@ -2,12 +2,11 @@ import { headers } from 'next/headers'
 
 export async function getSchemaBricks() {
     try {
-      const headersInstance = headers();
-      const authorization = headersInstance.get('authorization') as string;
+      const accessToken = headers().get('X-AppFrame-Access-Token') as string;
   
       const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/schema_bricks`, {
         method: 'GET',
-          headers: { authorization}
+        headers: { 'X-AppFrame-Access-Token': accessToken}
         }
       );
       if (!res.ok) {

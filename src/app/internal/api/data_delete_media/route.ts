@@ -1,23 +1,19 @@
 import { NextResponse } from 'next/server'
 import { getToken } from '@/lib/token'
-import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
     try {
-        const cookieStore = cookies()
-
-        const cipherToken = cookieStore.get(process.env.SESSION_COOKIE_NAME as string);
-        if (!cipherToken) {
-            throw new Error();
+        const token = getToken();
+        if (!token) {
+            return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
-        const token = getToken(cipherToken.value);
 
         const body = await req.json();
         const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/data_delete_media', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                authorization: token || ''
+                'X-AppFrame-Access-Token': token
             }, 
             body: JSON.stringify(body)
         });
