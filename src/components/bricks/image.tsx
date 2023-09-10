@@ -58,7 +58,7 @@ export function ImageBrick(
 
                     await fetch(stagedTarget.url, {method: 'POST', body: formData});
 
-                    const res = await fetch('/internal/api/create_file', {
+                    const res = await fetch('/internal/api/files', {
                         method: 'POST',  
                         headers: {
                             'Content-Type': 'application/json'

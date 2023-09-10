@@ -1,2 +1,8 @@
-.container {
+.files {
+    text-align: left;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #d7d7d7;
+    padding: 8px;
 }
