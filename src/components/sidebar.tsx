@@ -5,11 +5,21 @@ export function Sidebar() {
     return (
         <div>
             <ul className={styles.links}>
-                <li><Link href='/'>Home</Link></li>
-                <li><Link href='/structures'>Structures</Link></li>
-                <li><Link href='/files'>Files</Link></li>
-                <li><Link href='/users'>Users</Link></li>
-                <li><Link href='/settings'>Settings</Link></li>
+                <li>
+                    <div className={styles.container}><Link href='/'>Home</Link></div>
+                </li>
+                <li>
+                   <div className={styles.container}><Link href='/structures'>Structures</Link></div>
+                </li>
+                <li>
+                    <div className={styles.container}><Link href='/files'>Files</Link></div>
+                </li>
+                <li>
+                    <div className={styles.container}><Link href='/users'>Users</Link></div>
+                </li>
+                <li>
+                    <div className={styles.container}><Link href='/settings'>Settings</Link></div>
+                </li>
             </ul>
         </div>
     )

@@ -19,7 +19,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     const {entry, files}: {entry: TEntry, files: TFile[]} = entryData;
 
     return (
-        <div>
+        <div className='page pageAlignCenter'>
             <Topbar title={'Edit entry of ' + structure.name} />
             <FormEditEntry structure={structure} entry={entry} files={files} />
         </div>

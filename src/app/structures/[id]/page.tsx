@@ -25,7 +25,7 @@ export default async function Structures({ params }: { params: { id: string } })
   const values = entries.map(e => codes.map(c => e.doc[c]));
 
   return (
-    <div>
+    <div className='page'>
       <Topbar title={structure.name}>
         <Link href={`/structures/${params.id}/edit`}>Edit structure</Link>
         <Link href={`/structures/${params.id}/new`}>Add entry</Link>

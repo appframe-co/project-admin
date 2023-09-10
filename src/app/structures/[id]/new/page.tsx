@@ -12,7 +12,7 @@ export default async function NewEntry({ params }: {params: {id: string}}) {
     const {structure}: {structure: TStructure} = await getStructure(params.id);
 
     return (
-        <div>
+        <div className='page pageAlignCenter'>
             <Topbar title='New Entry' />
             <FormNewEntry structure={structure} />
         </div>

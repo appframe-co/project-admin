@@ -20,7 +20,7 @@ export default async function Bricks({ params }: { params: { id: string } }) {
   const {structure}: {structure: TStructure} = structureData;
 
   return (
-    <div>
+    <div className='page'>
       <Topbar title={'Manage bricks of ' + structure.name} />
       <FormManageBricks schemaBricks={schemaBricks} structure={structure} structureId={params.id} />
     </div>

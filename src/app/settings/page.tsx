@@ -17,7 +17,7 @@ export default async function Settings() {
     const { accessToken }: {projectId: string, accessToken: string} = accessTokenProjectData;
 
     return (
-        <div>
+        <div className='page pageAlignCenter'>
             <Topbar title={'Settings'} />
             <FormEditProject project={project} accessToken={accessToken} />
         </div>

@@ -13,7 +13,7 @@ export default async function Structures() {
   const {structures=[]}:{structures: TStructure[]} = await getStructures();
 
   return (
-    <div>
+    <div className='page'>
         <Topbar title='Structures'>
             <Link href={'/structures/new'}>New structure</Link>
         </Topbar>

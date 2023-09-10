@@ -12,7 +12,7 @@ export default async function Files() {
     const {files=[]}:{files: TFile[]} = await getFiles();
 
     return (
-    <div>
+    <div className='page'>
         <Topbar title='Files'></Topbar>
 
         <div className={styles.container}>

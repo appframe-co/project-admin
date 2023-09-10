@@ -13,7 +13,7 @@ export default async function EditStructure({ params }: {params: {id: string}}) 
     const {structure}: {structure: TStructure} = await getStructure(params.id);
 
     return (
-        <div>
+        <div className='page pageAlignCenter'>
             <Topbar title={'Edit ' + structure.name}>
                 <Link href={`/structures/${params.id}/edit/bricks`}>Manage bricks</Link>
             </Topbar>

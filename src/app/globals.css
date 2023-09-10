@@ -1,8 +1,10 @@
 :root {
-  --header-bg: #f6f8fa;
+  --header-bg: #1a1a1a;
+  --header-color: #ffffff;
   --body-font-size: 14px;
   --heading-font-size: 16px;
   --color-link: blue;
+  --sidebar-bg: #ebebeb;
 }
 
 * {
@@ -31,19 +33,35 @@ h2 {
 
 header {
   display: flex;
-  height: 48px;
+  height: 56px;
   background-color: var(--header-bg);
   box-shadow: rgb(216, 222, 228) 0px -1px 0px 0px inset;
+  color: var(--header-color);
+  position: fixed;
+  z-index: 1;
+  width: 100%;
 }
 .container {
   display: flex;
   flex-direction: row;
-  margin: 24px 20px;
+  padding-top: 56px;
 }
 main {
   flex: 1;
-  margin-left: 20px;
+  padding-left: 240px;
 }
 .sidebar {
   width: 240px;
+  position: fixed;
+  height: 100%;
+  min-height: 100%;
+  background-color: var(--sidebar-bg);
+}
+.page {
+  width: 100%;
+  padding: 0 24px;
+}
+.pageAlignCenter {
+  width: 950px;
+  margin: 0 auto;
 }

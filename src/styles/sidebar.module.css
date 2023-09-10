@@ -1,6 +1,12 @@
-.links li:hover {
-    background-color: rgba(208, 215, 222, 0.32);
-    border-radius: 6px;
+.links {
+    padding-top: 16px;
+}
+
+.links li {
+    width: 100%;
+}
+.container  {
+    padding: 0 12px;
 }
 .links li a {
     width: 100%;
@@ -10,4 +16,9 @@
     display: block;
     user-select: none;
     text-align: left;
+    font-weight: 500;
+}
+.links li a:hover {
+    background-color: #f1f1f1;
+    border-radius: 6px;
 }

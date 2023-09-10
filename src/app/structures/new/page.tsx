@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default async function NewStructure() {
     return (
-        <div>
+        <div className='page pageAlignCenter'>
             <Topbar title='New structure' />
             <FormNewStructure />
         </div>
