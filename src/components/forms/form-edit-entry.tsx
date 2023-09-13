@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { TEntry, TFile, TStructure } from '@/types'
+import { TEntry, TStructure, TFile } from '@/types'
 import { TextField } from '@/ui/text-field'
 import { Button } from '@/ui/button'
 import { ImageBrick } from '@/components/bricks/image';
+import { Card } from '@/ui/card';
+import { Box } from '@/ui/box';
 
 function isError(data: TErrorResponse | {entry: TEntry}): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
@@ -19,7 +21,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
         <TextField 
             onChange={field.onChange}
             onBlur={field.onBlur}
-            value={field.value}
+            value={field.value ?? ''}
             name={field.name}
             error={fieldState.error}
             label={props.label}
@@ -46,7 +48,7 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: TErrorResponse | {entry: TEntry}  = await res.json();
+            const dataJson: TErrorResponse|{entry: TEntry} = await res.json();
 
             if (isError(dataJson)) {
                 throw new Error('Fetch error');
@@ -59,24 +61,29 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
         }
     }
 
+    const bricks = structure.bricks.map((brick, i) => {
+        return (
+            <div key={i}>
+                {brick.type === 'single_line_text' && 
+                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'multi_line_text' && 
+                    <Input control={control} name={brick.key} multiline={true} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'number_integer' && 
+                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'number_decimal' && 
+                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'file' && (
+                    <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} fileIdList={getValues(brick.key) ?? []} 
+                    fileList={fileList} setFileList={setFileList} />
+                )}
+            </div>
+        )
+    });
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                {structure.bricks.map((brick, i) => (
-                    <div key={i}>
-                        {brick.type === 'text' && 
-                            <Input control={control} name={brick.code} label={brick.name} 
-                            rules={{ required: {message: 'is required', value: true} }} />}
-                        {brick.type === 'rich_text' && 
-                            <Input control={control} name={brick.code} multiline={true} label={brick.name} 
-                            rules={{ required: {message: 'is required', value: true} }} />}
-                        {brick.type === 'image' && (
-                            <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} fileIdList={getValues(brick.code) ?? []} 
-                            fileList={fileList} setFileList={setFileList} />
-                        )}
-                    </div>
-                ))}
-
+                <Card><Box padding={16}>{bricks}</Box></Card>
                 <Button disabled={!isDirty} submit={true} primary>Update</Button>
             </form>
         </>

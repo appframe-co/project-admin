@@ -1,0 +1,23 @@
+.bricks {
+
+}
+
+.brick {
+    padding: 8px 16px;
+    border-top: 1px solid #ebebeb;
+    height: 60px;
+    cursor: pointer;
+}
+.brick:first-child {
+    border-top: none;
+}
+.brick:hover {
+    background-color: #fafafa;
+}
+
+.name {
+    font-weight: 500;
+}
+.key {
+    color: #616161;
+}

@@ -20,9 +20,9 @@ export default async function Structures({ params }: { params: { id: string } })
   const [structureData, entriesData] = await Promise.all([structurePromise, entriesPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
-  const {entries, names, codes}: {entries: TEntry[], names: string[], codes: string[]} = entriesData;
+  const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
 
-  const values = entries.map(e => codes.map(c => e.doc[c]));
+  const values = entries.map(e => keys.map(k => e.doc[k]));
 
   return (
     <div className='page'>

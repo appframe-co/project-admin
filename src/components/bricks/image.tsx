@@ -71,7 +71,7 @@ export function ImageBrick(
                     const {files}: {files: TFile[]} = await res.json();
 
                     const fileIds = files.map(file => file.id);
-                    setValue(brick.code, [...fileIdList, ...fileIds], { shouldDirty: true });
+                    setValue(brick.key, [...fileIdList, ...fileIds], { shouldDirty: true });
                     setFileList((prevState: TFile[]) => prevState.concat(files));
                 }
             } catch (e) {
@@ -141,12 +141,13 @@ export function ImageBrick(
     };
 
     const deleteUploadedImgField = async (id: string) => {
-        setValue(brick.code, fileIdList.filter(fileId => fileId !== id), { shouldDirty: true });
+        setValue(brick.key, fileIdList.filter(fileId => fileId !== id), { shouldDirty: true });
     };
 
     return (
         <div className={styles.image}>
             <div>{brick.name}</div>
+            <div>{brick.description}</div>
 
             <div>
                 <input style={{display: 'none'}} type="file" multiple accept="image/*" ref={imageRef} />

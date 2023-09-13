@@ -1,0 +1,58 @@
+.checkboxWrapper {
+    position: relative;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #303030;
+    text-align: left;
+    padding: 4px 0 4px 25px;
+    display: inline-block;
+    cursor: pointer; 
+}
+
+.checkboxWrapper .checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0; 
+}
+
+.checkboxWrapper .checkbox:checked ~ .controlIndicator {
+    border-color: #000000;
+    background-color: #000000; 
+}
+
+.checkboxWrapper .checkbox:checked ~ .controlIndicator:after {
+    visibility: visible;
+}
+
+.checkboxWrapper .controlIndicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border-radius: 5px;
+    border: 1px solid #C8C7C6;
+    background-color: transparent;
+}
+
+.checkboxWrapper .controlIndicator:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    height: 9px;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgMTAgOCI+CiAgPHBhdGggZD0iTTM5MC41LDEwMDUuNTU2YTEsMSwwLDAsMS0uNzA3LS4yOTNsLTMtM2ExLDEsMCwwLDEsMS40MTQtMS40MTRsMi4yMjYsMi4yMjUsNC4zLTUuMTU5YTEsMSwwLDEsMSwxLjUzNiwxLjI4MWwtNSw2YTEsMSwwLDAsMS0uNzIzLjM1OVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zODYuNSAtOTk3LjU1NikiIGZpbGw9IiNmZmYiLz4KPC9zdmc+Cg==");
+    background-position: center;
+    background-repeat: no-repeat;
+    visibility: hidden;
+    margin: auto;
+    display: block; 
+}

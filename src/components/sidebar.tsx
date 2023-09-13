@@ -15,9 +15,6 @@ export function Sidebar() {
                     <div className={styles.container}><Link href='/files'>Files</Link></div>
                 </li>
                 <li>
-                    <div className={styles.container}><Link href='/users'>Users</Link></div>
-                </li>
-                <li>
                     <div className={styles.container}><Link href='/settings'>Settings</Link></div>
                 </li>
             </ul>

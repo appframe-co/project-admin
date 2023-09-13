@@ -13,16 +13,16 @@
 }
 
 .textfield .name {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
   margin-bottom: 7px;
   display: block;
+  color: rgb(48, 48, 48);
 }
 
 .textfield .input,
 .textfield .textarea {
   position: relative;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 20px;
   width: 100%;

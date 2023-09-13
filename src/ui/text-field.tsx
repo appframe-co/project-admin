@@ -5,10 +5,15 @@ import styles from '@/styles/ui/text-field.module.css'
 export function TextField(props: any) {
     const {
         onChange, onBlur,
-        name, label, value='', type='text',
+        name, label, value, type='text',
         error,
-        multiline, helpText, disabled
+        multiline, helpText, disabled, innerRef
     } = props;
+
+    const fields: {ref?: any} = {};
+    if (innerRef) {
+        fields.ref = innerRef;
+    }
 
     return (
         <div className={styles['textfield'] + (error ? ' ' + styles.error : '')}>
@@ -18,9 +23,10 @@ export function TextField(props: any) {
                     onChange={onChange}
                     onBlur={onBlur}
                     name={name}
-                    value={!value ? '' : value}
                     className={styles.textarea}
                     disabled={disabled}
+                    value={value}
+                    {...fields}
                 />
             }
             {!multiline && 
@@ -28,10 +34,11 @@ export function TextField(props: any) {
                     onChange={onChange}
                     onBlur={onBlur}
                     name={name}
-                    value={!value ? '' : value}
                     type={type}
                     className={styles.input}
                     disabled={disabled}
+                    value={value}
+                    {...fields}
                 />
             }
             {error && <div className={styles.msg}>{error.message}</div>}

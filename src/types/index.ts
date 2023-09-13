@@ -4,13 +4,15 @@ export type TNewStructure = {
 
 export type FormValuesNewStructure = {
     name: string;
-    code: string
+    code: string;
+    bricks: TBrick[]
 }
 
 export type TBrick = {
     name: string;
     type: string;
-    code: string;
+    key: string;
+    description: string;
     validation: {
         code: string;
         value: any;
@@ -27,6 +29,7 @@ export type FormValuesEditStructure = {
     id: string;
     name: string;
     code: string;
+    bricks: TBrick[];
 }
 
 export type FormValuesManageBricks = {
@@ -39,11 +42,12 @@ type TValidationSchemaBrick = {
     name: string;
     value: string;
 }
-export type TSchemaBricks = {
+export type TSchemaBrick = {
     id: string;
     name: string;
     type: string;
     icon: string;
+    groupCode: string;
     validation: TValidationSchemaBrick[];
 }
 

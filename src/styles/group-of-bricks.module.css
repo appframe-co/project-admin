@@ -1,0 +1,26 @@
+.heading {
+    font-weight: 500;
+    color: rgb(97, 97, 97);
+    padding: 8px 16px;
+}
+
+.brick {
+    margin: 0 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.brick:hover {
+    background-color: #f1f1f1;
+    border-radius: 6px;
+}
+
+.addBrick {
+    padding: 20px;
+    height: 60px;
+    cursor: pointer;
+    border: 1px solid #ebebeb;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    color: var(--color-link)
+}
