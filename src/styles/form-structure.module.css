@@ -21,3 +21,29 @@
 .key {
     color: #616161;
 }
+
+.infoBrick {
+    border-bottom: 1px solid #ebebeb;
+}
+.validation {
+    padding-top: 20px;
+}
+.validationText {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+    margin-bottom: 15px;
+}
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.actionsRight {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

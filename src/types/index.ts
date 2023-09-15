@@ -41,6 +41,7 @@ type TValidationSchemaBrick = {
     code: string;
     name: string;
     value: string;
+    desc: string;
 }
 export type TSchemaBrick = {
     id: string;
@@ -48,6 +49,7 @@ export type TSchemaBrick = {
     type: string;
     icon: string;
     groupCode: string;
+    validationDescHtml: string;
     validation: TValidationSchemaBrick[];
 }
 

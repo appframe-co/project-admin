@@ -2,7 +2,7 @@
   margin: 15px 0;
 }
 
-.textfield.error .input {
+.textfield.error .input, .textfield.error .textarea {
   border-color: #B00020;
   background-color: rgba(176, 0, 32, 0.03); 
 }

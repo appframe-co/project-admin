@@ -28,7 +28,7 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    border-radius: 32px;
+    border-radius: 16px;
     padding: 16px;
     max-width: 620px;
     width: 100%;

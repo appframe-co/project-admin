@@ -39,6 +39,9 @@ type TProps = {
     groupOfBricks: {[key: string]: TSchemaBrick[]}, 
     names:{[key: string]: string}
 }
+type TSchemaValidation = {
+    [key: string]: {name: string, desc: string}
+}
 
 export function FormNewStructure({groupOfBricks, names}: TProps) {
     const [showGroupOfBricks, setShowGroupOfBricks] = useState<boolean>(false);
@@ -46,7 +49,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
     const [indexBrick, setIndexBrick] = useState<number|null>(null);
     const [brick, setBrick] = useState<TBrick>();
     const [schemaBrick, setSchemaBrick] = useState<TSchemaBrick>();
-    const [namesValidation, setNamesValidation] = useState<{[key: string]: string}>();
+    const [schemaValidation, setSchemaValidation] = useState<TSchemaValidation>();
 
     const router = useRouter();
 
@@ -91,8 +94,11 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
     }
 
     const createBrick = (schemaBrick: TSchemaBrick): void => {
-        const namesValidation = schemaBrick.validation.reduce((acc: {[key: string]: string}, v) => {
-            acc[v.code] = v.name;
+        const schemaValidation = schemaBrick.validation.reduce((acc: TSchemaValidation, v) => {
+            acc[v.code] = {
+                name: v.name,
+                desc: v.desc
+            };
             return acc;
         }, {});
 
@@ -104,7 +110,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
             description: '',
             validation: schemaBrick.validation.map(v => ({code: v.code, value: v.value}))
         });
-        setNamesValidation(namesValidation);
+        setSchemaValidation(schemaValidation);
         handleChangeModalBrick();
         setShowGroupOfBricks(false);
     };
@@ -115,14 +121,17 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
         });
         const schemaBrick: TSchemaBrick|undefined = schemaBricks.find(b => b.type === brick.type);
         if (schemaBrick) {
-            const namesValidation = schemaBrick.validation.reduce((acc: {[key: string]: string}, v) => {
-                acc[v.code] = v.name;
+            const schemaValidation = schemaBrick.validation.reduce((acc: TSchemaValidation, v) => {
+                acc[v.code] = {
+                    name: v.name,
+                    desc: v.desc
+                };
                 return acc;
             }, {});
 
             setSchemaBrick(schemaBrick);
             setBrick(brick);
-            setNamesValidation(namesValidation);
+            setSchemaValidation(schemaValidation);
             setIndexBrick(index);
             handleChangeModalBrick();
         }
@@ -160,7 +169,8 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
                         onClose={handleClose}
                         title={brick?.name || schemaBrick?.name || ''}
                     >
-                        {brick && namesValidation && <FormBrick brick={brick} namesValidation={namesValidation} 
+                        {brick && schemaValidation && schemaBrick && <FormBrick brick={brick} schemaValidation={schemaValidation} 
+                            schemaBrick={schemaBrick}
                             handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} handleDeleteBrick={handleDeleteBrick}
                             handleClose={handleClose} indexBrick={indexBrick} />}
                     </Modal>,

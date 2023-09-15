@@ -10,8 +10,8 @@ import { ImageBrick } from '@/components/bricks/image';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
 
-function isError(data: TErrorResponse | {entry: TEntry}): data is TErrorResponse {
-    return (data as TErrorResponse).error !== undefined;
+function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
+    return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
 function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
@@ -33,7 +33,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 
 export function FormNewEntry({structure}: {structure: TStructure}) {
     const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty }, setValue, getValues } = useForm<any>();
+    const { control, handleSubmit, formState, setValue, setError, register, watch } = useForm<any>();
     const [fileList, setFileList] = useState([]);
 
     const onSubmit: SubmitHandler<any> = async (data) => {
@@ -48,10 +48,15 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: TErrorResponse|{entry: TEntry} = await res.json();
+            const dataJson: {userErrors: TUserErrorResponse[]}|{entry: TEntry} = await res.json();
 
             if (isError(dataJson)) {
-                throw new Error('Fetch error');
+                dataJson.userErrors.forEach(d => {
+                    setError(d.field.join('.'), {
+                        message: d.message
+                    });
+                });
+                return;
             }
 
             router.refresh();
@@ -68,9 +73,13 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'multi_line_text' && 
                     <Input control={control} name={brick.key} multiline={true} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'number_integer' && 
+                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'number_decimal' && 
+                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'file' && (
-                    <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} fileIdList={getValues(brick.key) ?? []} 
-                    fileList={fileList} setFileList={setFileList} />
+                    <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} structureId={structure.id} brick={brick} 
+                    fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
                 )}
             </div>
         )
@@ -80,7 +89,7 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Card><Box padding={16}>{bricks}</Box></Card>
-                <Button disabled={!isDirty} submit={true} primary>Create</Button>
+                <Button disabled={!formState.isDirty} submit={true} primary>Create</Button>
             </form>
         </>
     )

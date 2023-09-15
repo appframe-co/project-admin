@@ -5,5 +5,9 @@ declare global {
         error: string|null;
         description?: string;
         property?: string;
-      }
+    }
+    type TUserErrorResponse = {
+        field: string[],
+        message: string
+    }
   }

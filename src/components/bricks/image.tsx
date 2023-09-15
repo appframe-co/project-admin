@@ -6,8 +6,8 @@ import styles from '@/styles/bricks/image.module.css'
 import { resizeImg } from "@/utils/resize-img";
 
 export function ImageBrick(
-    {brick, setValue, fileIdList=[], fileList=[], structureId, setFileList}: 
-    {brick: TBrick, fileIdList?: string[], setValue: any, fileList: TFile[], structureId: string, setFileList: any}) 
+    {error, register, brick, setValue, fileIdList=[], fileList=[], structureId, setFileList}: 
+    {error: any, register: any, brick: TBrick, fileIdList?: string[], setValue: any, fileList: TFile[], structureId: string, setFileList: any}) 
 {
     const imageRef = useRef<HTMLInputElement>(null);
 
@@ -71,7 +71,7 @@ export function ImageBrick(
                     const {files}: {files: TFile[]} = await res.json();
 
                     const fileIds = files.map(file => file.id);
-                    setValue(brick.key, [...fileIdList, ...fileIds], { shouldDirty: true });
+                    setValue([...fileIdList, ...fileIds]);
                     setFileList((prevState: TFile[]) => prevState.concat(files));
                 }
             } catch (e) {
@@ -141,16 +141,17 @@ export function ImageBrick(
     };
 
     const deleteUploadedImgField = async (id: string) => {
-        setValue(brick.key, fileIdList.filter(fileId => fileId !== id), { shouldDirty: true });
+        setValue(fileIdList.filter(fileId => fileId !== id));
     };
 
     return (
         <div className={styles.image}>
             <div>{brick.name}</div>
             <div>{brick.description}</div>
+            {error && <div className={styles.msg}>{error.message}</div>}
 
             <div>
-                <input style={{display: 'none'}} type="file" multiple accept="image/*" ref={imageRef} />
+                <input style={{display: 'none'}} type="file" multiple accept="image/*" {...register} ref={imageRef}  />
                 <Button onClick={() => chooseFiles()}>Upload</Button>
             </div>
 

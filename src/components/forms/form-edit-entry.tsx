@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+
 import { TEntry, TStructure, TFile } from '@/types'
 import { TextField } from '@/ui/text-field'
 import { Button } from '@/ui/button'
@@ -10,8 +10,8 @@ import { ImageBrick } from '@/components/bricks/image';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
 
-function isError(data: TErrorResponse | {entry: TEntry}): data is TErrorResponse {
-    return (data as TErrorResponse).error !== undefined;
+function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
+    return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
 function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
@@ -32,9 +32,14 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 }
 
 export function FormEditEntry({structure, entry, files} : {structure: TStructure, entry: TEntry, files: TFile[]}) {
-    const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty }, setValue, getValues } = useForm<any>({defaultValues: entry.doc});
+    const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: entry.doc});
     const [fileList, setFileList] = useState(files);
+
+    useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+          reset(getValues());
+        }
+    }, [formState, structure, reset]);
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
@@ -48,14 +53,16 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: TErrorResponse|{entry: TEntry} = await res.json();
+            const dataJson: {userErrors: TUserErrorResponse[]}|{entry: TEntry} = await res.json();
 
             if (isError(dataJson)) {
-                throw new Error('Fetch error');
+                dataJson.userErrors.forEach(d => {
+                    setError(d.field.join('.'), {
+                        message: d.message
+                    });
+                });
+                return;
             }
-
-            router.refresh();
-            router.push(`/structures/${structure.id}`);
         } catch (e) {
             console.log(e);
         }
@@ -73,8 +80,8 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                 {brick.type === 'number_decimal' && 
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'file' && (
-                    <ImageBrick setValue={setValue} structureId={structure.id} brick={brick} fileIdList={getValues(brick.key) ?? []} 
-                    fileList={fileList} setFileList={setFileList} />
+                    <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} structureId={structure.id} brick={brick} 
+                    fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
                 )}
             </div>
         )
@@ -84,7 +91,7 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Card><Box padding={16}>{bricks}</Box></Card>
-                <Button disabled={!isDirty} submit={true} primary>Update</Button>
+                <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>
         </>
     )

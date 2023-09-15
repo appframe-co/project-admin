@@ -1,13 +1,12 @@
 'use client'
 
 import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray} from 'react-hook-form'
-import { useRouter } from 'next/navigation'
 import { TStructure, FormValuesEditStructure, TBrick, TSchemaBrick } from '@/types'
 import { TextField } from '@/ui/text-field'
 import { Button } from '@/ui/button'
 import { Card } from '@/ui/card'
 import { GroupOfBricks } from '../group-of-bricks'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Modal } from '@/ui/modal'
 import { Box } from '@/ui/box'
@@ -40,6 +39,9 @@ type TProps = {
     groupOfBricks: {[key: string]: TSchemaBrick[]}, 
     names:{[key: string]: string}
 }
+type TSchemaValidation = {
+    [key: string]: {name: string, desc: string}
+}
 
 export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
     const [showGroupOfBricks, setShowGroupOfBricks] = useState<boolean>(false);
@@ -47,16 +49,21 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
     const [indexBrick, setIndexBrick] = useState<number|null>(null);
     const [brick, setBrick] = useState<TBrick>();
     const [schemaBrick, setSchemaBrick] = useState<TSchemaBrick>();
-    const [namesValidation, setNamesValidation] = useState<{[key: string]: string}>();
+    const [schemaValidation, setSchemaValidation] = useState<TSchemaValidation>();
 
-    const router = useRouter();
-    const { register, control, handleSubmit, formState: { errors, isDirty }, watch } = useForm<FormValuesEditStructure>({defaultValues: structure});
+    const { control, handleSubmit, formState, watch, reset, getValues } = useForm<FormValuesEditStructure>({defaultValues: structure});
     const { fields, append, remove, update } = useFieldArray({
         name: 'bricks',
         control
     });
 
     const handleChangeModalBrick = useCallback(() => setActiveModalBrick(!activeModalBrick), [activeModalBrick]);
+
+    useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+          reset(getValues());
+        }
+    }, [formState, structure, reset]);
 
     const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
         try {
@@ -74,19 +81,17 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
             if (!isStructure(dataJson)) {
                 throw new Error('Fetch error');
             }
-
-            const { structure } = dataJson;
-
-            router.refresh();
-            router.push(`/structures/${structure.id}`);
         } catch (e) {
             console.log(e);
         }
     }
 
     const createBrick = (schemaBrick: TSchemaBrick): void => {
-        const namesValidation = schemaBrick.validation.reduce((acc: {[key: string]: string}, v) => {
-            acc[v.code] = v.name;
+        const schemaValidation = schemaBrick.validation.reduce((acc: TSchemaValidation, v) => {
+            acc[v.code] = {
+                name: v.name,
+                desc: v.desc
+            };
             return acc;
         }, {});
 
@@ -98,7 +103,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
             description: '',
             validation: schemaBrick.validation.map(v => ({code: v.code, value: v.value}))
         });
-        setNamesValidation(namesValidation);
+        setSchemaValidation(schemaValidation);
         handleChangeModalBrick();
         setShowGroupOfBricks(false);
     };
@@ -109,14 +114,17 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
         });
         const schemaBrick: TSchemaBrick|undefined = schemaBricks.find(b => b.type === brick.type);
         if (schemaBrick) {
-            const namesValidation = schemaBrick.validation.reduce((acc: {[key: string]: string}, v) => {
-                acc[v.code] = v.name;
+            const schemaValidation = schemaBrick.validation.reduce((acc: TSchemaValidation, v) => {
+                acc[v.code] = {
+                    name: v.name,
+                    desc: v.desc
+                };
                 return acc;
             }, {});
 
             setSchemaBrick(schemaBrick);
             setBrick(brick);
-            setNamesValidation(namesValidation);
+            setSchemaValidation(schemaValidation);
             setIndexBrick(index);
             handleChangeModalBrick();
         }
@@ -154,7 +162,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                         onClose={handleClose}
                         title={brick?.name || schemaBrick?.name || ''}
                     >
-                        {brick && namesValidation && <FormBrick brick={brick} namesValidation={namesValidation} 
+                        {brick && schemaValidation && schemaBrick && <FormBrick brick={brick} schemaBrick={schemaBrick} schemaValidation={schemaValidation} 
                             handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} handleDeleteBrick={handleDeleteBrick}
                             handleClose={handleClose} indexBrick={indexBrick} />}
                     </Modal>,
@@ -185,7 +193,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                     </Box>
                 </Card>
 
-                <Button disabled={!isDirty} submit={true} primary>Update</Button>
+                <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>
         </>
     )
