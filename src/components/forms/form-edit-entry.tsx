@@ -74,17 +74,6 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
     }
 
     const bricks = structure.bricks.map((brick, i) => {
-        if (brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') {
-            const error = Array.isArray(formState.errors[brick.key]) ? formState.errors[brick.key] : [formState.errors[brick.key]];
-
-            return (
-                <div key={i}>
-                    <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={error} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} label={brick.name} />
-                </div>
-            )
-        }
-
         return (
             <div key={i}>
                 {brick.type === 'single_line_text' && 
@@ -95,10 +84,12 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'number_decimal' && 
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
-                {brick.type === 'file_reference' && (
+                {brick.type === 'file_reference' && 
                     <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} 
-                    structureId={structure.id} brick={brick} fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
-                )}
+                    structureId={structure.id} brick={brick} fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />}
+                {(brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') && 
+                    <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} label={brick.name} />}
             </div>
         )
     });

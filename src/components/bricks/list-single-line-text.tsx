@@ -67,12 +67,13 @@ export function ListSingleLineText({register, error, setValue, label, value=[]}:
                     <div className={styles.wrapper}>
                         <div className={styles.container}>
                             <div>{label}</div>
+                            {error && !fields.length && <div className={styles.msg}>{error?.message}</div>}
                             <form>
                                 <ul>
                                     {fields.map((item, index) => (
                                         <li key={item.id}>
                                             <Input control={control} name={`list.${index}`} />
-                                            {error && <div className={styles.msg}>{error[index]?.message}</div>}
+                                            {error && Array.isArray(error) && <div className={styles.msg}>{error[index]?.message}</div>}
                                             <button type="button" onClick={() => remove(index)}>Delete</button>
                                         </li>
                                     ))}
