@@ -112,7 +112,10 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
         Object.keys(groupOfBricks).forEach(group => {
             schemaBricks.push(...groupOfBricks[group]);
         });
-        const schemaBrick: TSchemaBrick|undefined = schemaBricks.find(b => b.type === brick.type);
+        const arType = brick.type.split('.');
+        const type = arType.length === 1 ? arType[0] : arType[1];
+
+        const schemaBrick: TSchemaBrick|undefined = schemaBricks.find(b => b.type === type);
         if (schemaBrick) {
             const schemaValidation = schemaBrick.validation.reduce((acc: TSchemaValidation, v) => {
                 acc[v.code] = {

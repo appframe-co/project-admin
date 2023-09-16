@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 
 export function Box({padding, children}: {padding?: number, children: React.ReactNode}) {
     const style = {} as CSSProperties;
-    if (padding !== undefined || padding !== null) {
+    if (padding !== undefined && padding !== null) {
         style.padding = padding+'px';
     }
 

@@ -3,7 +3,8 @@ import { CSSProperties } from 'react';
 
 export function Card({title, padding, children}: {title?: string, padding?: number, children: React.ReactNode}) {
     const style = {} as CSSProperties;
-    if (padding !== undefined || padding !== null) {
+
+    if (padding !== undefined && padding !== null) {
         style.padding = padding+'px';
     }
 

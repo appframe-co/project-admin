@@ -4,6 +4,7 @@ import { TBrick, TSchemaBrick } from '@/types';
 import { SubmitHandler, UseControllerProps, useController, useFieldArray, useForm } from 'react-hook-form';
 import { Button } from '@/ui/button';
 import styles from '@/styles/form-structure.module.css';
+import { useState } from 'react';
 
 function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
     const { field, fieldState } = useController(props);
@@ -54,6 +55,10 @@ type TProps = {
 }
 
 export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBrick, handleClose, handleDeleteBrick, indexBrick}: TProps) {
+    const isListBrick = brick.type.split('.')[0] === 'list';
+
+    const [isListValues, setIsListValues] = useState<boolean>(isListBrick);
+
     const { register, control, handleSubmit, formState } = useForm<TBrick>({
         defaultValues: brick
     });
@@ -64,6 +69,10 @@ export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBri
 
     const onSubmit: SubmitHandler<TBrick> = async (data) => {
         try {
+            if (isListValues && !isListBrick) {
+                data.type = 'list.' + data.type;
+            }
+
             handleSubmitBrick(data);
         } catch (e) {
             console.log(e)
@@ -77,6 +86,15 @@ export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBri
                     <Input control={control} name='name' label='Name' />
                     <Input control={control} name='key' label='Key' />
                     <Input control={control} name='description' label='Description' />
+
+                    {schemaBrick.list && (
+                        <div className={styles.switchValues + (indexBrick !== null ? ' ' + styles.disabledValues : '') }>
+                            <div className={styles.btnValue + (isListValues === false ? ' ' + styles.activeValue : '')} 
+                            onClick={() => indexBrick === null && setIsListValues(false)}>One value</div>
+                            <div className={styles.btnValue + (isListValues === true ? ' ' + styles.activeValue : '')} 
+                            onClick={() => indexBrick === null && setIsListValues(true)}>List of values</div>
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.validation}>

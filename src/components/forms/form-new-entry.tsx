@@ -9,12 +9,13 @@ import { Button } from '@/ui/button';
 import { ImageBrick } from '@/components/bricks/image';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
+import { ListSingleLineText } from '../bricks/list-single-line-text';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
+function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, type?: string}) {
     const { field, fieldState } = useController(props);
 
     return (
@@ -27,6 +28,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
             label={props.label}
             helpText={props.helpText}
             multiline={props.multiline}
+            type={props.type}
         />
     )
 }
@@ -67,6 +69,17 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
     }
 
     const bricks = structure.bricks.map((brick, i) => {
+        if (brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') {
+            const error = Array.isArray(formState.errors[brick.key]) ? formState.errors[brick.key] : [formState.errors[brick.key]];
+
+            return (
+                <div key={i}>
+                    <ListSingleLineText register={register(brick.key)} error={error} 
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} label={brick.name} />
+                </div>
+            )
+        }
+
         return (
             <div key={i}>
                 {brick.type === 'single_line_text' && 
@@ -78,8 +91,8 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
                 {brick.type === 'number_decimal' && 
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'file' && (
-                    <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} structureId={structure.id} brick={brick} 
-                    fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
+                    <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} 
+                    structureId={structure.id} brick={brick} fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
                 )}
             </div>
         )
