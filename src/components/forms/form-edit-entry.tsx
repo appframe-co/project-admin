@@ -95,7 +95,7 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
                 {brick.type === 'number_decimal' && 
                     <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
-                {brick.type === 'file' && (
+                {brick.type === 'file_reference' && (
                     <ImageBrick error={formState.errors[brick.key]} register={register(brick.key)} setValue={(v:any) => setValue(brick.key, v)} 
                     structureId={structure.id} brick={brick} fileIdList={watch(brick.key) ?? []} fileList={fileList} setFileList={setFileList} />
                 )}
