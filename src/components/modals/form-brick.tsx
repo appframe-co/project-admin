@@ -63,7 +63,7 @@ export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBri
         defaultValues: brick
     });
     const { fields } = useFieldArray({
-        name: 'validation',
+        name: 'validations',
         control
     });
 
@@ -97,7 +97,7 @@ export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBri
                     )}
                 </div>
 
-                <div className={styles.validation}>
+                <div className={styles.validations}>
                     <p>Validations</p>
                     <p className={styles.validationText}>{schemaBrick.validationDescHtml}</p>
                     <div>
@@ -105,23 +105,23 @@ export function FormBrick({brick, schemaBrick, schemaValidation, handleSubmitBri
                             return (
                                 <div key={item.id}>
                                     {item.code === 'required' && (
-                                        <InputRegister register={register(`validation.${index}.value`, {})} 
+                                        <InputRegister register={register(`validations.${index}.value`, {})} 
                                         label={schemaValidation[item.code].name} helpText={schemaValidation[item.code].desc} type='checkbox' />
                                     )}
                                     {item.code === 'max' && (
-                                        <InputRegister register={register(`validation.${index}.value`, {valueAsNumber: true})} 
+                                        <InputRegister register={register(`validations.${index}.value`, {valueAsNumber: true})} 
                                         label={schemaValidation[item.code].name} helpText={schemaValidation[item.code].desc} type='number' />
                                     )}
                                     {item.code === 'min' && (
-                                        <InputRegister register={register(`validation.${index}.value`, {valueAsNumber: true})} 
+                                        <InputRegister register={register(`validations.${index}.value`, {valueAsNumber: true})} 
                                         label={schemaValidation[item.code].name} helpText={schemaValidation[item.code].desc} type='number' />
                                     )}
                                     {item.code === 'regex' && (
-                                        <InputRegister register={register(`validation.${index}.value`)} 
+                                        <InputRegister register={register(`validations.${index}.value`)} 
                                         label={schemaValidation[item.code].name} helpText={schemaValidation[item.code].desc} />
                                     )}
                                     {item.code === 'max_precision' && (
-                                        <InputRegister register={register(`validation.${index}.value`, {valueAsNumber: true})} 
+                                        <InputRegister register={register(`validations.${index}.value`, {valueAsNumber: true})} 
                                         label={schemaValidation[item.code].name} helpText={schemaValidation[item.code].desc} type='number' />
                                     )}
                                 </div>

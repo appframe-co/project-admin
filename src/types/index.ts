@@ -13,7 +13,7 @@ export type TBrick = {
     type: string;
     key: string;
     description: string;
-    validation: {
+    validations: {
         code: string;
         value: any;
     }[];
@@ -51,7 +51,7 @@ export type TSchemaBrick = {
     groupCode: string;
     list: string;
     validationDescHtml: string;
-    validation: TValidationSchemaBrick[];
+    validations: TValidationSchemaBrick[];
 }
 
 export type TProject = {
