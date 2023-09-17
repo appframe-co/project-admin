@@ -30,7 +30,7 @@ export default async function Files() {
                     <tbody>
                         {files.map(file => (
                             <tr key={file.id}>
-                                <td><img src={resizeImg(file.src, {w:40, h:40})} /></td>
+                                <td><img src={resizeImg(file.src, {w:100, h:100})} /></td>
                                 <td>{file.filename}</td>
                                 <td>{file.size} B</td>
                                 <td><DeleteFile fileId={file.id} /></td>

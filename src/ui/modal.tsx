@@ -9,11 +9,13 @@ type TProps = {
     onClose: any, 
     children: React.ReactNode, 
     primaryAction?: {onAction: (s: any) => void, content: string},
-    secondaryActions?: any
+    secondaryActions?: any,
+    small?: boolean
+    large?: boolean
 }
 
 export function Modal(props: TProps) {
-    const {activator, open, title, onClose, children, primaryAction, secondaryActions} = props;
+    const {activator, open, title, onClose, children, primaryAction, secondaryActions, small, large} = props;
 
     return (
         <>
@@ -23,7 +25,7 @@ export function Modal(props: TProps) {
                 <>
                     <div className={styles.overlay} onClick={onClose}></div>
                     <div className={styles.modal}>
-                        <div className={styles.container}>
+                        <div className={styles.container + (large ? ' '+styles.large : '')+ (small ? ' '+styles.small : '')}>
                             <div className={styles.header}>
                                 <div>{title && <h2>{title}</h2>}</div>
                                 <Button plain onClick={onClose} size="small"><Image width={24} height={24} src='/icons/close.svg' alt='' /></Button>

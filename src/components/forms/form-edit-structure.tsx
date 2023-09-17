@@ -160,15 +160,15 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
     return (
         <>
             {activeModalBrick && createPortal(
-                    <Modal
-                        open={activeModalBrick}
-                        onClose={handleClose}
-                        title={brick?.name || schemaBrick?.name || ''}
-                    >
-                        {brick && schemaValidation && schemaBrick && <FormBrick brick={brick} schemaBrick={schemaBrick} schemaValidation={schemaValidation} 
-                            handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} handleDeleteBrick={handleDeleteBrick}
-                            handleClose={handleClose} indexBrick={indexBrick} />}
-                    </Modal>,
+                <Modal
+                    open={activeModalBrick}
+                    onClose={handleClose}
+                    title={brick?.name || schemaBrick?.name || ''}
+                >
+                    {brick && schemaValidation && schemaBrick && <FormBrick brick={brick} schemaBrick={schemaBrick} schemaValidation={schemaValidation} 
+                        handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} handleDeleteBrick={handleDeleteBrick}
+                        handleClose={handleClose} indexBrick={indexBrick} />}
+                </Modal>,
                 document.body
             )}
 

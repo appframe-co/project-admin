@@ -25,7 +25,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 export function ListSingleLineText({register, error, setValue, label, value=[]}: {register: any, error: any, setValue: any, label: string, value?: any}) {
     const { control, watch } = useForm<any>({
         defaultValues: {
-            list: Array.isArray(value) ? value : JSON.parse(value)
+            list: value
         }
     });
     const { fields, append, remove } = useFieldArray({
@@ -40,7 +40,7 @@ export function ListSingleLineText({register, error, setValue, label, value=[]}:
     useEffect(() => {
         const closeDropDown = (event: Event) => {
             if (!event.composedPath().includes(btnRef.current as HTMLDivElement)) {
-                setValue(JSON.stringify(watch('list')));
+                setValue(watch('list'));
                 setShowFields(false);
             }
         };
