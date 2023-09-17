@@ -45,8 +45,8 @@ export default async function Structures({ params }: { params: { id: string } })
               <tr key={i}>
                 {value.map((v: any) => (
                   <td>
-                    {!Array.isArray(v) && v}
-
+                    {!Array.isArray(v) && !v.src && v }
+                    {!Array.isArray(v) && v.src && <img src={resizeImg(v.src, {w: 100, h: 100})} />}
                     {Array.isArray(v) && v.length > 0 && v[0].src && <img src={resizeImg(v[0].src, {w: 100, h: 100})} />}
                     {Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
                   </td>
