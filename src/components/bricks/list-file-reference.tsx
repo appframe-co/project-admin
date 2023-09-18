@@ -16,34 +16,57 @@ type TProp = {
     brick: TBrick;
     value?: any;
     filesRef?: TFile[];
+    watchGlobal: any;
+}
+type TRect = {
+    top: number, left: number, width: number
 }
 
-export function ListFileReference({register, error, setValue, brick, value=[], filesRef=[]}: TProp) {
+export function ListFileReference({watchGlobal, register, error, setValue, brick, value=[], filesRef=[]}: TProp) {
+    const divInputListRef = useRef<null|HTMLDivElement>(null);
+    const divInputRef = useRef<null|HTMLDivElement>(null);
+    const [showFields, setShowFields] = useState<boolean>(false);
+    const [rect, setRect] = useState<TRect>();
     const [files, setFiles] = useState<TFile[]>(filesRef);
     const [activeModalFiles, setActiveModalFiles] = useState<boolean>(false);
+
     const handleChangeModalFiles = useCallback(() => setActiveModalFiles(!activeModalFiles), [activeModalFiles]);
     
-    const [showFields, setShowFields] = useState<boolean>(false);
-    const btnRef = useRef<null|HTMLDivElement>(null);
-    const divInputRef = useRef<null|HTMLDivElement>(null);
-
     useEffect(() => {
         const closeDropDown = (event: Event) => {
-            if (!event.composedPath().includes(btnRef.current as HTMLDivElement)) {
+            if (!divInputRef.current) {
+                return;
+            }
+
+            if (!event.composedPath().includes(divInputRef.current as HTMLDivElement) && 
+                !event.composedPath().includes(divInputListRef.current as HTMLDivElement)
+                ) {
                 setShowFields(false);
             }
         };
 
-        document.body.addEventListener('click', closeDropDown);
+        window.addEventListener('click', closeDropDown);
 
-        return () => document.body.removeEventListener('click', closeDropDown);
+        return () => window.removeEventListener('click', closeDropDown);
     }, []);
+
+    useEffect(() => {
+        if (!divInputRef.current) {
+            return;
+        }
+
+        const rect = divInputRef.current.getBoundingClientRect();
+        setRect({top: rect.top + window.scrollY, left: rect.left, width: rect.width});
+    }, [watchGlobal]);
 
     const handleClose = () => {
         handleChangeModalFiles();
     };
 
-    const rect = divInputRef.current?.getBoundingClientRect();
+    const handleDeleteFile = (fileId: string) => {
+        setValue(value.filter((id:string) => id !== fileId));
+        setFiles(prevState => prevState.filter(f => f.id !== fileId));
+    }
 
     return (
         <>
@@ -59,33 +82,33 @@ export function ListFileReference({register, error, setValue, brick, value=[], f
                 document.body
             )}
 
-            <div ref={divInputRef} onClick={() => setShowFields((prevState: any) => !prevState)}>
-                <div>{brick.name}</div>
-                <div>{brick.description}</div>
-                {error && <div className={styles.msg}>{error.message}</div>}
+            <div ref={divInputRef} className={styles.field} onClick={() => setShowFields((prevState: any) => !prevState)}>
+                <div className={styles.name}>{brick.name}</div>
                 <select style={{display: 'none'}} {...register} multiple />
-                <div className={styles.input}>
+                <div className={styles.input + (error ? ' '+styles.errorInput : '')}>
                     <div>{files.map(f => f.filename).join(' • ')}</div>
                     <div>{files.length} {files.length > 1 ? 'items' : 'item'}</div>
                 </div>
+                <div className={styles.info}>{brick.description}</div>
             </div>
             {showFields && createPortal(
-                <div ref={btnRef} style={{position:'absolute',width: rect?.width,top:rect?.top,left:rect?.left}}>
+                <div ref={divInputListRef} style={{position:'absolute',width: rect?.width,top:rect?.top,left:rect?.left}}>
                     <div className={styles.wrapperList}>
                         <div className={styles.containerList}>
-                            <div>{brick.name}</div>
-                            <ul>
-                                {files.length > 0 && (
-                                    files.map(file => (
-                                        <div key={file.id}>
-                                            <img src={resizeImg(file.src, {w:100, h:100})} />
-                                            <span>{file.filename}</span>
-                                            <Button onClick={() => setFiles(prevState => prevState.filter(f => f.id !== file.id))}>Delete</Button>
+                            <div className={styles.name}>{brick.name}</div>
+                            <ul className={styles.selectedFiles}>
+                                {files.map(file => (
+                                    <div key={file.id} className={styles.selectedFile}>
+                                        <div className={styles.infoFile}>
+                                            <div className={styles.img}><img src={file.src} /></div>
+                                            <div className={styles.filename}>{file.filename}</div>
                                         </div>
-                                    ))
-                                )}
+                                        <div><Button onClick={() => handleDeleteFile(file.id)}>Delete</Button></div>
+                                    </div>
+                                ))}
                             </ul>
                             <Button onClick={handleChangeModalFiles}>Select files</Button>
+                            {error && <div className={styles.error}>{error?.message}</div>}
                         </div>
                     </div>
                 </div>,

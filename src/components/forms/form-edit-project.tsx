@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { FormValuesEditStructure, TProject } from '@/types'
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
+import { Card } from '@/ui/card';
+import { Box } from '@/ui/box';
 
 function isProject(data: TErrorResponse | {project: TProject}): data is {project: TProject} {
     return (data as {project: TProject}).project.id !== undefined;
@@ -60,9 +62,13 @@ export function FormEditProject({project, accessToken} : {project: TProject, acc
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
-                <TextField value={project.projectNumber} label='Project Number' ronChange={() => {}} disabled />
-                <TextField value={accessToken} label='Token' ronChange={() => {}} disabled helpText='Use this token for Project API' />
+                <Card>
+                    <Box padding={16}>
+                        <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
+                        <TextField value={project.projectNumber} label='Project Number' ronChange={() => {}} disabled />
+                        <TextField value={accessToken} label='Token' ronChange={() => {}} disabled helpText='Use this token for Project API' />
+                    </Box>
+                </Card>
 
                 <Button disabled={!isDirty} submit={true} primary>Update</Button>
             </form>

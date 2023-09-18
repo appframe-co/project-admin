@@ -7,7 +7,6 @@ import styles from '@/styles/bricks/file-reference.module.css'
 import { Modal } from "@/ui/modal";
 import { createPortal } from "react-dom";
 import { Files } from "../modals/files";
-import { resizeImg } from "@/utils/resize-img";
 
 type TProp = {
     register: any;
@@ -27,6 +26,11 @@ export function FileReference({register, error, setValue, brick, value, filesRef
         handleChangeModalFiles();
     };
 
+    const handleClear = () => {
+        setValue(null);
+        setFiles([]);
+    };
+
     return (
         <>
             {activeModalFiles && createPortal(
@@ -41,21 +45,27 @@ export function FileReference({register, error, setValue, brick, value, filesRef
                 document.body
             )}
 
-            <div className={styles.image}>
-                <div>{brick.name}</div>
-                <div>{brick.description}</div>
-                {error && <div className={styles.msg}>{error.message}</div>}
-
+            <div className={styles.field}>
+                <div className={styles.name}>
+                    <div>{brick.name}</div>
+                    {value && (
+                        <div className={styles.clear} onClick={handleClear}>Clear</div>
+                    )}
+                </div>
                 <div>
                     <input style={{display: 'none'}} {...register} />
-                    {files.length === 0 ? <Button onClick={handleChangeModalFiles}>Select file</Button> : (
-                        <div>
-                            <img src={resizeImg(files[0].src, {w:100, h:100})} />
-                            <span>{files[0].filename}</span>
-                            <Button onClick={handleChangeModalFiles}>Change</Button>
+                    {!value ? <Button onClick={handleChangeModalFiles}>Select file</Button> : (
+                        <div className={styles.selectedFile}>
+                            <div className={styles.infoFile}>
+                                <div className={styles.img}><img src={files[0].src} /></div>
+                                <div className={styles.filename}>{files[0].filename}</div>
+                            </div>
+                            <div><Button onClick={handleChangeModalFiles}>Change</Button></div>
                         </div>
                     )}
                 </div>
+                <div className={styles.info}>{brick.description}</div>
+                {error && <div className={styles.error}>{error.message}</div>}
             </div>
         </>
     )

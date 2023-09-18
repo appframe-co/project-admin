@@ -176,14 +176,6 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
     const selectFiles = (fileId: string) => {
         if (!multiple) {
             setSelectedFileIds(fileId);
-
-            setFilesRef((prevState: TFile[]) => {
-                const file = files.find(f => f.id === fileId);
-                if (!file) {
-                    return prevState;
-                }
-                return [file];
-            });
         } else {
             setSelectedFileIds(prevState => {
                 const files = !Array.isArray(prevState) ? [] : prevState;
@@ -192,25 +184,16 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                 }
                 return files.concat(fileId);
             });
-
-            setFilesRef((prevState: TFile[]) => {
-                const file = files.find(f => f.id === fileId);
-                if (!file) {
-                    return prevState;
-                }
-
-                if (prevState.map(f => f.id).includes(fileId)) {
-                    return prevState.filter(f => f.id !== fileId);
-                }
-                return prevState.concat(file);
-            });
         }
-
-        
     };
 
     const applyFiles = () => {
         setValue(selectedFileIds);
+
+        setFilesRef((prevState: TFile[]) => {
+            return files.filter(f => selectedFileIds.includes(f.id));
+        });
+
         onClose();
     };
 
@@ -232,7 +215,8 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                     </div>
                     <div className={styles.files}>
                         {files.map(file => (
-                            <div key={file.id} className={styles.file + (selectedFileIds?.includes(file.id) ? ' '+styles.active : '')} onClick={() => selectFiles(file.id)}>
+                            <div key={file.id} className={styles.file + (selectedFileIds?.includes(file.id) ? ' '+styles.active : '')} 
+                                onClick={() => selectFiles(file.id)}>
                                 <img src={resizeImg(file.src, {w:100, h:100})} />
                             </div>
                         ))}

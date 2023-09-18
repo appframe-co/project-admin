@@ -17,8 +17,15 @@
     user-select: none;
     text-align: left;
     font-weight: 500;
+    display: flex;
+    align-items: center;
 }
 .links li a:hover {
     background-color: #f1f1f1;
     border-radius: 6px;
+}
+.links li a img {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
 }

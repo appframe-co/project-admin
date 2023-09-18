@@ -49,6 +49,21 @@
     border-radius: 10px;
 }
 
+.wrapperList {
+    position: relative;
+    background-color: #ffffff;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+    border: 1px solid #d4d4d4;
+    padding: 0px;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0px 0px 10px 0.5px rgba(0,0,0,0.15);
+}
+
+.containerList {
+    padding: 0 16px;
+}
+
 .input {
     display: flex;
     justify-content: space-between;
@@ -68,17 +83,79 @@
     user-select: none;
     position: relative;
 }
-
-.wrapperList {
-    position: relative;
-    background-color: #ffffff;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
-    border: 1px solid #d4d4d4;
-    padding: 0px;
-    border-radius: 6px;
-    padding: 12px;
+.input.errorInput {
+    border: 1px solid #B00020;
+    background-color: rgba(176, 0, 32, 0.03); 
 }
-
-.containerList {
-    padding: 0 16px;
+.name {
+    font-size: 13px;
+    margin-bottom: 7px;
+    display: block;
+    color: rgb(48, 48, 48);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.field {
+    margin: 15px 0;
+}
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+}
+.error {
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 5px;
+    display: block; 
+    color: #B00020;
+}
+.selectedFiles {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ebebeb;
+}
+.selectedFile {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+.containerList .selectedFile {
+    padding: 4px;
+}
+.infoFile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}
+.img {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #d7d7d7;
+    background-color: #efefef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.filename {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.clear {
+    color: var(--color-link);
+    cursor: pointer;
 }

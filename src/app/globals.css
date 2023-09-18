@@ -1,7 +1,8 @@
 :root {
   --header-bg: #1a1a1a;
   --header-color: #ffffff;
-  --body-font-size: 14px;
+  --body-font-size: 13px;
+  --body-bg: #f1f1f1;
   --heading-font-size: 16px;
   --color-link: blue;
   --sidebar-bg: #ebebeb;
@@ -20,6 +21,7 @@ body, html {
 
 body {
   font-size: var(--body-font-size);
+  background-color: var(--body-bg);
 }
 
 ul {

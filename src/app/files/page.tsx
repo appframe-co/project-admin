@@ -17,8 +17,8 @@ export default async function Files() {
         <div className='page'>
             <Topbar title='Files'></Topbar>
 
-            <div className={styles.container}>
-                <table className={styles.files}>
+            <div className={styles.table}>
+                <table>
                     <thead>
                         <tr>
                             <th></th>
@@ -29,8 +29,8 @@ export default async function Files() {
                     </thead>
                     <tbody>
                         {files.map(file => (
-                            <tr key={file.id}>
-                                <td><img src={resizeImg(file.src, {w:100, h:100})} /></td>
+                            <tr key={file.id} className={styles.doc}>
+                                <td><div className={styles.img}><img src={file.src} /></div></td>
                                 <td>{file.filename}</td>
                                 <td>{file.size} B</td>
                                 <td><DeleteFile fileId={file.id} /></td>

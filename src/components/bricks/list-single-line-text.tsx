@@ -1,4 +1,7 @@
+'use client'
+
 import styles from '@/styles/bricks.module.css'
+import { TBrick } from '@/types';
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
 import { useEffect, useRef, useState } from 'react';
@@ -22,7 +25,24 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
     )
 }
 
-export function ListSingleLineText({register, error, setValue, label, value=[]}: {register: any, error: any, setValue: any, label: string, value?: any}) {
+type TProp = {
+    register: any;
+    error: any;
+    setValue: any;
+    brick: TBrick;
+    value?: any;
+    watchGlobal: any;
+}
+type TRect = {
+    top: number, left: number, width: number
+}
+
+export function ListSingleLineText({watchGlobal, register, error, setValue, brick, value=[]}: TProp) {
+    const divInputListRef = useRef<null|HTMLDivElement>(null);
+    const divInputRef = useRef<null|HTMLDivElement>(null);
+    const [showFields, setShowFields] = useState<boolean>(false);
+    const [rect, setRect] = useState<TRect>();
+
     const { control, watch } = useForm<any>({
         defaultValues: {
             list: value
@@ -33,48 +53,64 @@ export function ListSingleLineText({register, error, setValue, label, value=[]}:
         control
     });
 
-    const btnRef = useRef<null|HTMLDivElement>(null);
-    const divInputRef = useRef<null|HTMLDivElement>(null);
-    const [showFields, setShowFields] = useState<boolean>(false);
-
     useEffect(() => {
         const closeDropDown = (event: Event) => {
-            if (!event.composedPath().includes(btnRef.current as HTMLDivElement)) {
+            if (!divInputRef.current) {
+                return;
+            }
+
+            if (!event.composedPath().includes(divInputRef.current as HTMLDivElement) && 
+                !event.composedPath().includes(divInputListRef.current as HTMLDivElement)
+                ) {
                 setValue(watch('list'));
                 setShowFields(false);
             }
         };
 
-        document.body.addEventListener('click', closeDropDown);
+        window.addEventListener('click', closeDropDown);
 
-        return () => document.body.removeEventListener('click', closeDropDown);
+        return () => window.removeEventListener('click', closeDropDown);
     }, []);
 
-    const rect = divInputRef.current?.getBoundingClientRect();
+    useEffect(() => {
+        if (!divInputRef.current) {
+            return;
+        }
+
+        const rect = divInputRef.current.getBoundingClientRect();
+        setRect({top: rect.top + window.scrollY, left: rect.left, width: rect.width});
+    }, [watchGlobal]);
 
     return (
         <>
-            <div ref={divInputRef} onClick={() => setShowFields((prevState: any) => !prevState)}>
-                <div>{label}</div>
+            <div ref={divInputRef} className={styles.field} onClick={() => setShowFields((prevState: any) => !prevState)}>
+                <div className={styles.name}>{brick.name}</div>
+                <div className={styles.info}>{brick.description}</div>
                 <input style={{display: 'none'}} {...register}/>
-                <div className={styles.input}>
-                    <div>{watch('list').join(' • ')}</div>
-                    <div>{watch('list').length} {watch('list').length > 1 ? 'items' : 'item'}</div>
+                <div className={styles.input + (error ? ' '+styles.errorInput : '')}>
+                    {watch('list') && (
+                        <>
+                            <div>{watch('list').join(' • ')}</div>
+                            <div>{watch('list').length} {watch('list').length > 1 ? 'items' : 'item'}</div>
+                        </>
+                    )}
                 </div>
             </div>
             {showFields && createPortal(
-                <div ref={btnRef} style={{position:'absolute',width: rect?.width,top:rect?.top,left:rect?.left}}>
+                <div ref={divInputListRef} style={{position:'absolute',width:rect?.width,top:rect?.top,left:rect?.left}}>
                     <div className={styles.wrapper}>
                         <div className={styles.container}>
-                            <div>{label}</div>
-                            {error && !fields.length && <div className={styles.msg}>{error?.message}</div>}
+                            <div className={styles.name}>{brick.name}</div>
+                            {error && !fields.length && <div className={styles.error}>{error?.message}</div>}
                             <form>
                                 <ul>
                                     {fields.map((item, index) => (
-                                        <li key={item.id}>
-                                            <Input control={control} name={`list.${index}`} />
-                                            {error && Array.isArray(error) && <div className={styles.msg}>{error[index]?.message}</div>}
-                                            <button type="button" onClick={() => remove(index)}>Delete</button>
+                                        <li key={item.id} className={styles.fieldList}>
+                                            <div className={styles.infoField}>
+                                                <Input control={control} name={`list.${index}`} />
+                                                {error && Array.isArray(error) && <div className={styles.msg}>{error[index]?.message}</div>}
+                                            </div>
+                                            <div><Button onClick={() => remove(index)}>Delete</Button></div>
                                         </li>
                                     ))}
                                 </ul>

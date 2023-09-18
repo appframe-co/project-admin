@@ -7,6 +7,7 @@ import styles from '@/styles/structure.module.css'
 import { DeleteEntry } from '@/components/delete-entry';
 import { Topbar } from '@/components/topbar';
 import { resizeImg } from '@/utils/resize-img';
+import { Button } from '@/ui/button';
 
 export const metadata: Metadata = {
   title: 'Structure | AppFrame'
@@ -27,32 +28,34 @@ export default async function Structures({ params }: { params: { id: string } })
   return (
     <div className='page'>
       <Topbar title={structure.name}>
-        <Link href={`/structures/${params.id}/edit`}>Edit structure</Link>
         <Link href={`/structures/${params.id}/new`}>Add entry</Link>
       </Topbar>
 
-      <div>
-        <table className={styles.structure}>
+      <div className={styles.table}>
+        <table>
           <thead>
             <tr>
               {names.map((name: string, i: number) => (
                 <th key={i}>{name}</th>
               ))}
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {values.map((value: any, i: number) => (
-              <tr key={i}>
+              <tr key={i} className={styles.doc}>
                 {value.map((v: any) => (
                   <td>
-                    {!Array.isArray(v) && !v.src && v }
-                    {!Array.isArray(v) && v.src && <img src={resizeImg(v.src, {w: 100, h: 100})} />}
-                    {Array.isArray(v) && v.length > 0 && v[0].src && <img src={resizeImg(v[0].src, {w: 100, h: 100})} />}
-                    {Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
+                    {v && !Array.isArray(v) && !v.src && v }
+                    {v && !Array.isArray(v) && v.src && <div className={styles.img}><img src={v.src} /></div>}
+                    {v && Array.isArray(v) && v.length > 0 && v[0].src && <div className={styles.img}><img src={v[0].src} /></div>}
+                    {v && Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
                   </td>
                 ))}
-                <td><Link href={`/structures/${structure.id}/${entries[i]['id']}/edit`}>Edit</Link></td>
-                <td><DeleteEntry structureId={structure.id} id={entries[i]['id']} /></td>
+                <td className={styles.actions}>
+                  <Link href={`/structures/${structure.id}/${entries[i]['id']}/edit`}><Button>Edit</Button></Link>
+                  <DeleteEntry structureId={structure.id} id={entries[i]['id']} />
+                </td>
               </tr>
             ))}
           </tbody>

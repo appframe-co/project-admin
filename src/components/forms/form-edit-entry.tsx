@@ -73,6 +73,8 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
         }
     }
 
+    const watchGlobal = watch();
+
     const bricks = structure.bricks.map((brick, i) => {
         return (
             <div key={i}>
@@ -89,10 +91,10 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
                 {brick.type === 'list.file_reference' && 
                     <ListFileReference filesRef={files.filter(f => getValues(brick.key).includes(f.id))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {(brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') && 
                     <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} label={brick.name} />}
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
             </div>
         )
     });

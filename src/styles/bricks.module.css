@@ -6,6 +6,7 @@
     padding: 0px;
     border-radius: 6px;
     padding: 12px;
+    box-shadow: 0px 0px 10px 0.5px rgba(0,0,0,0.15);
 }
 
 .container {
@@ -30,4 +31,43 @@
     cursor: pointer;
     user-select: none;
     position: relative;
+}
+.input.errorInput {
+    border: 1px solid #B00020;
+    background-color: rgba(176, 0, 32, 0.03); 
+}
+.name {
+    font-size: 13px;
+    margin-bottom: 7px;
+    display: block;
+    color: rgb(48, 48, 48);
+}
+.field {
+    margin: 15px 0;
+}
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+}
+.error {
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 5px;
+    display: block; 
+    color: #B00020;
+}
+
+.fieldList {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+.infoField {
+    flex: 1;
 }
