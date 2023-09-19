@@ -14,8 +14,8 @@ import styles from '@/styles/form-structure.module.css'
 import { Box } from '@/ui/box'
 import { FormBrick } from '../modals/form-brick'
 
-function isStructure(data: TErrorResponse | {structure: TStructure}): data is {structure: TStructure} {
-    return (data as {structure: TStructure}).structure.id !== undefined;
+function isErrorStructure(data: TErrorResponse | {structure: TStructure}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
 }
 
 function Input(props: UseControllerProps<FormValuesNewStructure> & {label?: string, helpText?: string, multiline?: boolean}) {
@@ -53,7 +53,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
 
     const router = useRouter();
 
-    const { control, handleSubmit, formState: { errors, isDirty }, watch } = useForm<FormValuesNewStructure>({
+    const { control, handleSubmit, formState: { errors, isDirty }, watch, setError } = useForm<FormValuesNewStructure>({
         defaultValues: {
             name: '',
             code: '',
@@ -80,8 +80,9 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
                 throw new Error('Fetch error');
             }
             const dataJson: TErrorResponse | {structure: TStructure}  = await res.json();
-            if (!isStructure(dataJson)) {
-                throw new Error('Fetch error');
+            if (isErrorStructure(dataJson)) {
+                setError('root', {type: 'manual', message: dataJson.error ?? ''});
+                throw new Error(dataJson.error ?? '');
             }
 
             const { structure } = dataJson;
@@ -179,6 +180,9 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
                 document.body
             )}
 
+            <div className='mb20'>
+                {errors.root && <p>{errors.root.message}</p>}
+            </div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Card>
                     <Box padding={16}>
