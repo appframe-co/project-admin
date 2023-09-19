@@ -20,6 +20,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
     const [selectedFileIds, setSelectedFileIds] = useState<string|string[]>(value);
     const [files, setFiles] = useState<TFile[]>([]);
     const imageRef = useRef<HTMLInputElement>(null);
+    const [errorUploading, setErrorUploading] = useState<string>();
 
     useEffect(() => {
         async function getFiles() {
@@ -84,8 +85,13 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                 if (!res.ok) {
                     throw new Error('Fetch error');
                 }
-                const {stagedTargets}: {stagedTargets: TStagedTarget[]} = await res.json();
-                for (const [i, stagedTarget] of Object.entries(stagedTargets)) {
+                const data: TErrorResponse|{stagedTargets: TStagedTarget[]} = await res.json();
+                if (isError(data)) {
+                    setErrorUploading(data.error ?? '');
+                    throw new Error('Error staged targets');
+                }
+
+                for (const [i, stagedTarget] of Object.entries(data.stagedTargets)) {
                     const formData = new FormData();
 
                     stagedTarget.parameters.forEach(p => formData.append(p.name, p.value));
@@ -98,7 +104,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                         headers: {
                             'Content-Type': 'application/json'
                         }, 
-                        body: JSON.stringify({files: stagedTargets.map(stagedTargetHandler)})
+                        body: JSON.stringify({files: data.stagedTargets.map(stagedTargetHandler)})
                     });
                     if (!res.ok) {
                         throw new Error('Fetch error');
@@ -209,6 +215,8 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                     </div>
                 </div>
                 <div className={styles.content}>
+                    {errorUploading && <div className='mb20'><p>{errorUploading}</p></div>}
+
                     <div className={styles.uploadArea}>
                         <input style={{display: 'none'}} type="file" multiple accept="image/*" ref={imageRef}  />
                         <Button onClick={() => addFiles()}>Add files</Button>
