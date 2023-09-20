@@ -87,7 +87,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                 }
                 const data: TErrorResponse|{stagedTargets: TStagedTarget[]} = await res.json();
                 if (isError(data)) {
-                    setErrorUploading(data.error ?? '');
+                    setErrorUploading(data.description ?? '');
                     throw new Error('Error staged targets');
                 }
 

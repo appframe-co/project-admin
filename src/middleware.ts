@@ -5,7 +5,7 @@ import { TProject } from './types';
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|logo.svg|icons).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico|logo.svg|icons|internal).*)'
     ]
 }
 
@@ -19,11 +19,24 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(process.env.URL_ACCOUNT as string, request.url));
     }
 
+    const pathPricing = '/access_account/pricing';
+
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('X-AppFrame-Access-Token', tokenCookie.value);
 
     const dataProject = await getProject(requestHeaders);
     if (isErrorProject(dataProject)) {
+        if (dataProject.error === 'plan_expired') {
+            if (request.nextUrl.pathname !== pathPricing) {
+                return NextResponse.redirect(new URL(pathPricing, request.url));
+            }
+
+            return NextResponse.next({
+                request: {
+                  headers: requestHeaders,
+                },
+            });
+        }
         return NextResponse.redirect(new URL(process.env.URL_ACCOUNT as string, request.url));
     }
     const {trialFinishedAt, planFinishedAt} = dataProject.project;
@@ -34,7 +47,6 @@ export async function middleware(request: NextRequest) {
     const now = Date.now();
     if (now > trialFinishedAtTimestamp) {
         if (now > planFinishedAtTimestamp) {
-            const pathPricing = '/access_account/pricing';
             if (request.nextUrl.pathname !== pathPricing) {
                 return NextResponse.redirect(new URL(pathPricing, request.url));
             }

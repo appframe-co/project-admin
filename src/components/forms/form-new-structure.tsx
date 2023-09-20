@@ -81,7 +81,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
             }
             const dataJson: TErrorResponse | {structure: TStructure}  = await res.json();
             if (isErrorStructure(dataJson)) {
-                setError('root', {type: 'manual', message: dataJson.error ?? ''});
+                setError('root', {type: 'manual', message: dataJson.description ?? ''});
                 throw new Error(dataJson.error ?? '');
             }
 
