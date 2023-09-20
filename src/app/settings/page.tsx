@@ -6,20 +6,32 @@ import { Topbar } from '@/components/topbar';
 
 export const metadata: Metadata = {
     title: 'Settings | AppFrame'
-  }
+}
+
+function isErrorProject(data: TErrorResponse|{project:TProject}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
+function isErrorProjectAccessToken(data: TErrorResponse|{projectId: string, accessToken: string}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 export default async function Settings() {
     const projectPromise = getProject();
     const accessTokenPromise = getAccessTokenProject();
 
     const [projectData, accessTokenProjectData] = await Promise.all([projectPromise, accessTokenPromise]);
-    const { project }: {project: TProject} = projectData;
-    const { accessToken }: {projectId: string, accessToken: string} = accessTokenProjectData;
+
+    if (isErrorProject(projectData)) {
+        return <></>;
+    }
+    if (isErrorProjectAccessToken(accessTokenProjectData)) {
+        return <></>;
+    }
 
     return (
         <div className='page pageAlignCenter'>
             <Topbar title={'Settings'} />
-            <FormEditProject project={project} accessToken={accessToken} />
+            <FormEditProject project={projectData.project} accessToken={accessTokenProjectData.accessToken} />
         </div>
     )
 }

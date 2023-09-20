@@ -23,6 +23,11 @@
     background-color: #f1f1f1;
     border-radius: 6px;
 }
+.links li a.active {
+    background-color: #fafafa;
+    border-radius: 6px;
+    font-weight: 600;
+}
 .links li a img {
     width: 18px;
     height: 18px;

@@ -58,6 +58,8 @@ export type TProject = {
     id: string;
     name: string;
     projectNumber: number;
+    planFinishedAt: Date;
+    trialFinishedAt: Date;
 }
 
 export type TStagedTarget = {
