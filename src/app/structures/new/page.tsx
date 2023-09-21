@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function NewStructure() {
-    const {schemaBricks}: {schemaBricks: TSchemaBrick[]} = await getSchemaBricks();
+    const {schemaBricks=[]}: {schemaBricks: TSchemaBrick[]} = await getSchemaBricks();
 
     const groupOfBricks = schemaBricks.reduce((acc: {[key: string]: TSchemaBrick[]}, brick) => {
         if (!acc.hasOwnProperty(brick.groupCode)) {
