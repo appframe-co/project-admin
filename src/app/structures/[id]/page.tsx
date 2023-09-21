@@ -44,8 +44,8 @@ export default async function Structures({ params }: { params: { id: string } })
           <tbody>
             {values.map((value: any, i: number) => (
               <tr key={i} className={styles.doc}>
-                {value.map((v: any) => (
-                  <td>
+                {value.map((v: any, k: number) => (
+                  <td key={k}>
                     {v && !Array.isArray(v) && !v.src && v }
                     {v && !Array.isArray(v) && v.src && <div className={styles.img}><img src={v.src} /></div>}
                     {v && Array.isArray(v) && v.length > 0 && v[0].src && <div className={styles.img}><img src={v[0].src} /></div>}
