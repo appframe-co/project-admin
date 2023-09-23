@@ -21,6 +21,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
     const [files, setFiles] = useState<TFile[]>([]);
     const imageRef = useRef<HTMLInputElement>(null);
     const [errorUploading, setErrorUploading] = useState<string>();
+    const [isFileProcessing, setIsFileProcessing] = useState<boolean>(false);
 
     useEffect(() => {
         async function getFiles() {
@@ -54,6 +55,8 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
 
         imageRef.current.onchange = async (event: Event) => {
             try {
+                setIsFileProcessing(true);
+
                 const target = event.target as HTMLInputElement;
                 const result = await validateImages(target.files);
     
@@ -112,6 +115,8 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                     const {files}: {files: TFile[]} = await res.json();
 
                     setFiles((prevState: TFile[]) => prevState.concat(files));
+
+                    setIsFileProcessing(false);
                 }
             } catch (e) {
                 return;
@@ -219,13 +224,13 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
 
                     <div className={styles.uploadArea}>
                         <input style={{display: 'none'}} type="file" multiple accept="image/*" ref={imageRef}  />
-                        <Button onClick={() => addFiles()}>Add files</Button>
+                        {!isFileProcessing ? <Button onClick={() => addFiles()}>Add files</Button> : <p>Wait, file is processing...</p>}
                     </div>
                     <div className={styles.files}>
                         {files.map(file => (
                             <div key={file.id} className={styles.file + (selectedFileIds?.includes(file.id) ? ' '+styles.active : '')} 
                                 onClick={() => selectFiles(file.id)}>
-                                <img src={resizeImg(file.src, {w:100, h:100})} />
+                                    <div className={styles.fileBorder}><div className={styles.fileBG}><img src={file.src} /></div></div>
                             </div>
                         ))}
                     </div>
