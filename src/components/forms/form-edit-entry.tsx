@@ -90,7 +90,7 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                     <FileReference filesRef={files.filter(f => f.id === getValues(brick.key))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
                 {brick.type === 'list.file_reference' && 
-                    <ListFileReference filesRef={files.filter(f => getValues(brick.key).includes(f.id))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
+                    <ListFileReference filesRef={files.filter(f => getValues(brick.key)?.includes(f.id))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {(brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') && 
                     <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 

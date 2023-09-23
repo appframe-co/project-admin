@@ -93,6 +93,7 @@ export type TFile = {
     mimeType: string;
     mediaContentType: string;
     src: string;
+    alt: string;
 }
 
 export enum Resource {

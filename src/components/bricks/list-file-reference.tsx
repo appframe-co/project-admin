@@ -8,6 +8,7 @@ import { Modal } from "@/ui/modal";
 import { createPortal } from "react-dom";
 import { Files } from "../modals/files";
 import { resizeImg } from "@/utils/resize-img";
+import { PreviewAndEditFile } from "../modals/preview-edit-file";
 
 type TProp = {
     register: any;
@@ -27,10 +28,13 @@ export function ListFileReference({watchGlobal, register, error, setValue, brick
     const divInputRef = useRef<null|HTMLDivElement>(null);
     const [showFields, setShowFields] = useState<boolean>(false);
     const [rect, setRect] = useState<TRect>();
+    const [fileIndex, setFileIndex] = useState<number>(0);
     const [files, setFiles] = useState<TFile[]>(filesRef);
     const [activeModalFiles, setActiveModalFiles] = useState<boolean>(false);
+    const [activeModalEditFile, setActiveModalEditFile] = useState<boolean>(false);
 
     const handleChangeModalFiles = useCallback(() => setActiveModalFiles(!activeModalFiles), [activeModalFiles]);
+    const handleChangeModalEditFile = useCallback(() => setActiveModalEditFile(!activeModalEditFile), [activeModalEditFile]);
     
     useEffect(() => {
         const closeDropDown = (event: Event) => {
@@ -59,15 +63,18 @@ export function ListFileReference({watchGlobal, register, error, setValue, brick
         setRect({top: rect.top + window.scrollY, left: rect.left, width: rect.width});
     }, [watchGlobal]);
 
-    const handleClose = () => {
-        handleChangeModalFiles();
-    };
+    const handleClose = () => handleChangeModalFiles();
+    const handleCloseEditFile = () => handleChangeModalEditFile();
 
     const handleDeleteFile = (fileId: string) => {
         setValue(value.filter((id:string) => id !== fileId));
         setFiles(prevState => prevState.filter(f => f.id !== fileId));
     }
 
+    const handleEditFile = (i=0) => {
+        setFileIndex(i);
+        handleChangeModalEditFile();
+    };
     return (
         <>
             {activeModalFiles && createPortal(
@@ -82,11 +89,22 @@ export function ListFileReference({watchGlobal, register, error, setValue, brick
                 document.body
             )}
 
+            {activeModalEditFile && createPortal(
+                    <Modal
+                        open={activeModalEditFile}
+                        onClose={handleCloseEditFile}
+                        title='Preview and edit'
+                    >
+                        <PreviewAndEditFile setFiles={setFiles} fileIndex={fileIndex} files={files}  onClose={handleCloseEditFile}/>
+                    </Modal>,
+                document.body
+            )}
+
             <div ref={divInputRef} className={styles.field} onClick={() => setShowFields((prevState: any) => !prevState)}>
                 <div className={styles.name}>{brick.name}</div>
                 <select style={{display: 'none'}} {...register} multiple />
                 <div className={styles.input + (error ? ' '+styles.errorInput : '')}>
-                    <div>{files.map(f => f.filename).join(' • ')}</div>
+                    <div className={styles.filename}>{files.map(f => f.filename).join(' • ')}</div>
                     <div>{files.length} {files.length > 1 ? 'items' : 'item'}</div>
                 </div>
                 <div className={styles.info}>{brick.description}</div>
@@ -97,10 +115,10 @@ export function ListFileReference({watchGlobal, register, error, setValue, brick
                         <div className={styles.containerList}>
                             <div className={styles.name}>{brick.name}</div>
                             <ul className={styles.selectedFiles}>
-                                {files.map(file => (
+                                {files.map((file, i) => (
                                     <div key={file.id} className={styles.selectedFile}>
                                         <div className={styles.infoFile}>
-                                            <div className={styles.img}><img src={file.src} /></div>
+                                            <div className={styles.img} onClick={() => handleEditFile(i)}><img src={file.src} /></div>
                                             <div className={styles.filename}>{file.filename}</div>
                                         </div>
                                         <div><Button onClick={() => handleDeleteFile(file.id)}>Delete</Button></div>

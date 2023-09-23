@@ -155,6 +155,15 @@ export default async function Pricing() {
                             <td>&#10003;</td>
                             <td>&#10003;</td>
                         </tr>
+                        <tr className={styles.doc}>
+                            <td className={styles.docName}>
+                                <span>WebP</span>
+                            </td>
+                            <td></td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

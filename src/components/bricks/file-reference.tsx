@@ -7,6 +7,7 @@ import styles from '@/styles/bricks/file-reference.module.css'
 import { Modal } from "@/ui/modal";
 import { createPortal } from "react-dom";
 import { Files } from "../modals/files";
+import { PreviewAndEditFile } from "../modals/preview-edit-file";
 
 type TProp = {
     register: any;
@@ -18,17 +19,24 @@ type TProp = {
 }
 
 export function FileReference({register, error, setValue, brick, value, filesRef=[]}: TProp) {
+    const [fileIndex, setFileIndex] = useState<number>(0);
     const [files, setFiles] = useState<TFile[]>(filesRef);
     const [activeModalFiles, setActiveModalFiles] = useState<boolean>(false);
+    const [activeModalEditFile, setActiveModalEditFile] = useState<boolean>(false);
     const handleChangeModalFiles = useCallback(() => setActiveModalFiles(!activeModalFiles), [activeModalFiles]);
+    const handleChangeModalEditFile = useCallback(() => setActiveModalEditFile(!activeModalEditFile), [activeModalEditFile]);
 
-    const handleClose = () => {
-        handleChangeModalFiles();
-    };
+    const handleClose = () => handleChangeModalFiles();
+    const handleCloseEditFile = () => handleChangeModalEditFile();
 
     const handleClear = () => {
         setValue(null);
         setFiles([]);
+    };
+
+    const handleEditFile = (i=0) => {
+        setFileIndex(i);
+        handleChangeModalEditFile();
     };
 
     return (
@@ -41,6 +49,16 @@ export function FileReference({register, error, setValue, brick, value, filesRef
                         title='Select file'
                     >
                         <Files setFilesRef={setFiles} value={value} setValue={setValue} onClose={handleClose} />
+                    </Modal>,
+                document.body
+            )}
+            {activeModalEditFile && createPortal(
+                    <Modal
+                        open={activeModalEditFile}
+                        onClose={handleCloseEditFile}
+                        title='Preview and edit'
+                    >
+                        <PreviewAndEditFile fileIndex={fileIndex} files={files} setFiles={setFiles} onClose={handleCloseEditFile}/>
                     </Modal>,
                 document.body
             )}
@@ -57,7 +75,7 @@ export function FileReference({register, error, setValue, brick, value, filesRef
                     {!value ? <Button onClick={handleChangeModalFiles}>Select file</Button> : (
                         <div className={styles.selectedFile}>
                             <div className={styles.infoFile}>
-                                <div className={styles.img}><img src={files[0].src} /></div>
+                                <div className={styles.img} onClick={() => handleEditFile()}><img src={files[0].src} /></div>
                                 <div className={styles.filename}>{files[0].filename}</div>
                             </div>
                             <div><Button onClick={handleChangeModalFiles}>Change</Button></div>
