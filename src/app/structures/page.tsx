@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Structures() {
-  const {structures=[]}:{structures: TStructure[]} = await getStructures();
+  const {structures=[]}:{structures: (TStructure & {entriesCount: number})[]} = await getStructures();
 
   return (
     <div className='page'>
@@ -32,7 +32,7 @@ export default async function Structures() {
               {structures.map(structure => (
                 <tr key={structure.id} className={styles.doc}>
                   <td>{structure.name}</td>
-                  <td>10</td>
+                  <td>{structure.entriesCount}</td>
                   <td className={styles.actions}>
                     <Link href={'structures/'+structure.id}><Button>View</Button></Link>
                     <Link href={`structures/${structure.id}/edit`}><Button>Edit</Button></Link>
