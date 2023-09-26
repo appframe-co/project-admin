@@ -5,8 +5,9 @@
 .brick {
     padding: 8px 16px;
     border-top: 1px solid #ebebeb;
-    height: 60px;
     cursor: pointer;
+    min-height: 60px;
+    word-wrap: break-word;
 }
 .brick:first-child {
     border-top: none;
@@ -90,4 +91,34 @@
 }
 .disabledValues .activeValue:hover {
     background-color: #ebebeb;
+}
+
+.choicesList li {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+.infoField {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.errorMsg {
+    color: #B00020;
+    margin-top: 6px;
+}
+.validationsErrors {
+    background-color: #fee9e8;
+    color: #B00020;
+    padding: 8px;
+    border-radius: 6px;
+}
+.validationsErrorsHeading {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.validationsErrorsList {
+    list-style: disc none inside;
 }

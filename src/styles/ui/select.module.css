@@ -1,0 +1,92 @@
+.select-container {
+    padding: 10px 0; 
+}
+.select-container.error .select {
+    border-color: #B00020;
+    background-color: rgba(176, 0, 32, 0.03); 
+}
+.select-container .select:focus {
+  background-color: #ffffff;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 2px rgb(9, 105, 218);
+}
+.select-container.error .msg {
+    height: auto;
+    color: #B00020;
+    visibility: visible; 
+}
+
+.wrapper {
+    position: relative;
+    width: 100%;
+    display: block; 
+}
+.wrapper::before,
+.wrapper::after {
+  position: absolute;
+  content: '';
+}
+.wrapper::before {
+    top: 26%;
+    right: 10px;
+    width: 11px;
+    height: 11px;
+    background: transparent url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+CiAgPHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNNC41IDE1Ljc1bDcuNS03LjUgNy41IDcuNSIgLz4KPC9zdmc+Cgo=);
+    background-position-x: center;
+    pointer-events: none;
+    z-index: 1;
+    background-repeat: no-repeat;  
+}
+.wrapper::after {
+    top: 50%;
+    right: 10px;
+    width: 11px;
+    height: 11px;
+    background: transparent url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+CiAgPHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNNC41IDE1Ljc1bDcuNS03LjUgNy41IDcuNSIgLz4KPC9zdmc+Cgo=);
+    background-position-x: center;
+    pointer-events: none;
+    z-index: 1;
+    background-repeat: no-repeat;
+    transform: rotate(180deg);
+}
+
+.select {
+    position: relative;
+    width: 100%;
+    height: 33px;
+    font-size: 13px;
+    font-weight: 400;
+    text-indent: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: 1px solid transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    color: #37352F;
+    cursor: pointer;
+    border: 1px solid #C8C7C6;
+}
+
+.name {
+    font-size: 13px;
+    margin-bottom: 7px;
+    display: block;
+    color: rgb(48, 48, 48);
+}
+.msg {
+    font-size: 12px;
+    font-weight: 400;
+    height: 0;
+    margin-top: 5px;
+    visibility: hidden;
+    display: block; 
+}
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+}

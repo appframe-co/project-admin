@@ -102,8 +102,8 @@ export default async function Pricing() {
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
-                                <span>External storage</span>
-                                <span className={styles.docNameInfo}>S3 AWS, Google Cloud, Yandex Cloud, Custom</span>
+                                <span>Storage</span>
+                                <span className={styles.docNameInfo}>AWS, Google Cloud, Microsoft Azure, Yandex Cloud, AppFrame, Custom</span>
                             </td>
                             <td></td>
                             <td></td>

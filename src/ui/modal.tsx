@@ -27,7 +27,7 @@ export function Modal(props: TProps) {
                     <div className={styles.modal}>
                         <div className={styles.container + (large ? ' '+styles.large : '')+ (small ? ' '+styles.small : '')}>
                             <div className={styles.header}>
-                                <div>{title && <h2>{title}</h2>}</div>
+                                <div className={styles.containerHeading}>{title && <h2>{title}</h2>}</div>
                                 <Button plain onClick={onClose} size="small"><Image width={24} height={24} src='/icons/close.svg' alt='' /></Button>
                             </div>
                             {children && (

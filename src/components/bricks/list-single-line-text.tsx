@@ -3,27 +3,10 @@
 import styles from '@/styles/bricks.module.css'
 import { TBrick } from '@/types';
 import { Button } from '@/ui/button';
-import { TextField } from '@/ui/text-field';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { UseControllerProps, useController, useFieldArray, useForm } from 'react-hook-form';
-
-function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
-    const { field, fieldState } = useController(props);
-
-    return (
-        <TextField 
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            name={field.name}
-            error={fieldState.error}
-            label={props.label}
-            helpText={props.helpText}
-            multiline={props.multiline}
-        />
-    )
-}
+import { useFieldArray, useForm } from 'react-hook-form';
+import { SingleLineText } from './single-line-text';
 
 type TProp = {
     register: any;
@@ -43,7 +26,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
     const [showFields, setShowFields] = useState<boolean>(false);
     const [rect, setRect] = useState<TRect>();
 
-    const { control, watch } = useForm<any>({
+    const { control, watch, formState } = useForm<any>({
         defaultValues: {
             list: value
         }
@@ -61,8 +44,10 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
 
             if (!event.composedPath().includes(divInputRef.current as HTMLDivElement) && 
                 !event.composedPath().includes(divInputListRef.current as HTMLDivElement)
-                ) {
-                setValue(watch('list'));
+            ) {
+                if (formState.isDirty) {
+                    setValue(watch('list'));
+                }
                 setShowFields(false);
             }
         };
@@ -70,7 +55,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
         window.addEventListener('click', closeDropDown);
 
         return () => window.removeEventListener('click', closeDropDown);
-    }, []);
+    }, [formState.isDirty]);
 
     useEffect(() => {
         if (!divInputRef.current) {
@@ -86,7 +71,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
             <div ref={divInputRef} className={styles.field} onClick={() => setShowFields((prevState: any) => !prevState)}>
                 <div className={styles.name}>{brick.name}</div>
                 <div className={styles.info}>{brick.description}</div>
-                <input style={{display: 'none'}} {...register}/>
+                <select style={{display: 'none'}} {...register} multiple />
                 <div className={styles.input + (error ? ' '+styles.errorInput : '')}>
                     {watch('list') && (
                         <>
@@ -107,7 +92,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
                                     {fields.map((item, index) => (
                                         <li key={item.id} className={styles.fieldList}>
                                             <div className={styles.infoField}>
-                                                <Input control={control} name={`list.${index}`} />
+                                                <SingleLineText brick={brick} control={control} name={`list.${index}`} />
                                                 {error && Array.isArray(error) && <div className={styles.msg}>{error[index]?.message}</div>}
                                             </div>
                                             <div><Button onClick={() => remove(index)}>Delete</Button></div>

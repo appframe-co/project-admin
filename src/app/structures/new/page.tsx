@@ -15,7 +15,6 @@ export default async function NewStructure() {
         if (!acc.hasOwnProperty(brick.groupCode)) {
             acc[brick.groupCode] = [];
         }
-
         acc[brick.groupCode].push(brick);
         return acc;
     }, {});

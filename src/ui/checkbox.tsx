@@ -20,7 +20,7 @@ export function Checkbox(props: any) {
                         onChange={onChange}
                         onBlur={onBlur}
                         name={name}
-                        defaultChecked={checked}
+                        checked={checked}
                         disabled={disabled}
                         className={styles.checkbox}
                         value={value}

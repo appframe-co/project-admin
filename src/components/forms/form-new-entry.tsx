@@ -1,36 +1,24 @@
 'use client'
 
-import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
+import { useForm, SubmitHandler} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+
 import { TEntry, TStructure } from '@/types';
-import { TextField } from '@/ui/text-field';
+
 import { Button } from '@/ui/button';
-import { FileReference } from '@/components/bricks/file-reference';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
-import { ListSingleLineText } from '../bricks/list-single-line-text';
-import { ListFileReference } from '../bricks/list-file-reference';
+
+import { FileReference } from '@/components/bricks/file-reference';
+import { ListFileReference } from '@/components/bricks/list-file-reference';
+import { ListSingleLineText } from '@/components/bricks/list-single-line-text';
+import { SingleLineText } from '@/components/bricks/single-line-text';
+import { MultiLineText } from '@/components/bricks/multi-line-text';
+import { NumberInteger } from '@/components/bricks/number-integer';
+import { NumberDecimal } from '@/components/bricks/number-decimal';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
-}
-
-function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, type?: string}) {
-    const { field, fieldState } = useController(props);
-
-    return (
-        <TextField 
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value ?? ''}
-            name={field.name}
-            error={fieldState.error}
-            label={props.label}
-            helpText={props.helpText}
-            multiline={props.multiline}
-            type={props.type}
-        />
-    )
 }
 
 export function FormNewEntry({structure}: {structure: TStructure}) {
@@ -72,14 +60,10 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
     const bricks = structure.bricks.map((brick, i) => {
         return (
             <div key={i}>
-                {brick.type === 'single_line_text' && 
-                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
-                {brick.type === 'multi_line_text' && 
-                    <Input control={control} name={brick.key} multiline={true} label={brick.name} helpText={brick.description} />}
-                {brick.type === 'number_integer' && 
-                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
-                {brick.type === 'number_decimal' && 
-                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />}
+                {brick.type === 'single_line_text' && <SingleLineText brick={brick} control={control} />}
+                {brick.type === 'multi_line_text' && <MultiLineText brick={brick} control={control} />}
+                {brick.type === 'number_integer' && <NumberInteger brick={brick} control={control} />}
+                {brick.type === 'number_decimal' && <NumberDecimal brick={brick} control={control} />}
                 {brick.type === 'file_reference' && 
                     <FileReference value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
