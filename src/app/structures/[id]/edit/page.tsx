@@ -22,7 +22,7 @@ export default async function EditStructure({ params }: {params: {id: string}}) 
         return acc;
     }, {});
 
-    const names: {[key: string]: string} = {text: 'Text', number: 'Number', reference: 'Reference'};
+    const names: {[key: string]: string} = {text: 'Text', number: 'Number', reference: 'Reference', other: 'Other'};
 
     return (
         <div className='page pageAlignCenter'>

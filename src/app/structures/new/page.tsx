@@ -19,7 +19,7 @@ export default async function NewStructure() {
         return acc;
     }, {});
 
-    const names: {[key: string]: string} = {text: 'Text', number: 'Number', reference: 'Reference'};
+    const names: {[key: string]: string} = {text: 'Text', number: 'Number', reference: 'Reference', other: 'Other'};
 
     return (
         <div className='page pageAlignCenter'>

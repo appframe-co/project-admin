@@ -16,6 +16,7 @@ import { SingleLineText } from '@/components/bricks/single-line-text';
 import { MultiLineText } from '@/components/bricks/multi-line-text';
 import { NumberInteger } from '@/components/bricks/number-integer';
 import { NumberDecimal } from '@/components/bricks/number-decimal';
+import { BooleanBrick } from '../bricks/boolean-brick';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
@@ -64,6 +65,7 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
                 {brick.type === 'multi_line_text' && <MultiLineText brick={brick} control={control} />}
                 {brick.type === 'number_integer' && <NumberInteger brick={brick} control={control} />}
                 {brick.type === 'number_decimal' && <NumberDecimal brick={brick} control={control} />}
+                {brick.type === 'boolean' && <BooleanBrick brick={brick} control={control} />}
                 {brick.type === 'file_reference' && 
                     <FileReference value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}

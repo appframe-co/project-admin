@@ -1,0 +1,35 @@
+.radio-container {
+    position: relative;
+    font-size: 13px;
+    font-weight: 400;
+    color: #37352F;
+    text-align: left;
+    display: block;
+    cursor: pointer;
+    padding: 0px 0 0 27px;
+    line-height: 24px;
+    margin-top: 4px;
+}
+.radio-container .radio {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0; 
+}
+.radio-container .radio:checked ~ .indicator {
+    box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 20px #000000;
+    border-color: #000000; 
+}
+.radio-container .indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0px;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border-radius: 50%;
+    border: 2px solid #AAA9A5;
+    background-color: transparent;
+}
