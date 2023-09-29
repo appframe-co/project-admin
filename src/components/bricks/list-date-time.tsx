@@ -3,10 +3,10 @@
 import styles from '@/styles/bricks.module.css'
 import { TBrick } from '@/types';
 import { Button } from '@/ui/button';
+import { TextField } from '@/ui/text-field';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { SingleLineText } from './single-line-text';
+import { UseControllerProps, useController, useFieldArray, useForm } from 'react-hook-form';
 
 type TProp = {
     register: any;
@@ -20,7 +20,28 @@ type TRect = {
     top: number, left: number, width: number
 }
 
-export function ListSingleLineText({watchGlobal, register, error, setValue, brick, value=[]}: TProp) {
+type TControllerProps = UseControllerProps & {
+    label?: string;
+    helpText?: string;
+    multiline?: boolean;
+    type?: string;
+}
+function Input({name, control, ...props}: TControllerProps) {
+    const { field, fieldState } = useController({name, control});
+
+    return (
+        <TextField 
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value ?? ''}
+            name={field.name}
+            error={fieldState.error}
+            type={props.type}
+        />
+    )
+}
+
+export function ListDateTime({watchGlobal, register, error, setValue, brick, value=[]}: TProp) {
     const divInputListRef = useRef<null|HTMLDivElement>(null);
     const divInputRef = useRef<null|HTMLDivElement>(null);
     const [showFields, setShowFields] = useState<boolean>(false);
@@ -92,7 +113,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, bric
                                     {fields.map((item, index) => (
                                         <li key={item.id} className={styles.fieldList}>
                                             <div className={styles.infoField}>
-                                                <SingleLineText brick={brick} control={control} name={`list.${index}`} />
+                                                <Input control={control} name={`list.${index}`} type='datetime-local' />
                                                 {error && Array.isArray(error) && <div className={styles.error}>{error[index]?.message}</div>}
                                             </div>
                                             <div><Button onClick={() => remove(index)}>Delete</Button></div>

@@ -6,38 +6,40 @@ import { Button } from '@/ui/button';
 import styles from '@/styles/form-structure.module.css';
 import { useState } from 'react';
 
-function Input(props: UseControllerProps<any> & {error?: string, label?: string, helpText?: string, multiline?: boolean}) {
-    const { field, fieldState } = useController(props);
-
-    return (
-        <TextField 
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            name={field.name}
-            error={fieldState.error || props.error}
-            label={props.label}
-            helpText={props.helpText}
-            multiline={props.multiline}
-        />
-    )
+type TControllerProps = UseControllerProps<any> & {
+    error?: string;
+    label?: string;
+    helpText?: string;
+    multiline?: boolean;
+    type?: string;
 }
-function InputRegister({register, label, helpText, type}: {register: any, label: string, helpText?: string, type?: string}) {
-    const fields = {
-        onChange: register.onChange,
-        onBlur: register.onBlur,
-        name: register.name,
-        innerRef: register.ref,
-        label: label,
-        helpText,
-        type
+
+function Input({name, control, rules={},  ...props}: TControllerProps) {
+    const { field, fieldState } = useController({name, control, rules});
+
+    if (props.type === 'checkbox') {
+        return <Checkbox 
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    error={fieldState.error || props.error}
+                    label={props.label}
+                    helpText={props.helpText}
+                    innerRef={control?.register(name).ref}
+                />
     }
 
-    if (type === 'checkbox') {
-        return <Checkbox {...fields} />
-    }
-
-    return <TextField {...fields} />
+    return <TextField 
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                value={field.value ?? ''}
+                name={field.name}
+                error={fieldState.error || props.error}
+                label={props.label}
+                helpText={props.helpText}
+                multiline={props.multiline}
+                type={props.type}
+            />
 }
 
 type TProps = {
@@ -52,7 +54,7 @@ type TProps = {
 export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handleClose, handleDeleteBrick}: TProps) {
     const [isLimited, setLimited] = useState<boolean>(!!brick.validations.find(v => v.code === 'choices')?.value.length ?? false);
 
-    const { register, control, handleSubmit, formState, setValue, getValues, watch } = useForm<TBrick>({
+    const { control, handleSubmit, formState, setValue, getValues, watch } = useForm<TBrick>({
         defaultValues: brick
     });
 
@@ -103,19 +105,19 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
     };
 
     const validationFields = fields.map((item, index: number) => {
-        const registerOptions: RegisterOptions = {};
-
         const schemaValidation = schemaBrick.validations.find(v => v.code === item.code);
         if (!schemaValidation) {
             return <div key={item.id}></div>;
         }
 
+        const registerOptions: RegisterOptions = {};
+        let type = schemaValidation.type;
+
         if (schemaValidation.code === 'required') {
             return (
                 <div key={item.id}>
-                    <InputRegister register={register(`validations.${index}.value`, registerOptions)} 
-                        label={schemaValidation.name} helpText={schemaValidation.desc} 
-                        type={schemaValidation.type} />
+                    <Input control={control} name={`validations.${index}.value`} 
+                    label={schemaValidation.name} helpText={schemaValidation.desc} type={schemaValidation.type} />
                 </div>
             );
         }
@@ -149,16 +151,24 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
         if (schemaValidation.type === 'number') {
             registerOptions.valueAsNumber = true;
         }
+        if (schemaValidation.type === 'date_time') {
+            registerOptions.valueAsDate = true;
+            type = 'datetime-local';
+        }
+        if (schemaValidation.type === 'date') {
+            registerOptions.valueAsDate = true;
+            type = 'date';
+        }
 
         return (
             <div key={item.id}>
-                <InputRegister register={register(`validations.${index}.value`, registerOptions)} 
+                <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
                     label={schemaValidation.name} helpText={schemaValidation.desc} 
-                    type={schemaValidation.type} />
+                    type={type} />
             </div>
         );
     });
-
+    
     return (
         <div>
             {errors && errors.validations && (
@@ -166,7 +176,7 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
                     <p className={styles.validationsErrorsHeading}>To save this brick, {errors.validations.filter((v:any) => v).length} changes need to be made:</p>
                     <ul className={styles.validationsErrorsList}>
                         {errors.validations.map((v:any, i:number) => (
-                            <li key={i}>{v.code} {v.value.message}</li>
+                            <li key={i}>{v.code} {v.value?.message}</li>
                         ))}
                     </ul>
                 </div>

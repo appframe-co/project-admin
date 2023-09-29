@@ -1,9 +1,9 @@
 import { TBrick } from "@/types";
 import { RadioButton } from "@/ui/radio-button";
-import { useEffect } from "react";
-import { UseControllerProps, useController } from "react-hook-form";
+import { Control, UseControllerProps, useController } from "react-hook-form";
+import styles from '@/styles/bricks/boolean.module.css'
 
-type TProps = UseControllerProps&{
+type TProps = UseControllerProps & {
     label: string;
     helpText: string;
     options: {label: string, value: string}[]
@@ -13,8 +13,8 @@ function RadioGroup({name, control, ...props}: TProps) {
     const { field, fieldState } = useController({name, control});
     
     return (
-        <>
-            <p>{props.label}</p>
+        <div className={styles.container}>
+            <p className={styles.name}>{props.label}</p>
             {props.options.map((option) => (
                 <RadioButton 
                     key={option.value}
@@ -26,13 +26,13 @@ function RadioGroup({name, control, ...props}: TProps) {
                     label={option.label}
                 />
             ))}
-            <p>{fieldState.error?.message}</p>
-            <p>{props.helpText}</p>
-        </>
+            <p className={styles.error}>{fieldState.error?.message}</p>
+            <p className={styles.info}>{props.helpText}</p>
+        </div>
     )
 }
 
-export function BooleanBrick({brick, control}: {brick: TBrick, control: any}) {
+export function BooleanBrick({brick, control}: {brick: TBrick, control: Control}) {
     return (
         <RadioGroup control={control} name={brick.key} label={brick.name} helpText={brick.description} 
         options={ [{label: 'True', value: 'true'}, {label: 'False', value: 'false'}] } />

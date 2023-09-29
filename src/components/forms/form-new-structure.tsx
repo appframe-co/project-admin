@@ -113,7 +113,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
             name: '',
             key: '',
             description: '',
-            validations: schemaBrick.validations.map(v => ({code: v.code, value: v.value}))
+            validations: schemaBrick.validations.map(v => ({type: v.type, code: v.code, value: v.value}))
         });
         handleChangeModalBrick();
         setShowGroupOfBricks(false);

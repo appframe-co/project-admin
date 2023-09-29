@@ -1,7 +1,7 @@
 import { TBrick } from "@/types";
 import { Select } from "@/ui/select";
 import { TextField } from "@/ui/text-field";
-import { UseControllerProps, useController } from "react-hook-form";
+import { Control, UseControllerProps, useController } from "react-hook-form";
 
 function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
     const { field, fieldState } = useController(props);
@@ -38,7 +38,7 @@ function Choices(props: UseControllerProps<any> & {label?: string, helpText?: st
     )
 }
 
-export function SingleLineText({brick, control, name}: {brick: TBrick, control: any, name?: string}) {
+export function SingleLineText({brick, control, name}: {brick: TBrick, control: Control, name?: string}) {
     const validationChoices = brick.validations.find((v:any) => v.code === 'choices');
 
     if (name && name.startsWith('list.')) {

@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: row;   
+    justify-content: space-between;
+    gap: 5px;
+}
+.date {
+    width: 100%;
+}
+.time {
+    width: 100%;
+}
+.name {
+    font-size: 13px;
+    display: block;
+    color: rgb(48, 48, 48);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #91908D;
+    display: block;
+}
+.error {
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 5px;
+    display: block; 
+    color: #B00020;
+}

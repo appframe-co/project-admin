@@ -1,0 +1,27 @@
+.container {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+.name {
+    font-size: 13px;
+    display: block;
+    color: rgb(48, 48, 48);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #91908D;
+    display: block;
+}
+.error {
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 5px;
+    display: block; 
+    color: #B00020;
+}

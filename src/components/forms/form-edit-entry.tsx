@@ -18,6 +18,10 @@ import { MultiLineText } from '@/components/bricks/multi-line-text';
 import { NumberInteger } from '@/components/bricks/number-integer';
 import { NumberDecimal } from '@/components/bricks/number-decimal';
 import { BooleanBrick } from '../bricks/boolean-brick';
+import { DateTime } from '../bricks/date-time';
+import { ListDateTime } from '../bricks/list-date-time';
+import { DateBrick } from '../bricks/date';
+import { ListDate } from '../bricks/list-date';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
@@ -72,6 +76,8 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                 {brick.type === 'number_integer' && <NumberInteger brick={brick} control={control} />}
                 {brick.type === 'number_decimal' && <NumberDecimal brick={brick} control={control} />}
                 {brick.type === 'boolean' && <BooleanBrick brick={brick} control={control} />}
+                {brick.type === 'date_time' && <DateTime brick={brick} control={control} />}
+                {brick.type === 'date' && <DateBrick brick={brick} control={control} />}
                 {brick.type === 'file_reference' && 
                     <FileReference filesRef={files.filter(f => f.id === getValues(brick.key))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
@@ -80,6 +86,12 @@ export function FormEditEntry({structure, entry, files} : {structure: TStructure
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {(brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') && 
                     <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'list.date_time' && 
+                    <ListDateTime value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'list.date' && 
+                    <ListDate value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
             </div>
         )

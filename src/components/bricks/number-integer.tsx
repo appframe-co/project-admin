@@ -1,6 +1,6 @@
 import { TBrick } from "@/types";
 import { TextField } from "@/ui/text-field";
-import { UseControllerProps, useController } from "react-hook-form";
+import { Control, UseControllerProps, useController } from "react-hook-form";
 
 function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, type: string}) {
     const { field, fieldState } = useController(props);
@@ -20,6 +20,6 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
     )
 }
 
-export function NumberInteger({brick, control}: {brick: TBrick, control: any}) {
+export function NumberInteger({brick, control}: {brick: TBrick, control: Control}) {
     return <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} type='number' />;
 }
