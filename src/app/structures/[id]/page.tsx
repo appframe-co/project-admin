@@ -2,23 +2,30 @@ import type { Metadata } from 'next'
 import Link from 'next/link';
 import { TStructure, TEntry } from '@/types';
 import { getStructure } from '@/services/structures';
-import { getEntries } from '@/services/entries';
+import { getEntries, getEntriesCount } from '@/services/entries';
 import styles from '@/styles/structure.module.css'
 import { DeleteEntry } from '@/components/delete-entry';
 import { Topbar } from '@/components/topbar';
-import { resizeImg } from '@/utils/resize-img';
 import { Button } from '@/ui/button';
 
 export const metadata: Metadata = {
   title: 'Structure | AppFrame'
 }
 
+type TPageProps = { 
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-export default async function Structures({ params }: { params: { id: string } }) {
+export default async function Structures({ params, searchParams }: TPageProps) {
+  const page = searchParams.page ? +searchParams.page : 1;
+  const limit = 10;
+
   const structurePromise = getStructure(params.id);
-  const entriesPromise = getEntries(params.id);
+  const entriesPromise = getEntries(params.id, {page, limit});
+  const entriesCountPromise = getEntriesCount(params.id);
 
-  const [structureData, entriesData] = await Promise.all([structurePromise, entriesPromise]);
+  const [structureData, entriesData, entriesCountData] = await Promise.all([structurePromise, entriesPromise, entriesCountPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
   const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
@@ -61,6 +68,16 @@ export default async function Structures({ params }: { params: { id: string } })
           </tbody>
         </table>
       </div>
+
+      <nav className={styles.pagination}>
+        {page > 1 ? (
+          <Link href={{pathname: `/structures/${structure.id}`, query: { page: page-1 }}}><Button>Previous</Button></Link>
+        ) : <Button disabled>Previous</Button>}
+
+        {page*limit < entriesCountData.count ? (
+          <Link href={{pathname: `/structures/${structure.id}`, query: { page: page+1 }}}><Button>Next</Button></Link>
+        ) : <Button disabled>Next</Button>}
+      </nav>
     </div>
   )
 }
