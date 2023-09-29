@@ -54,3 +54,11 @@
     padding: 15px 0;
     gap: 10px;
 }
+
+.docContainer {
+    word-break: break-word;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+    overflow: hidden;
+}

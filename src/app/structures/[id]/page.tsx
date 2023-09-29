@@ -53,10 +53,12 @@ export default async function Structures({ params, searchParams }: TPageProps) {
               <tr key={i} className={styles.doc}>
                 {value.map((v: any, k: number) => (
                   <td key={k}>
-                    {v && !Array.isArray(v) && !v.src && v }
-                    {v && !Array.isArray(v) && v.src && <div className={styles.img}><img src={v.src} /></div>}
-                    {v && Array.isArray(v) && v.length > 0 && v[0].src && <div className={styles.img}><img src={v[0].src} /></div>}
-                    {v && Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
+                    <div className={styles.docContainer}>
+                      {v && !Array.isArray(v) && !v.src && v }
+                      {v && !Array.isArray(v) && v.src && <div className={styles.img}><img src={v.src} /></div>}
+                      {v && Array.isArray(v) && v.length > 0 && v[0].src && <div className={styles.img}><img src={v[0].src} /></div>}
+                      {v && Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
+                    </div>
                   </td>
                 ))}
                 <td className={styles.actions}>
