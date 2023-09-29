@@ -2,16 +2,30 @@ import type { Metadata } from 'next'
 import styles from '@/styles/files.module.css';
 import { Topbar } from '@/components/topbar';
 import { TFile } from '@/types';
-import { getFiles } from '@/services/files';
-import { resizeImg } from '@/utils/resize-img';
+import { getFiles, getFilesCount } from '@/services/files';
 import { DeleteFile } from '@/components/delete-file';
+import Link from 'next/link';
+import { Button } from '@/ui/button';
 
 export const metadata: Metadata = {
   title: 'Files | AppFrame'
 }
 
-export default async function Files() {
-    const {files=[]}:{files: TFile[]} = await getFiles();
+type TPageProps = {
+    searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function Files({ searchParams }: TPageProps) {
+    const page = searchParams.page ? +searchParams.page : 1;
+    const limit = 10;
+
+    const filesPromise = getFiles({page, limit});
+    const filesCountPromise = getFilesCount();
+
+    const [filesData, filesCountData] = await Promise.all([filesPromise, filesCountPromise]);
+
+    const {files=[]}:{files: TFile[]} = filesData;
+    const {count} = filesCountData;
 
     return (
         <div className='page'>
@@ -39,6 +53,16 @@ export default async function Files() {
                     </tbody>
                 </table>
             </div>
+
+            <nav className={styles.pagination}>
+                {page > 1 ? (
+                    <Link href={{pathname: `/files`, query: { page: page-1 }}}><Button>Previous</Button></Link>
+                ) : <Button disabled>Previous</Button>}
+
+                {page*limit < count ? (
+                    <Link href={{pathname: `/files`, query: { page: page+1 }}}><Button>Next</Button></Link>
+                ) : <Button disabled>Next</Button>}
+            </nav>
         </div>
     )
 }

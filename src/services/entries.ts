@@ -5,8 +5,8 @@ export async function getEntries(structureId: string, {page=1, limit=10}: {page:
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
     const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries?structureId=${structureId}&page=${page}&limit=${limit}`, {
-    method: 'GET',
-    headers: { 'X-AppFrame-Access-Token': accessToken}
+      method: 'GET',
+      headers: { 'X-AppFrame-Access-Token': accessToken}
     });
     if (!res.ok) {
       throw new Error('Failed to fetch entries');
@@ -23,8 +23,8 @@ export async function getEntriesCount(structureId: string) {
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
     const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/count?structureId=${structureId}`, {
-    method: 'GET',
-    headers: { 'X-AppFrame-Access-Token': accessToken}
+      method: 'GET',
+      headers: { 'X-AppFrame-Access-Token': accessToken}
     });
     if (!res.ok) {
       throw new Error('Failed to fetch entries');
