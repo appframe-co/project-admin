@@ -46,3 +46,7 @@
     border-color: #DADFDD;
     color: #9FA4A2; 
 }
+
+.fullWidth {
+    width: 100%;
+}

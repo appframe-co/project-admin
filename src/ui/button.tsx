@@ -10,7 +10,8 @@ export function Button(props: any) {
         disabled,
         submit,
         primary,
-        url, external=false
+        url, external=false,
+        fullWidth
     } = props;
 
     let classList = styles['button'];
@@ -21,6 +22,9 @@ export function Button(props: any) {
     }
     if (plain) {
         classList += ' plain';
+    }
+    if (fullWidth) {
+        classList += ' ' + styles['fullWidth'];
     }
 
     if (url) {
