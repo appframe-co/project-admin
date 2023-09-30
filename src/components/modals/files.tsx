@@ -17,6 +17,7 @@ type TProp = {
 }
 
 export function Files({setFilesRef, multiple=false, value, setValue, onClose}: TProp) {
+    const [page, setPage] = useState<number>(1);
     const [selectedFileIds, setSelectedFileIds] = useState<string|string[]>(value);
     const [files, setFiles] = useState<TFile[]>([]);
     const imageRef = useRef<HTMLInputElement>(null);
@@ -24,9 +25,13 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
     const [isFileProcessing, setIsFileProcessing] = useState<boolean>(false);
 
     useEffect(() => {
+        if (page < 1) {
+            return;
+        }
+
         async function getFiles() {
             try {
-                const res = await fetch('/internal/api/files', {
+                const res = await fetch(`/internal/api/files?page=${page}`, {
                     method: 'GET', 
                     headers: {
                         'Content-Type': 'application/json'
@@ -46,7 +51,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
             }
         }
         getFiles();
-    }, []);
+    }, [page]);
 
     useEffect(() => {
         if (!imageRef.current) {
@@ -212,7 +217,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
         <div className={styles.wrapper}>
             <div className={styles.container}>
                 <div className={styles.sidebar}>
-                    <div className={styles.heading}><span>Store library</span></div>
+                    <div className={styles.heading}><span>Project library</span></div>
                     <div className={styles.linksContainer}>
                         <ul className={styles.links}>
                             <li><span>All Files</span></li>
@@ -233,6 +238,10 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                                     <div className={styles.fileBorder}><div className={styles.fileBG}><img src={file.src} /></div></div>
                             </div>
                         ))}
+                    </div>
+                    <div className={styles.pagination}>
+                        <Button onClick={() => setPage(prevState => prevState && prevState-1)} disabled={page < 2}>Previous</Button>
+                        <Button onClick={() => setPage(prevState => prevState+1)} disabled={!files.length }>Next</Button>
                     </div>
                 </div>
             </div>

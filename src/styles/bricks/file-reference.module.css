@@ -181,3 +181,11 @@
     color: var(--color-link);
     cursor: pointer;
 }
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 15px 0;
+    gap: 10px;
+}

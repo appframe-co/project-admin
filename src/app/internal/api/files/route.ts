@@ -8,7 +8,11 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
 
-        const res = await fetch(process.env.URL_PROJECT_ADMIN_API + '/api/files', {
+        const { searchParams } = new URL(req.url)
+        const page = searchParams.get('page') ?? 1;
+        const limit = searchParams.get('limit') ?? 10;
+
+        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/files?page=${page}&limit=${limit}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
