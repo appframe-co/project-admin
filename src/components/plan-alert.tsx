@@ -32,7 +32,7 @@ export function PlanAlert({trialFinishedAt}: {trialFinishedAt:Date|null}) {
 
     return (
         <>
-            {days > 0 && createPortal(
+            {days >= 0 && createPortal(
                 <div className={styles.planAlert}>
                     <div className={styles.banner}>
                         <Box padding={16}>
