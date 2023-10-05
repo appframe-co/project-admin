@@ -72,3 +72,21 @@
   color: #91908D;
   display: block;
 }
+
+.wrapperInput {
+  position: relative;
+}
+.prefix {
+  color: #616161;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 26px;
+  justify-content: center;
+  padding-bottom: 2px;
+}
+.prefix + .input {
+  padding: 5px 12px 5px 26px;
+}

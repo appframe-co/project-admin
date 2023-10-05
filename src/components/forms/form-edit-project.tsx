@@ -1,18 +1,19 @@
 'use client'
 
-import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
-import { useRouter } from 'next/navigation'
-import { FormValuesEditStructure, TProject } from '@/types'
+import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray} from 'react-hook-form'
+import { FormValuesEditProject, TProject, TCurrencyOption } from '@/types'
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
+import { ProjectCurrencies } from '../project-currencies';
+import { useEffect } from 'react';
 
 function isProject(data: TErrorResponse | {project: TProject}): data is {project: TProject} {
     return (data as {project: TProject}).project.id !== undefined;
 }
 
-function Input(props: UseControllerProps<FormValuesEditStructure> & {label?: string, helpText?: string, multiline?: boolean}) {
+function Input(props: UseControllerProps<FormValuesEditProject> & {label?: string, helpText?: string, multiline?: boolean}) {
     const { field, fieldState } = useController(props);
 
     return (
@@ -29,11 +30,16 @@ function Input(props: UseControllerProps<FormValuesEditStructure> & {label?: str
     )
 }
 
-export function FormEditProject({project, accessToken} : {project: TProject, accessToken: string}) {
-    const router = useRouter();
-    const { control, handleSubmit, formState: { errors, isDirty } } = useForm<FormValuesEditStructure>({defaultValues: project});
+export function FormEditProject({project, accessToken, currencies} : {project: TProject, accessToken: string, currencies:TCurrencyOption[]}) {
+    const { control, handleSubmit, formState, getValues, reset } = useForm<FormValuesEditProject>({defaultValues: project});
 
-    const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
+    useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+          reset(getValues());
+        }
+    }, [formState, project, reset]);
+
+    const onSubmit: SubmitHandler<FormValuesEditProject> = async (data) => {
         try {
             const res = await fetch('/internal/api/project', {
                 method: 'PUT',
@@ -49,20 +55,20 @@ export function FormEditProject({project, accessToken} : {project: TProject, acc
             if (!isProject(dataJson)) {
                 throw new Error('Fetch error');
             }
-
-            const { project } = dataJson;
-
-            router.refresh();
-            router.push(`/settings`);
         } catch (e) {
             console.log(e);
         }
     }
 
+    const currenciesFieldArray = useFieldArray({
+        name: 'currencies',
+        control
+    });
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Card>
+                <Card title='Profile'>
                     <Box padding={16}>
                         <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
                         <TextField value={project.projectNumber} label='Project Number' ronChange={() => {}} disabled />
@@ -70,7 +76,9 @@ export function FormEditProject({project, accessToken} : {project: TProject, acc
                     </Box>
                 </Card>
 
-                <Button disabled={!isDirty} submit={true} primary>Update</Button>
+                <ProjectCurrencies project={project} currenciesFieldArray={currenciesFieldArray} currencies={currencies} />
+
+                <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>
         </>
     )

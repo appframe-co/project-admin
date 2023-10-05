@@ -63,7 +63,10 @@ export type TProject = {
     projectNumber: number;
     planFinishedAt: Date;
     trialFinishedAt: Date;
+    currencies: {code:string, primary:boolean}[]
 }
+export type FormValuesEditProject = Pick<TProject, 'name'|'currencies'>
+
 
 export type TStagedTarget = {
     parameters: {name: string, value: string}[];
@@ -123,4 +126,26 @@ export type TEntry = {
     createdBy: string;
     updatedBy: string;
     doc: TDoc;
+}
+
+export type TCurrency = {
+    name: string;
+    code: string;
+    enabled:boolean;
+    sort: number;
+    moneyFormat: string;
+    moneyInEmailsFormat: string;
+    moneyWithCurrencyFormat: string;
+    moneyWithCurrencyInEmailsFormat: string;
+    decimalMark: string;
+    subunitToUnit: number;
+    symbol: string;
+    thousandsSeparator: string;
+}
+
+export type TCurrencyPreview = Pick<TCurrency, 'name' | 'code' | 'symbol'>&{primary:boolean}
+
+export type TCurrencyOption = {
+    value: string;
+    label: string;
 }

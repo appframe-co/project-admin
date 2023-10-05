@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TStructure, TEntry } from '@/types';
+import { TStructure, TEntry, TCurrencyOption } from '@/types';
 import { getStructure } from '@/services/structures';
 import { getEntries, getEntriesCount } from '@/services/entries';
 import styles from '@/styles/structure.module.css'
@@ -30,7 +30,59 @@ export default async function Structures({ params, searchParams }: TPageProps) {
   const {structure}: {structure: TStructure} = structureData;
   const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
 
-  const values = entries.map(e => keys.map(k => e.doc[k]));
+  const types = structure.bricks.reduce((acc:{[key:string]:string}, brick) => {
+    acc[brick.key] = brick.type;
+    return acc;
+  }, {});
+
+  const rows = entries.map(entry => keys.map(k => ({value: entry.doc[k], type: types[k]})));
+
+  const rowsJSX = rows.map((col, i: number) => {
+    const colsJSX = col.map((data, k: number) => {
+      if (data.value === null || data.value === undefined) {
+        return (
+          <td key={k}>
+            <div className={styles.docContainer}></div>
+          </td>
+        ); 
+      }
+  
+      let dataJSX: JSX.Element|null = <div>{data.value}</div>;
+
+      if (data.type === 'file_reference') {
+        dataJSX = data.value ? <div className={styles.img}><img src={data.value.src} /></div> : null;
+      }
+      if (data.type.startsWith('list.')) {
+        if (data.type === 'list.file_reference') {
+          dataJSX = data.value.length ? <div className={styles.img}><img src={data.value[0].src} /></div> : null;
+        } else {
+          dataJSX = <div>{data.value.join(' • ')}</div>;
+        }
+      }
+      if (data.type === 'money') {
+        const money = data.value.map((v: {amount:string,currencyCode:string}, k: number) => {
+          return `${k ? ' • ' : ''} ${v.amount} ${v.currencyCode}`;
+        })
+        dataJSX = <div>{money}</div>;
+      }
+
+      return (
+        <td key={k}>
+          <div className={styles.docContainer}>{dataJSX}</div>
+        </td>
+      );
+    })
+
+    return (
+      <tr key={i} className={styles.doc}>
+        {colsJSX}
+        <td className={styles.actions}>
+          <Link href={`/structures/${structure.id}/${entries[i]['id']}/edit`}><Button>Edit</Button></Link>
+          <DeleteEntry structureId={structure.id} id={entries[i]['id']} />
+        </td>
+      </tr>
+    );
+  });
 
   return (
     <div className='page'>
@@ -49,24 +101,7 @@ export default async function Structures({ params, searchParams }: TPageProps) {
             </tr>
           </thead>
           <tbody>
-            {values.map((value: any, i: number) => (
-              <tr key={i} className={styles.doc}>
-                {value.map((v: any, k: number) => (
-                  <td key={k}>
-                    <div className={styles.docContainer}>
-                      {v && !Array.isArray(v) && !v.src && v }
-                      {v && !Array.isArray(v) && v.src && <div className={styles.img}><img src={v.src} /></div>}
-                      {v && Array.isArray(v) && v.length > 0 && v[0].src && <div className={styles.img}><img src={v[0].src} /></div>}
-                      {v && Array.isArray(v) && v.length > 0 && !v[0].src && v.join(' • ')}
-                    </div>
-                  </td>
-                ))}
-                <td className={styles.actions}>
-                  <Link href={`/structures/${structure.id}/${entries[i]['id']}/edit`}><Button>Edit</Button></Link>
-                  <DeleteEntry structureId={structure.id} id={entries[i]['id']} />
-                </td>
-              </tr>
-            ))}
+            {rowsJSX}
           </tbody>
         </table>
       </div>

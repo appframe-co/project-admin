@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 
-import { TEntry, TStructure } from '@/types';
+import { TEntry, TStructure, TCurrencyPreview } from '@/types';
 
 import { Button } from '@/ui/button';
 import { Card } from '@/ui/card';
@@ -21,12 +21,13 @@ import { DateTime } from '@/components/bricks/date-time';
 import { ListDateTime } from '../bricks/list-date-time';
 import { DateBrick } from '../bricks/date';
 import { ListDate } from '../bricks/list-date';
+import { Money } from '../bricks/money';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-export function FormNewEntry({structure}: {structure: TStructure}) {
+export function FormNewEntry({structure, currencies}: {structure: TStructure, currencies: TCurrencyPreview[]}) {
     const router = useRouter();
     const { control, handleSubmit, formState, setValue, setError, register, watch, getValues } = useForm<any>();
 
@@ -86,6 +87,9 @@ export function FormNewEntry({structure}: {structure: TStructure}) {
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {brick.type === 'list.date' && 
                     <ListDate value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
+                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'money' && 
+                    <Money currencies={currencies} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
             </div>
         )
