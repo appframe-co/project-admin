@@ -177,7 +177,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                 <Card>
                     <Box padding={16}>
                         <Input control={control} name='name' label='Name' />
-                        <Input control={control} name='code' label='Code' helpText={`Code will be used in API, e.g. /api/structures/${watch('code') || 'example'}`} />
+                        <Input control={control} name='code' label='Code' helpText={`Code will be used in Project API`} />
                     </Box>
                 </Card>
 

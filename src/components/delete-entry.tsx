@@ -28,7 +28,7 @@ export function DeleteEntry({structureId, id}: {structureId: string, id: string}
             }
 
             router.refresh();
-            router.push(`/structures/${structureId}`);
+            router.push(`/structures/${structureId}/entries`);
         } catch (e) {
             console.log(e);
         }

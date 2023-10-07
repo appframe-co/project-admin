@@ -34,8 +34,8 @@ export default async function Structures() {
                   <td>{structure.name}</td>
                   <td>{structure.entriesCount}</td>
                   <td className={styles.actions}>
-                    <Link href={'structures/'+structure.id}><Button>View</Button></Link>
-                    <Link href={`structures/${structure.id}/edit`}><Button>Edit</Button></Link>
+                    <Link href={`structures/${structure.id}/entries`}><Button>View</Button></Link>
+                    <Link href={`structures/${structure.id}`}><Button>Edit</Button></Link>
                   </td>
                 </tr>
               ))}

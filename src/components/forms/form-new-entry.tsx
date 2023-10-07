@@ -55,7 +55,7 @@ export function FormNewEntry({structure, currencies}: {structure: TStructure, cu
             }
 
             router.refresh();
-            router.push(`/structures/${structure.id}`);
+            router.push(`/structures/${structure.id}/entries/${dataJson.entry.id}`);
         } catch (e) {
             console.log(e);
         }
