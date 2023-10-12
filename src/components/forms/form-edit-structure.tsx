@@ -6,13 +6,14 @@ import { TStructure, FormValuesEditStructure, TBrick, TSchemaBrick } from '@/typ
 import { Button } from '@/ui/button'
 import { TextField } from '@/ui/text-field'
 import { Card } from '@/ui/card'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { GroupOfBricks } from '../group-of-bricks'
 import { Modal } from '@/ui/modal'
 import styles from '@/styles/form-structure.module.css'
 import { Box } from '@/ui/box'
 import { FormBrick } from '../modals/form-brick'
+import { StructureApi } from '../structure-api'
 
 function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {structure: TStructure})): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
@@ -55,7 +56,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
 
     const router = useRouter();
 
-    const { control, handleSubmit, formState, watch, reset, getValues, setError } = useForm<FormValuesEditStructure>({defaultValues: structure});
+    const { control, handleSubmit, formState, reset, setError } = useForm<FormValuesEditStructure>({defaultValues: structure});
     const { fields, append, remove, update } = useFieldArray({
         name: 'bricks',
         control,
@@ -63,12 +64,6 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
     });
 
     const handleChangeModalBrick = useCallback(() => setActiveModalBrick(!activeModalBrick), [activeModalBrick]);
-
-    useEffect(() => {
-        if (formState.isSubmitSuccessful) {
-          reset(getValues());
-        }
-    }, [formState, structure, reset]);
 
     const onSubmit: SubmitHandler<FormValuesEditStructure> = async (data) => {
         try {
@@ -158,6 +153,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
 
     const errorsBrick: any = formState.errors.bricks ?? [];
 
+
     return (
         <>
             {activeModalBrick && createPortal(
@@ -183,7 +179,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
 
                 <Card title='Bricks'>
                     <div className={styles.bricks}>
-                            <Input control={control} name='bricks' type='hidden' />
+                        <Input control={control} name='bricks' type='hidden' />
 
                         {fields.map((brick, index: number) => (
                             <div key={brick.key} className={styles.brick} onClick={() => updateBrick(brick, index)}>
@@ -207,6 +203,8 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                             showGroupOfBricks={showGroupOfBricks} setShowGroupOfBricks={setShowGroupOfBricks} />
                     </Box>
                 </Card>
+
+                <StructureApi control={control} />
 
                 <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>

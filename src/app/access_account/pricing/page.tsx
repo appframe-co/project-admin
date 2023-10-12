@@ -130,9 +130,9 @@ export default async function Pricing() {
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>Notifications</span>
-                                <span className={styles.docNameInfo}>Email, Messengers</span>
+                                <span className={styles.docNameInfo}>Alerts, Emails, Messengers</span>
                             </td>
-                            <td></td>
+                            <td>&#10003;</td>
                             <td>&#10003;</td>
                             <td>&#10003;</td>
                             <td>&#10003;</td>

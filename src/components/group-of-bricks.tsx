@@ -47,7 +47,7 @@ export function GroupOfBricks({groupOfBricks, names, createBrick, showGroupOfBri
             <div className={styles.addBrick} onClick={() => setShowGroupOfBricks((prevState: any) => !prevState)}>+ Add brick</div>
 
             {showGroupOfBricks && (
-                <div style={{position:'absolute',width:'100%',left:'0',marginTop:'6px',padding: '0px 16px'}}>
+                <div style={{position:'absolute',width:'100%',left:'0',marginTop:'6px',padding: '0px 16px',zIndex:'2'}}>
                     <Card padding={0}>{bricks}</Card>
                 </div>
             )}

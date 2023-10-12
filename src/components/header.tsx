@@ -2,6 +2,7 @@ import Link from "next/link"
 import styles from '@/styles/header.module.css'
 import Image from "next/image"
 import { Account } from "./account";
+import { Alerts } from "./alerts";
 
 export function Header({name}:{name:string}) {
     return (
@@ -13,7 +14,10 @@ export function Header({name}:{name:string}) {
                         <span className={styles.projectName}>{name}</span>
                     </Link>
                 </div>
-                <Account />
+                <div className={styles.actions}>
+                    <Alerts />
+                    <Account />
+                </div>
             </div>
         </>  
     )

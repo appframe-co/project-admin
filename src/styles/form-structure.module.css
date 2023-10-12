@@ -122,3 +122,36 @@
 .validationsErrorsList {
     list-style: disc none inside;
 }
+
+.methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.method:first-child {
+    margin-top: 0;
+}
+.method {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    position: relative;
+    padding: 20px 15px 15px 15px;
+    margin-top: 20px;
+}
+.methodHeading {
+    font-weight: 500;
+    background: #fff;
+    line-height: 21px;
+    position: absolute;
+    top: -12px;
+    padding: 0 5px;
+    left: 10px;
+}
+.methodSubHeading {
+    padding-bottom: 10px;
+    font-weight: 500;
+}

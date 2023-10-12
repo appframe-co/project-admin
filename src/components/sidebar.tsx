@@ -14,7 +14,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/' className={pathname === '/' ? styles.active : ''}>
-                            <Image width={20} height={20} src='/icons/home.svg' alt='' />
+                            <Image width={18} height={18} src='/icons/home.svg' alt='' />
                             <span>Home</span>
                         </Link>
                     </div>
@@ -22,7 +22,7 @@ export function Sidebar() {
                 <li>
                    <div className={styles.container}>
                         <Link href='/structures' className={pathname.startsWith('/structures') ? styles.active : ''}>
-                            <Image width={20} height={20} src='/icons/building.svg' alt='' />
+                            <Image width={18} height={18} src='/icons/square-stack.svg' alt='' />
                             <span>Structures</span>
                         </Link>
                     </div>
@@ -30,7 +30,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/files' className={pathname === '/files' ? styles.active : ''}>
-                            <Image width={20} height={20} src='/icons/files.svg' alt='' />
+                            <Image width={18} height={18} src='/icons/files.svg' alt='' />
                             <span>Files</span>
                         </Link>
                     </div>
@@ -38,7 +38,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/settings' className={pathname === '/settings' ? styles.active : ''}>
-                            <Image width={20} height={20} src='/icons/settings.svg' alt='' />
+                            <Image width={18} height={18} src='/icons/settings.svg' alt='' />
                             <span>Settings</span>
                         </Link>
                     </div>

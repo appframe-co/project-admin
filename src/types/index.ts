@@ -32,6 +32,9 @@ export type FormValuesEditStructure = {
     name: string;
     code: string;
     bricks: TBrick[];
+    api: {
+        enabled: boolean
+    }
 }
 
 export type FormValuesManageBricks = {
@@ -148,4 +151,14 @@ export type TCurrencyPreview = Pick<TCurrency, 'name' | 'code' | 'symbol'>&{prim
 export type TCurrencyOption = {
     value: string;
     label: string;
+}
+
+export type TAlert = {
+    id: string;
+    message: string;
+    createdAt: string;
+    read: boolean;
+    structureId: string;
+    subjectId: string;
+    subjectType: string;
 }

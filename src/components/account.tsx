@@ -31,7 +31,7 @@ export function Account() {
     return (
         <>
             <div ref={divAccountRef} className={styles.account} onClick={() => setShowAccountMenu((prevState: any) => !prevState)}>
-                <Image width={26} height={26} src='/icons/account.svg' alt='' />
+                <Image width={18} height={18} src='/icons/account.svg' alt='' />
             </div>
 
             {showAccountMenu && createPortal(
