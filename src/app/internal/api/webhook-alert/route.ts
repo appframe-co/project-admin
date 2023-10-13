@@ -15,6 +15,10 @@ export async function POST(req: Request) {
                 'X-AppFrame-Access-Token': token
             }
         });
+        if (!res.ok) {
+            throw new Error('Error fetch');
+        }
+
         const data = await res.json();
 
         return NextResponse.json(data);

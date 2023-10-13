@@ -108,11 +108,11 @@ export default async function Structures({ params, searchParams }: TPageProps) {
 
       <nav className={styles.pagination}>
         {page > 1 ? (
-          <Link href={{pathname: `/structures/${structure.id}`, query: { page: page-1 }}}><Button>Previous</Button></Link>
+          <Link href={{pathname: `/structures/${structure.id}/entries`, query: { page: page-1 }}}><Button>Previous</Button></Link>
         ) : <Button disabled>Previous</Button>}
 
         {page*limit < entriesCountData.count ? (
-          <Link href={{pathname: `/structures/${structure.id}`, query: { page: page+1 }}}><Button>Next</Button></Link>
+          <Link href={{pathname: `/structures/${structure.id}/entries`, query: { page: page+1 }}}><Button>Next</Button></Link>
         ) : <Button disabled>Next</Button>}
       </nav>
     </div>

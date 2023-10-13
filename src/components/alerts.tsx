@@ -77,18 +77,17 @@ export function Alerts() {
                     }
                 });
                 if (!res.ok) {
-                    fetchWebhookAlert();
-                    return;
+                    return fetchWebhookAlert();
                 }
 
                 const dataJson: TErrorResponse|{alert: TAlert} = await res.json();
                 if (isErrorWebhook(dataJson)) {
-                    throw new Error('Fetch error');
+                    return fetchWebhookAlert();
                 }
 
                 setAlerts(prevState => [dataJson.alert, ...prevState]);
 
-                fetchWebhookAlert();
+                return fetchWebhookAlert();
             } catch(e) {
                 return;
             }

@@ -186,10 +186,10 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                                 <div className={styles.name}>{brick.name}</div>
                                 <div className={styles.key}>{brick.key}</div>
                                 {errorsBrick[index]?.name && (
-                                    <p className={styles.errorMsg}>{errorsBrick[index]?.name.message} changes need to be made</p>
+                                    <p className={styles.errorMsg}>{errorsBrick[index]?.name.message} (changes need to be made)</p>
                                 )}
                                 {errorsBrick[index]?.key && (
-                                    <p className={styles.errorMsg}>{errorsBrick[index]?.key.message} changes need to be made</p>
+                                    <p className={styles.errorMsg}>{errorsBrick[index]?.key.message} (changes need to be made)</p>
                                 )}
                                 {errorsBrick[index]?.validations && (
                                     <p className={styles.errorMsg}>{errorsBrick[index]?.validations?.filter((v: any)=>v).length} changes need to be made</p>
