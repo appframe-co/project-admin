@@ -86,7 +86,6 @@ export function Alerts() {
 
         return () => {
             eventSource.close();
-            console.log("connection closed");
         }
     }, []);
 
