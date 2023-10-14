@@ -45,8 +45,13 @@ export function ProjectCurrencies({project, currenciesFieldArray, currencies}:{p
         remove(index);
     };
     const handleAddCurrency = () => {
+        if (!currencyCode) {
+            return;
+        }
+
         append({code: currencyCode, primary: false});
         setCurrenciesOptions(prevState => prevState.filter(c => c.value !== currencyCode));
+        setCurrencyCode('');
     };
 
     return (
