@@ -121,6 +121,7 @@
 }
 .notReaded {
     background-color: #f5f5f5;
+    padding-top: 10px;
 }
 .alertLink {
     position: absolute;

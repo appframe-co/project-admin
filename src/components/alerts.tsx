@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import styles from '@/styles/header.module.css'
 import Image from "next/image"
-import { TAlert } from "@/types"
 import { useRouter } from "next/navigation"
 
 function isError(data: TErrorResponse|{alerts: TAlert[]}): data is TErrorResponse {
@@ -13,9 +12,14 @@ function isError(data: TErrorResponse|{alerts: TAlert[]}): data is TErrorRespons
 function isErrorUpdate(data: TErrorResponse|{alert: TAlert}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
-function isErrorWebhook(data: TErrorResponse|{alert: TAlert}): data is TErrorResponse {
-    return !!(data as TErrorResponse).error;
-}
+
+type TAlert = {
+    id: string;
+    message: string;
+    read: boolean;
+    createdAt: string;
+    link: string;
+};
 
 export function Alerts() {
     const router = useRouter();
@@ -68,40 +72,25 @@ export function Alerts() {
     }, []);
 
     useEffect(() => {
-        async function fetchWebhookAlert() {
-            try {
-                const res = await fetch('/internal/api/webhook-alert', {
-                    method: 'POST',  
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (!res.ok) {
-                    return fetchWebhookAlert();
-                }
-
-                const dataJson: TErrorResponse|{alert: TAlert} = await res.json();
-                if (isErrorWebhook(dataJson)) {
-                    return fetchWebhookAlert();
-                }
-
-                setAlerts(prevState => [dataJson.alert, ...prevState]);
-
-                return fetchWebhookAlert();
-            } catch(e) {
-                return;
-            }
+        if (typeof(EventSource) === 'undefined') {
+            return;
         }
 
-        fetchWebhookAlert();
+        const eventSource = new EventSource(process.env.NEXT_PUBLIC_URL_WEBHOOKS + '/alert', { withCredentials: true });
+        eventSource.addEventListener('alert', (event: MessageEvent) => {
+            if (event.type === 'alert') {
+                const alert = JSON.parse(event.data);
+                setAlerts(prevState => [alert, ...prevState]);
+            }
+        });
+
+        return () => {
+            eventSource.close();
+            console.log("connection closed");
+        }
     }, []);
 
     const handleClick = async (alert: TAlert) => {
-        let link = '';
-        if (alert.subjectType === 'entries') {
-            link = `/structures/${alert.structureId}/entries/${alert.subjectId}`;
-        }
-
         if (!alert.read) {
             try {
                 const res = await fetch('/internal/api/alerts', {
@@ -124,8 +113,8 @@ export function Alerts() {
             }
         }
 
-        if (link) {
-            router.push(link);
+        if (alert.link) {
+            router.push(alert.link);
         }
     };
 
@@ -145,7 +134,7 @@ export function Alerts() {
                     <ul>
                         {alerts.map(alert => (
                             <li key={alert.id} className={styles.wrapperAlert + (!alert.read ? ' '+styles.notReaded : '')} onClick={() => handleClick(alert)}>
-                                {alert.subjectId && <div className={styles.alertLink}></div>}
+                                {alert.link && <div className={styles.alertLink}></div>}
                                 <div className={styles.alert}>
                                     <div>{alert.message}</div>
                                     <div className={styles.alertDate}>{alert.createdAt}</div>
