@@ -161,10 +161,21 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
         }
 
         return (
-            <div key={item.id}>
+            <div key={item.id} className={styles.wrapperBrick}>
                 <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
-                    label={schemaValidation.name} helpText={schemaValidation.desc} 
-                    type={type} />
+                    label={schemaValidation.name} helpText={schemaValidation.desc} type={type} />
+                {schemaValidation.presetChoices.length > 0 && (
+                    <div className={styles.presetChoices}>
+                        <ul>
+                            {schemaValidation.presetChoices.map((presetChoice, i) => (
+                                <li key={i} onClick={() => setValue(`validations.${index}.value`, presetChoice.value, {shouldDirty: true})}>
+                                    <div>{presetChoice.name}</div>
+                                    <div className={styles.valuePresetChocie}>{presetChoice.value}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         );
     });

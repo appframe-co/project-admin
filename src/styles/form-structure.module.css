@@ -155,3 +155,25 @@
     padding-bottom: 10px;
     font-weight: 500;
 }
+.wrapperBrick {
+    position: relative;
+}
+.presetChoices {
+    margin-bottom: 15px;
+}
+.presetChoices ul li {
+    cursor: pointer;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 6px;
+}
+.presetChoices ul li:hover {
+    background-color: #f3f3f3;
+}
+.valuePresetChocie {
+    color: #616161;
+}
