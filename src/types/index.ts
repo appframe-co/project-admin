@@ -17,6 +17,7 @@ export type TBrick = {
     description: string;
     validations: {
         code: string;
+        type: string;
         value: any;
     }[];
 }

@@ -52,7 +52,7 @@ type TProps = {
 }
 
 export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handleClose, handleDeleteBrick}: TProps) {
-    const [isLimited, setLimited] = useState<boolean>(!!brick.validations.find(v => v.code === 'choices')?.value.length ?? false);
+    const [choicesEnabled, setChoicesEnabled] = useState<boolean>(!!brick.validations.find(v => v.code === 'choices')?.value.length ?? false);
 
     const { control, handleSubmit, formState, setValue, getValues, watch } = useForm<TBrick>({
         defaultValues: brick
@@ -92,7 +92,7 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
 
     const handleLimited = (e: Event) => {
         const target = e.target as HTMLInputElement;
-        setLimited(target.checked);
+        setChoicesEnabled(target.checked);
 
         if (target.checked && choicesFieldArray.fields.length === 0) {
             choicesFieldArray.append('');
@@ -111,9 +111,25 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
         }
 
         const registerOptions: RegisterOptions = {};
-        let type = schemaValidation.type;
+        let type = item.type;
+        switch(item.type) {
+            case 'number': {
+                registerOptions.valueAsNumber = true;
+                break;    
+            }
+            case 'date_time': {
+                registerOptions.valueAsDate = true;
+                type = 'datetime-local';
+                break;    
+            }
+            case 'date': {
+                registerOptions.valueAsDate = true;
+                type = 'date';
+                break;    
+            }
+        }
 
-        if (schemaValidation.code === 'required') {
+        if (item.code === 'required') {
             return (
                 <div key={item.id}>
                     <Input control={control} name={`validations.${index}.value`} 
@@ -121,11 +137,22 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
                 </div>
             );
         }
-        if (schemaValidation.code === 'choices') {
+        if (!choicesEnabled) {
+            if (item.code === 'unique') {
+                return (
+                    <div key={item.id}>
+                        <Input control={control} name={`validations.${index}.value`} 
+                        label={schemaValidation.name} helpText={schemaValidation.desc} type={schemaValidation.type} />
+                    </div>
+                );
+            }
+        }
+
+        if (item.code === 'choices') {
             return (
                 <div key={item.id}>
-                    <Checkbox onChange={(e: Event) => handleLimited(e)} label={schemaValidation.name} checked={isLimited} />
-                    {isLimited && (
+                    <Checkbox onChange={(e: Event) => handleLimited(e)} label={schemaValidation.name} checked={choicesEnabled} />
+                    {choicesEnabled && (
                         <>
                             <ul className={styles.choicesList}>
                                 {choicesFieldArray.fields.map((itemChoice, indexChoice) => (
@@ -144,42 +171,51 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
                 </div>
             );
         }
-        if (isLimited) {
-            return <div key={item.id}></div>;
-        }
 
-        if (schemaValidation.type === 'number') {
-            registerOptions.valueAsNumber = true;
-        }
-        if (schemaValidation.type === 'date_time') {
-            registerOptions.valueAsDate = true;
-            type = 'datetime-local';
-        }
-        if (schemaValidation.type === 'date') {
-            registerOptions.valueAsDate = true;
-            type = 'date';
-        }
-
-        return (
-            <div key={item.id} className={styles.wrapperBrick}>
-                <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
-                    label={schemaValidation.name} helpText={schemaValidation.desc} type={type} />
-                {schemaValidation.presetChoices.length > 0 && (
-                    <div className={styles.presetChoices}>
-                        <ul>
-                            {schemaValidation.presetChoices.map((presetChoice, i) => (
-                                <li key={i} onClick={() => setValue(`validations.${index}.value`, presetChoice.value, {shouldDirty: true})}>
-                                    <div>{presetChoice.name}</div>
-                                    <div className={styles.valuePresetChocie}>{presetChoice.value}</div>
-                                </li>
-                            ))}
-                        </ul>
+        if (!choicesEnabled) {
+            if (item.code === 'min') {
+                return (
+                    <div key={item.id} className={styles.wrapperBrick}>
+                        <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
+                        label={schemaValidation.name} helpText={schemaValidation.desc} type={type} />
                     </div>
-                )}
-            </div>
-        );
+                );
+            }
+            if (item.code === 'max') {
+                return (
+                    <div key={item.id} className={styles.wrapperBrick}>
+                        <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
+                        label={schemaValidation.name} helpText={schemaValidation.desc} type={type} />
+                    </div>
+                );
+            }
+            if (item.code === 'regex') {
+                return (
+                    <div key={item.id} className={styles.wrapperBrick}>
+                        <Input control={control} name={`validations.${index}.value`} rules={registerOptions}
+                        label={schemaValidation.name} helpText={schemaValidation.desc} type={type} />
+                        {schemaValidation.presetChoices.length > 0 && (
+                            <div className={styles.presetChoices}>
+                                <ul>
+                                    {schemaValidation.presetChoices.map((presetChoice, i) => (
+                                        <li key={i} onClick={() => setValue(`validations.${index}.value`, presetChoice.value, {shouldDirty: true})}>
+                                            <div>{presetChoice.name}</div>
+                                            <div className={styles.valuePresetChocie}>{presetChoice.value}</div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+        }
+
+        return <div key={item.id}></div>;
     });
     
+    console.log(watch());
+
     return (
         <div>
             {errors && errors.validations && (
