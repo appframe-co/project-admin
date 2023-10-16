@@ -213,8 +213,6 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
 
         return <div key={item.id}></div>;
     });
-    
-    console.log(watch());
 
     return (
         <div>
