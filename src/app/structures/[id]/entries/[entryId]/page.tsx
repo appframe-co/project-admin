@@ -6,6 +6,9 @@ import { getEntry } from '@/services/entries';
 import { Topbar } from '@/components/topbar';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Toolbar } from '@/components/toolbar';
 
 export const metadata: Metadata = {
     title: 'Edit entry | AppFrame'
@@ -57,9 +60,20 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
         });
     }
 
+    const tools = [];
+    if (structure.translations.enabled) {
+        tools.push(<>
+            <Link href={entry.id+'/translations'}>
+                <Image width={20} height={20} src='/icons/language.svg' alt='' />
+                <span>Translations</span>
+            </Link>
+        </>);
+    }
+
     return (
         <div className='page pageAlignCenter'>
-            <Topbar title={'Edit entry of ' + structure.name} />
+            <Topbar title={'Edit entry of ' + structure.name} back={`/structures/${structure.id}/entries`} />
+            <Toolbar tools={tools} />
             <FormEditEntry structure={structure} entry={entry} files={files} currencies={currencies} />
         </div>
     )

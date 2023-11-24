@@ -50,6 +50,10 @@ export function FormNewEntry({structure, currencies}: {structure: TStructure, cu
                     setError(d.field.join('.'), {
                         message: d.message
                     });
+
+                    if (d.value) {
+                        setValue(d.field.join('.'), d.value);
+                    }
                 });
                 return;
             }
@@ -91,6 +95,7 @@ export function FormNewEntry({structure, currencies}: {structure: TStructure, cu
                 {brick.type === 'money' && 
                     <Money currencies={currencies} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'url_handle' && <SingleLineText brick={brick} control={control} />}
             </div>
         )
     });

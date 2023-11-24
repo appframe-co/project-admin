@@ -14,8 +14,8 @@ export function Checkbox(props: any) {
     }
 
     return (
-        <div>
-            <label className={styles['checkboxWrapper']}>
+        <div className={styles['checkbox-container']}>
+            <label className={styles['checkbox-wrapper']}>
                 <input type='checkbox'
                         onChange={onChange}
                         onBlur={onBlur}
@@ -27,9 +27,9 @@ export function Checkbox(props: any) {
                         {...fields} />
                 <div className={styles.controlIndicator} />
                 {label && <div>{label}</div>}
-                {helpText && <p>{helpText}</p>}
-                {error && <span>{error}</span>}
             </label>
+            {helpText && <div className={styles.info}>{helpText}</div>}
+            {error && <span>{error}</span>}
         </div>
     );
 }

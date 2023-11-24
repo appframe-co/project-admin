@@ -21,6 +21,7 @@
 
 .textfield .input,
 .textfield .textarea {
+  font-family: inherit;
   position: relative;
   font-size: 13px;
   font-weight: 400;
@@ -89,4 +90,12 @@
 }
 .prefix + .input {
   padding: 5px 12px 5px 26px;
+}
+
+.td {
+  padding: 0;
+}
+.td .input, .td .textarea {
+  border-radius: 0;
+  border: 0;
 }

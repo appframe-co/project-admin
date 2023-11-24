@@ -10,7 +10,7 @@ export type FormValuesNewStructure = {
 }
 
 export type TBrick = {
-    id?: string;
+    id: string;
     name: string;
     type: string;
     key: string;
@@ -26,6 +26,9 @@ export type TStructure = {
     name: string;
     code: string;
     bricks: TBrick[];
+    translations: {
+        enabled: boolean
+    };
 }
 
 export type FormValuesEditStructure = {
@@ -35,7 +38,10 @@ export type FormValuesEditStructure = {
     bricks: TBrick[];
     api: {
         enabled: boolean
-    }
+    };
+    translations: {
+        enabled: boolean
+    };
 }
 
 export type FormValuesManageBricks = {
@@ -68,9 +74,10 @@ export type TProject = {
     projectNumber: number;
     planFinishedAt: Date;
     trialFinishedAt: Date;
-    currencies: {code:string, primary:boolean}[]
+    currencies: {code:string, primary:boolean, name: string}[];
+    languages: {code:string, primary:boolean, name: string}[];
 }
-export type FormValuesEditProject = Pick<TProject, 'name'|'currencies'>
+export type FormValuesEditProject = Pick<TProject, 'name'|'currencies'|'languages'>
 
 
 export type TStagedTarget = {
@@ -105,6 +112,7 @@ export type TFile = {
     mediaContentType: string;
     src: string;
     alt: string;
+    caption: string;
 }
 
 export enum Resource {
@@ -147,10 +155,20 @@ export type TCurrency = {
     symbol: string;
     thousandsSeparator: string;
 }
-
 export type TCurrencyPreview = Pick<TCurrency, 'name' | 'code' | 'symbol'>&{primary:boolean}
-
 export type TCurrencyOption = {
+    value: string;
+    label: string;
+}
+
+export type TLanguage = {
+    name: string;
+    code: string;
+    enabled:boolean;
+    sort: number;
+}
+export type TLanguagePreview = Pick<TLanguage, 'name' | 'code'>&{primary:boolean}
+export type TLanguageOption = {
     value: string;
     label: string;
 }
@@ -163,4 +181,19 @@ export type TAlert = {
     structureId: string;
     subjectId: string;
     subjectType: string;
+}
+
+export type TValueTranslation = {[key: string]: any}
+
+export type TTranslation = {
+    id: string;
+	userId: string; 
+    projectId: string;
+    structureId: string;
+    subjectId: string;
+    subject: string;
+    key: string;
+    value: TValueTranslation;
+    lang: string;
+    createdAt?: string;
 }

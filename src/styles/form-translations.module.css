@@ -1,0 +1,79 @@
+.table {
+    text-align: left;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #d7d7d7;
+    overflow: hidden;
+}
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table th {
+    background-color: #f7f7f7;
+    color: #616161;
+    padding: 13px;
+    font-weight: 500;
+    border-right: 1px solid #d7d7d7;
+}
+.table thead tr {
+    border-top: none;
+}
+.table tr {
+    height: 33px;
+    border-top: 1px solid #d7d7d7;
+}
+.value td {
+    border-right: 1px solid #d7d7d7;
+}
+
+.td {
+    padding: 0 13px;
+}
+.tdTitle {
+    width: 250px;
+    max-width: 300px;
+}
+
+
+.files {
+    display: grid;
+    column-gap: 10px;
+    row-gap: 10px;
+    margin-top: 25px;
+    grid-template-columns: repeat(auto-fill,minmax(8.125rem,1fr));
+    padding: 0 20px 20px 20px;
+}
+.file {
+    padding: 20px 12px 20px 12px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+.fileBorder {
+    padding: 4px;
+    margin: 0 8px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 0 0.9px #1718180d;
+}
+.fileBG {
+    background-color: #f1f1f1;
+    width: 115px;
+    height: 115px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.file img {
+    width: 115px;
+    height: 115px;
+    object-fit: contain;
+}
+
+.lineWrapper {
+    display: flex;
+    flex-direction: column;
+}
+.line {
+    padding: 8px 0;
+}

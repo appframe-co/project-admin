@@ -54,7 +54,7 @@ export default async function NewEntry({ params }: {params: {id: string}}) {
 
     return (
         <div className='page pageAlignCenter'>
-            <Topbar title='New Entry' />
+            <Topbar title='New Entry' back={`/structures/${structureData.structure.id}/entries`} />
             <FormNewEntry structure={structureData.structure} currencies={currencies} />
         </div>
     )

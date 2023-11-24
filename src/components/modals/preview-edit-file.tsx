@@ -33,14 +33,15 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 }
 
 export function PreviewAndEditFile({fileIndex, files, setFiles,  onClose}: TProp) {
-    const { control, handleSubmit, formState, setError } = useForm<{id:string,alt:string}>({
+    const { control, handleSubmit, formState, setError } = useForm<{id:string,alt:string,caption:string}>({
         defaultValues: {
             id: files[fileIndex].id,
-            alt: files[fileIndex].alt ?? ''
+            alt: files[fileIndex].alt ?? '',
+            caption: files[fileIndex].caption ?? ''
         }
     });
 
-    const onSubmit: SubmitHandler<{id:string,alt:string}> = async (data) => {
+    const onSubmit: SubmitHandler<{id:string,alt:string,caption:string}> = async (data) => {
         try {
             const res = await fetch('/internal/api/files', {
                 method: 'PUT',  
@@ -67,6 +68,7 @@ export function PreviewAndEditFile({fileIndex, files, setFiles,  onClose}: TProp
             setFiles((prevState: TFile[]) => prevState.map((file, i) => {
                 if (i === fileIndex) {
                     file.alt = dataJson.file.alt;
+                    file.caption = dataJson.file.caption;
                 }
                 return file;
             }));
@@ -85,6 +87,7 @@ export function PreviewAndEditFile({fileIndex, files, setFiles,  onClose}: TProp
                     <div className={styles.previewFile}><img src={files[fileIndex].src} /></div>
                     <div>
                         <Input control={control} name='alt' label='Alt text' />
+                        <Input control={control} name='caption' label='Caption text' />
                     </div>
                     <p className={styles.text}>Edits will apply to all places this file is used across AppFrame.</p>
                 </div>

@@ -1,13 +1,15 @@
 'use client'
 
-import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray} from 'react-hook-form'
-import { FormValuesEditProject, TProject, TCurrencyOption } from '@/types'
+import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray, UseFieldArrayReturn} from 'react-hook-form'
+import { FormValuesEditProject, TProject, TCurrencyOption, TLanguageOption } from '@/types'
+import { useEffect } from 'react';
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
 import { Card } from '@/ui/card';
 import { Box } from '@/ui/box';
-import { ProjectCurrencies } from '../project-currencies';
-import { useEffect } from 'react';
+import { ProjectCurrencies } from '@/components/project-currencies';
+import { ProjectLanguages } from '@/components/project-languages';
+import { useRouter } from 'next/navigation'
 
 function isProject(data: TErrorResponse | {project: TProject}): data is {project: TProject} {
     return (data as {project: TProject}).project.id !== undefined;
@@ -30,7 +32,15 @@ function Input(props: UseControllerProps<FormValuesEditProject> & {label?: strin
     )
 }
 
-export function FormEditProject({project, accessToken, currencies} : {project: TProject, accessToken: string, currencies:TCurrencyOption[]}) {
+type TProps = {
+    project: TProject; 
+    accessToken: string; 
+    currencies: TCurrencyOption[];
+    languages: TLanguageOption[];
+}
+
+export function FormEditProject({project, accessToken, currencies, languages} : TProps) {
+    const router = useRouter();
     const { control, handleSubmit, formState, getValues, reset } = useForm<FormValuesEditProject>({defaultValues: project});
 
     useEffect(() => {
@@ -55,6 +65,8 @@ export function FormEditProject({project, accessToken, currencies} : {project: T
             if (!isProject(dataJson)) {
                 throw new Error('Fetch error');
             }
+
+            router.refresh();
         } catch (e) {
             console.log(e);
         }
@@ -62,6 +74,10 @@ export function FormEditProject({project, accessToken, currencies} : {project: T
 
     const currenciesFieldArray = useFieldArray({
         name: 'currencies',
+        control
+    });
+    const languagesFieldArray = useFieldArray({
+        name: 'languages',
         control
     });
 
@@ -77,6 +93,7 @@ export function FormEditProject({project, accessToken, currencies} : {project: T
                 </Card>
 
                 <ProjectCurrencies project={project} currenciesFieldArray={currenciesFieldArray} currencies={currencies} />
+                <ProjectLanguages project={project} languagesFieldArray={languagesFieldArray} languages={languages} />
 
                 <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>

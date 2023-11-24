@@ -7,7 +7,13 @@ import { UseFieldArrayReturn } from "react-hook-form";
 import { FormValuesEditProject, TProject, TCurrencyOption } from "@/types";
 import styles from '@/styles/form-project.module.css';
 
-export function ProjectCurrencies({project, currenciesFieldArray, currencies}:{project:TProject, currenciesFieldArray: UseFieldArrayReturn<FormValuesEditProject>, currencies: TCurrencyOption[]}) {
+type TProps = {
+    project: TProject;
+    currenciesFieldArray: UseFieldArrayReturn<FormValuesEditProject, 'currencies', 'id'>;
+    currencies: TCurrencyOption[];
+}
+
+export function ProjectCurrencies({project, currenciesFieldArray, currencies}:TProps) {
     const { fields, append, remove, update } = currenciesFieldArray;
 
     const [currenciesOptions, setCurrenciesOptions] = useState<TCurrencyOption[]>(currencies);
@@ -29,8 +35,8 @@ export function ProjectCurrencies({project, currenciesFieldArray, currencies}:{p
         if (primaryIndex === -1) {
             return;
         }
-        update(primaryIndex, {code: fields[primaryIndex].code, primary: false});
-        update(index, {code, primary: true});
+        update(primaryIndex, {code: fields[primaryIndex].code, primary: false, name: fields[primaryIndex].name});
+        update(index, {code, primary: true, name: fields[index].name});
     };
     const handleRemoveCurrency = (index: number) => {
         const code = fields[index].code;
@@ -49,7 +55,12 @@ export function ProjectCurrencies({project, currenciesFieldArray, currencies}:{p
             return;
         }
 
-        append({code: currencyCode, primary: false});
+        const c = currencies.find(c => c.value === currencyCode);
+        if (!c) {
+            return;
+        }
+
+        append({code: currencyCode, primary: false, name: c.label});
         setCurrenciesOptions(prevState => prevState.filter(c => c.value !== currencyCode));
         setCurrencyCode('');
     };
@@ -61,7 +72,7 @@ export function ProjectCurrencies({project, currenciesFieldArray, currencies}:{p
                     {fields.map((item, index) => (
                         <li key={item.id}>
                             <div>
-                                <span>{item.code}</span>
+                                <span>{item.name}</span>
                                 <span>{item.primary}</span>
                             </div>
                             {!item.primary && (

@@ -5,6 +5,7 @@ import { RegisterOptions, SubmitHandler, UseControllerProps, useController, useF
 import { Button } from '@/ui/button';
 import styles from '@/styles/form-structure.module.css';
 import { useState } from 'react';
+import { Select } from '@/ui/select';
 
 type TControllerProps = UseControllerProps<any> & {
     error?: string;
@@ -12,6 +13,7 @@ type TControllerProps = UseControllerProps<any> & {
     helpText?: string;
     multiline?: boolean;
     type?: string;
+    disabled?: boolean;
 }
 
 function Input({name, control, rules={},  ...props}: TControllerProps) {
@@ -26,6 +28,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
                     label={props.label}
                     helpText={props.helpText}
                     innerRef={control?.register(name).ref}
+                    disabled={props.disabled}
                 />
     }
 
@@ -39,10 +42,12 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
                 helpText={props.helpText}
                 multiline={props.multiline}
                 type={props.type}
+                disabled={props.disabled}
             />
 }
 
 type TProps = {
+    bricks: TBrick[];
     errors: any;
     brick: TBrick;
     handleSubmitBrick: any;
@@ -51,7 +56,12 @@ type TProps = {
     schemaBrick: TSchemaBrick
 }
 
-export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handleClose, handleDeleteBrick}: TProps) {
+type TOption = {
+    value: string;
+    label: string;
+}
+
+export function FormBrick({bricks, errors, brick, schemaBrick, handleSubmitBrick, handleClose, handleDeleteBrick}: TProps) {
     const [choicesEnabled, setChoicesEnabled] = useState<boolean>(!!brick.validations.find(v => v.code === 'choices')?.value.length ?? false);
 
     const { control, handleSubmit, formState, setValue, getValues, watch } = useForm<TBrick>({
@@ -206,6 +216,39 @@ export function FormBrick({errors, brick, schemaBrick, handleSubmitBrick, handle
                                 </ul>
                             </div>
                         )}
+                    </div>
+                );
+            }
+            if (item.code === 'brick_reference') {
+                const options = bricks.reduce((acc: TOption[], brick): TOption[] => {
+                    if (brick.type === 'single_line_text') {
+                        acc.push({value: brick.key, label: brick.name});
+                    }
+                    return acc;
+                }, []);
+
+                const { field, fieldState } = useController({name: `validations.${index}.value`, control});
+
+                return (
+                    <div key={item.id} className={styles.wrapperBrick}>
+                        <Select 
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            value={field.value ?? ''}
+                            name={field.name}
+                            error={fieldState.error}
+                            label={schemaValidation.name}
+                            helpText={schemaValidation.desc}
+                            options={[{value: '', label: 'Select a brick'}, ...options]}
+                        />
+                    </div>
+                );
+            }
+            if (item.code === 'transliteration') {
+                return (
+                    <div key={item.id}>
+                        <Input control={control} name={`validations.${index}.value`} disabled={true}
+                        label={schemaValidation.name} helpText={schemaValidation.desc} type={schemaValidation.type} />
                     </div>
                 );
             }

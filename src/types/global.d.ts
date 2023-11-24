@@ -7,7 +7,8 @@ declare global {
         property?: string;
     }
     type TUserErrorResponse = {
-        field: string[],
-        message: string
+        field: string[];
+        message: string;
+        value?: any;
     }
   }

@@ -1,16 +1,20 @@
-.checkboxWrapper {
+.checkbox-container {
+    padding: 10px 0;
+}
+
+.checkbox-wrapper {
     position: relative;
     font-size: 13px;
     font-weight: 400;
     line-height: 22px;
     color: #303030;
     text-align: left;
-    padding: 4px 0 4px 25px;
+    padding-left: 25px;
     display: inline-block;
     cursor: pointer; 
 }
 
-.checkboxWrapper .checkbox {
+.checkbox-wrapper .checkbox {
     position: absolute;
     top: 0;
     left: 0;
@@ -18,16 +22,16 @@
     height: 0; 
 }
 
-.checkboxWrapper .checkbox:checked ~ .controlIndicator {
+.checkbox-wrapper .checkbox:checked ~ .controlIndicator {
     border-color: #000000;
     background-color: #000000; 
 }
 
-.checkboxWrapper .checkbox:checked ~ .controlIndicator:after {
+.checkbox-wrapper .checkbox:checked ~ .controlIndicator:after {
     visibility: visible;
 }
 
-.checkboxWrapper .controlIndicator {
+.checkbox-wrapper .controlIndicator {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -40,7 +44,7 @@
     background-color: transparent;
 }
 
-.checkboxWrapper .controlIndicator:after {
+.checkbox-wrapper .controlIndicator:after {
     content: '';
     position: absolute;
     top: 0;
@@ -55,4 +59,18 @@
     visibility: hidden;
     margin: auto;
     display: block; 
+}
+
+.info {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+}
+
+.checkbox-wrapper .checkbox:disabled ~ .controlIndicator {
+    border-color: #ccc;
+    background-color: #ccc; 
 }

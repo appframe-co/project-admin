@@ -41,7 +41,7 @@ export default async function Structures() {
               ))}
             </tbody>
           </table>
-        </div>              
+        </div>
     </div>
   )
 }

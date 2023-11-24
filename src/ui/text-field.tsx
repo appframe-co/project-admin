@@ -7,7 +7,8 @@ export function TextField(props: any) {
         onChange, onBlur,
         name, label, value, type='text',
         error,
-        multiline, helpText, disabled, innerRef, prefix, placeholder
+        multiline, helpText, disabled, innerRef, prefix, placeholder,
+        style=''
     } = props;
 
     const fields: {ref?: any} = {};
@@ -15,8 +16,16 @@ export function TextField(props: any) {
         fields.ref = innerRef;
     }
 
+    let className = styles['textfield'];
+    if (error) {
+        className += ' ' + styles.error;
+    }
+    if (style) {
+        className += ' ' + styles[style];
+    }
+
     return (
-        <div className={styles['textfield'] + (error ? ' ' + styles.error : '')}>
+        <div className={className}>
             {label && <div className={styles.name}>{label}</div>}
             {multiline && 
                 <textarea

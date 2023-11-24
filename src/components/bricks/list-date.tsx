@@ -103,7 +103,7 @@ export function ListDate({watchGlobal, register, error, setValue, brick, value=[
                 </div>
             </div>
             {showFields && createPortal(
-                <div ref={divInputListRef} style={{position:'absolute',width:rect?.width,top:rect?.top,left:rect?.left}}>
+                <div ref={divInputListRef} style={{position:'absolute',width:rect?.width,top:rect?.top,left:rect?.left,zIndex:1}}>
                     <div className={styles.wrapper}>
                         <div className={styles.container}>
                             <div className={styles.name}>{brick.name}</div>

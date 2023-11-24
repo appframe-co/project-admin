@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { FormEditProject } from "@/components/forms/form-edit-project";
 import { getProject, getAccessTokenProject } from "@/services/project"
-import { TCurrency, TProject } from "@/types";
+import { TCurrency, TLanguage, TProject } from "@/types";
 import { Topbar } from '@/components/topbar';
-import { getCurrencies } from '@/services/system';
+import { getCurrencies, getLanguages } from '@/services/system';
 
 export const metadata: Metadata = {
     title: 'Settings | AppFrame'
@@ -18,13 +18,17 @@ function isErrorProjectAccessToken(data: TErrorResponse|{projectId: string, acce
 function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
+function isErrorLanguages(data: TErrorResponse|{languages: TLanguage[]}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 export default async function Settings() {
     const projectPromise = getProject();
     const accessTokenPromise = getAccessTokenProject();
     const currenciesPromise:Promise<TErrorResponse|{currencies:TCurrency[]}> = getCurrencies();
+    const languagesPromise:Promise<TErrorResponse|{languages:TLanguage[]}> = getLanguages();
 
-    const [projectData, accessTokenProjectData, currenciesData] = await Promise.all([projectPromise, accessTokenPromise, currenciesPromise]);
+    const [projectData, accessTokenProjectData, currenciesData, languagesData] = await Promise.all([projectPromise, accessTokenPromise, currenciesPromise, languagesPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -35,14 +39,17 @@ export default async function Settings() {
     if (isErrorCurrencies(currenciesData)) {
         return <></>;
     }
+    if (isErrorLanguages(languagesData)) {
+        return <></>;
+    }
 
-    
     const currencies = currenciesData.currencies.map(c => ({value: c.code, label: c.name}));
+    const languages = languagesData.languages.map(c => ({value: c.code, label: c.name}));
 
     return (
         <div className='page pageAlignCenter'>
             <Topbar title={'Settings'} />
-            <FormEditProject project={projectData.project} accessToken={accessTokenProjectData.accessToken} currencies={currencies} />
+            <FormEditProject project={projectData.project} accessToken={accessTokenProjectData.accessToken} currencies={currencies} languages={languages} />
         </div>
     )
 }

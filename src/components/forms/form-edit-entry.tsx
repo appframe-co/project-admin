@@ -32,12 +32,6 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
     const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: entry.doc});
     const router = useRouter();
 
-    useEffect(() => {
-        if (formState.isSubmitSuccessful) {
-          reset(getValues());
-        }
-    }, [formState, structure, reset]);
-
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
             const res = await fetch('/internal/api/entries', {
@@ -61,6 +55,7 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
                 return;
             }
 
+            reset(dataJson.entry.doc);
             router.refresh();
         } catch (e) {
             console.log(e);
@@ -97,6 +92,7 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
                 {brick.type === 'money' && 
                     <Money value={getValues(brick.key)} currencies={currencies} register={register(brick.key)} error={formState.errors[brick.key]} 
                     setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'url_handle' && <SingleLineText brick={brick} control={control} />}
             </div>
         )
     });

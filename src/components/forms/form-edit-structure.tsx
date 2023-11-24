@@ -13,7 +13,8 @@ import { Modal } from '@/ui/modal'
 import styles from '@/styles/form-structure.module.css'
 import { Box } from '@/ui/box'
 import { FormBrick } from '../modals/form-brick'
-import { StructureApi } from '../structure-api'
+import { StructureNotifications } from '../structure-notifications'
+import { StructureTranslations } from '../structure-translations'
 
 function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {structure: TStructure})): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
@@ -56,7 +57,7 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
 
     const router = useRouter();
 
-    const { control, handleSubmit, formState, reset, setError } = useForm<FormValuesEditStructure>({defaultValues: structure});
+    const { control, handleSubmit, formState, reset, setError, watch } = useForm<FormValuesEditStructure>({defaultValues: structure});
     const { fields, append, remove, update } = useFieldArray({
         name: 'bricks',
         control,
@@ -153,7 +154,6 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
 
     const errorsBrick: any = formState.errors.bricks ?? [];
 
-
     return (
         <>
             {activeModalBrick && createPortal(
@@ -162,8 +162,10 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                     onClose={handleClose}
                     title={brick?.name || schemaBrick?.name || ''}
                 >
-                    {brick && schemaBrick && <FormBrick errors={formState.errors.bricks && indexBrick !== null ? formState.errors.bricks[indexBrick]: []}  
-                        brick={brick} schemaBrick={schemaBrick} handleClose={handleClose}
+                    {brick && schemaBrick && <FormBrick 
+                        errors={formState.errors.bricks && indexBrick !== null ? formState.errors.bricks[indexBrick]: []}  
+                        brick={brick} schemaBrick={schemaBrick} bricks={fields}
+                        handleClose={handleClose}
                         handleDeleteBrick={handleDeleteBrick} handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} />}
                 </Modal>,
                 document.body
@@ -204,7 +206,8 @@ export function FormEditStructure({structure, groupOfBricks, names} : TProps) {
                     </Box>
                 </Card>
 
-                <StructureApi control={control} />
+                <StructureNotifications control={control} />
+                <StructureTranslations control={control} />
 
                 <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
             </form>

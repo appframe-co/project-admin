@@ -167,8 +167,10 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
                     onClose={handleClose}
                     title={brick?.name || schemaBrick?.name || ''}
                 >
-                    {brick && schemaBrick && <FormBrick errors={formState.errors.bricks && indexBrick !== null ? formState.errors.bricks[indexBrick]: []} 
-                        brick={brick} schemaBrick={schemaBrick} handleClose={handleClose}
+                    {brick && schemaBrick && <FormBrick 
+                    errors={formState.errors.bricks && indexBrick !== null ? formState.errors.bricks[indexBrick]: []} 
+                        brick={brick} schemaBrick={schemaBrick}  bricks={fields}
+                        handleClose={handleClose}
                         handleDeleteBrick={handleDeleteBrick} handleSubmitBrick={indexBrick !== null ? handleEditBrick : handleAddBrick} />}
                 </Modal>,
                 document.body
