@@ -40,7 +40,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     }
     if (isErrorCurrencies(currenciesData)) {
         return <></>;
-    }    
+    }
 
     const {structure}: {structure: TStructure} = structureData;
     const {entry, files}: {entry: TEntry, files: TFile[]} = entryData;
@@ -61,7 +61,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     }
 
     const tools = [];
-    if (structure.translations.enabled) {
+    if (structure.translations && structure.translations.enabled) {
         tools.push(<>
             <Link href={entry.id+'/translations'}>
                 <Image width={20} height={20} src='/icons/language.svg' alt='' />
