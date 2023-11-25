@@ -14,6 +14,22 @@ type TControllerProps = UseControllerProps<any> & {
     multiline?: boolean;
     type?: string;
     disabled?: boolean;
+    options?: any;
+}
+
+function SelectField({name, control, rules={},  ...props}: TControllerProps) {
+    const { field, fieldState } = useController({name, control, rules});
+
+    return <Select 
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        value={field.value ?? ''}
+        name={field.name}
+        error={fieldState.error}
+        label={props.label}
+        helpText={props.helpText}
+        options={props.options}
+    />
 }
 
 function Input({name, control, rules={},  ...props}: TControllerProps) {
@@ -227,18 +243,11 @@ export function FormBrick({bricks, errors, brick, schemaBrick, handleSubmitBrick
                     return acc;
                 }, []);
 
-                const { field, fieldState } = useController({name: `validations.${index}.value`, control});
-
                 return (
                     <div key={item.id} className={styles.wrapperBrick}>
-                        <Select 
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                            value={field.value ?? ''}
-                            name={field.name}
-                            error={fieldState.error}
-                            label={schemaValidation.name}
-                            helpText={schemaValidation.desc}
+                        <SelectField 
+                            control={control} name={`validations.${index}.value`}
+                            label={schemaValidation.name} helpText={schemaValidation.desc}
                             options={[{value: '', label: 'Select a brick'}, ...options]}
                         />
                     </div>

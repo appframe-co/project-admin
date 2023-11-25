@@ -10,7 +10,7 @@ export type FormValuesNewStructure = {
 }
 
 export type TBrick = {
-    id: string;
+    id?: string;
     name: string;
     type: string;
     key: string;

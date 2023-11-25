@@ -6,7 +6,7 @@ export function Toolbar({tools, children}: {tools: React.ReactNode[], children?:
     return (
         <div className={styles.toolbar}>
             <div className={styles.controls}>
-                {tools.map(tool => <div className={styles.tool}>{tool}</div>)}
+                {tools.map((tool, i) => <div key={i} className={styles.tool}>{tool}</div>)}
             </div>
         </div>
     )
