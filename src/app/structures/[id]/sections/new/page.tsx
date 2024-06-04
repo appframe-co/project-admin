@@ -26,6 +26,8 @@ type TPageProps = {
 }
 
 export default async function NewSection({ params, searchParams }: TPageProps) {
+    const parentId = searchParams.parent_id ? searchParams.parent_id.toString() : undefined;
+
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const structurePromise: Promise<TErrorResponse|{structure: TStructure}> = getStructure(params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
@@ -60,7 +62,7 @@ export default async function NewSection({ params, searchParams }: TPageProps) {
     return (
         <div className='page pageAlignCenter'>
             <Topbar title='New Section' back={`/structures/${structureData.structure.id}/entries`} />
-            <FormNewSection structure={structureData.structure} currencies={currencies} />
+            <FormNewSection structure={structureData.structure} currencies={currencies} parentId={parentId} />
         </div>
     )
 }
