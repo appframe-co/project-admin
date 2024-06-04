@@ -25,8 +25,8 @@ export default async function Pricing() {
                     <tbody>
                         <tr className={styles.doc}>
                             <td></td>
-                            <td>₪9.90 / month</td>
-                            <td>soon</td>
+                            <td>? / month</td>
+                            <td>? / month</td>
                             <td>soon</td>
                             <td>soon</td>
                         </tr>
@@ -80,6 +80,33 @@ export default async function Pricing() {
                             <td>3 / 3</td>
                         </tr>
                         <tr className={styles.doc}>
+                            <td className={styles.docName}>
+                                <span>WebP format</span>
+                            </td>
+                            <td></td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                        </tr>
+                        <tr className={styles.doc}>
+                            <td className={styles.docName}>
+                                <span>Dynamic resize images</span>
+                            </td>
+                            <td></td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                        </tr>
+                        <tr className={styles.doc}>
+                            <td className={styles.docName}>
+                                <span>Translations</span>
+                            </td>
+                            <td></td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
+                        </tr>
+                        <tr className={styles.doc}>
                             <td className={styles.docName}>Backups</td>
                             <td></td>
                             <td></td>
@@ -95,16 +122,6 @@ export default async function Pricing() {
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>Webhooks</td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>Storage</span>
-                                <span className={styles.docNameInfo}>AWS, Google Cloud, Microsoft Azure, Yandex Cloud, AppFrame, Custom</span>
-                            </td>
                             <td></td>
                             <td></td>
                             <td>&#10003;</td>
@@ -129,38 +146,10 @@ export default async function Pricing() {
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
-                                <span>Notifications</span>
-                                <span className={styles.docNameInfo}>Alerts, Emails, Messengers</span>
-                            </td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>Translations</span>
-                            </td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
                                 <span>Marketing</span>
                             </td>
                             <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>WebP</span>
-                            </td>
                             <td></td>
-                            <td>&#10003;</td>
                             <td>&#10003;</td>
                             <td>&#10003;</td>
                         </tr>

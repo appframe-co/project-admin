@@ -6,7 +6,7 @@ export type FormValuesNewStructure = {
     id?: string;
     name: string;
     code: string;
-    bricks: TBrick[]
+    bricks: TBrick[];
 }
 
 export type TBrick = {
@@ -20,15 +20,31 @@ export type TBrick = {
         type: string;
         value: any;
     }[];
+    system: boolean;
+}
+export type TTranslations = {
+    enabled: boolean;
+}
+export type TSections = {
+    enabled: boolean;
+    bricks: TBrick[];
+}
+export type TNotifications = {
+    new: {
+        alert: {
+          enabled: boolean;
+          message: string;
+        }
+    }
 }
 export type TStructure = {
     id: string;
     name: string;
     code: string;
     bricks: TBrick[];
-    translations: {
-        enabled: boolean
-    };
+    sections: TSections;
+    translations: TTranslations;
+    notifications: TNotifications;
 }
 
 export type FormValuesEditStructure = {
@@ -40,6 +56,9 @@ export type FormValuesEditStructure = {
         enabled: boolean
     };
     translations: {
+        enabled: boolean
+    };
+    sections: {
         enabled: boolean
     };
 }
@@ -113,6 +132,7 @@ export type TFile = {
     src: string;
     alt: string;
     caption: string;
+    state: string;
 }
 
 export enum Resource {
@@ -138,6 +158,21 @@ export type TEntry = {
     updatedAt?: string;
     createdBy: string;
     updatedBy: string;
+    doc: TDoc;
+    sectionIds: string[];
+}
+
+export type TSection = {
+    id: string;
+    projectId: string;
+    structureId: string;
+    parentId: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy: string;
+    updatedBy: string;
+    name: string;
+    code: string;
     doc: TDoc;
 }
 

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { TEntry, TFile, TProject, TStructure } from '@/types';
+import { TFile, TProject, TSection, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
-import { getEntry } from '@/services/entries';
 import { Topbar } from '@/components/topbar';
 import { getProject } from '@/services/project';
 import { FormEditTranslations } from '@/components/forms/form-edit-translations';
+import { getSection } from '@/services/sections';
 
 export const metadata: Metadata = {
     title: 'Edit translations | AppFrame'
@@ -16,16 +16,16 @@ function isErrorProject(data: TErrorResponse|{project: TProject}): data is TErro
 function isErrorStructure(data: TErrorResponse|{structure: TStructure}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
-function isErrorEntry(data: TErrorResponse|{entry: TEntry}): data is TErrorResponse {
+function isErrorSection(data: TErrorResponse|{section: TSection}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
 
-export default async function EditTranslations({ params }: {params: {id: string, entryId: string}}) {
+export default async function EditTranslations({ params }: {params: {id: string, sectionId: string}}) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const structurePromise: Promise<TErrorResponse|{structure: TStructure}>  = getStructure(params.id);
-    const entryPromise: Promise<TErrorResponse|{entry:TEntry, files: TFile[]}> = getEntry(params.entryId, params.id);
+    const sectionPromise: Promise<TErrorResponse|{section: TSection, files: TFile[]}> = getSection(params.sectionId, params.id);
 
-    const [projectData, structureData, entryData] = await Promise.all([projectPromise, structurePromise, entryPromise]);
+    const [projectData, structureData, sectionData] = await Promise.all([projectPromise, structurePromise, sectionPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -33,26 +33,26 @@ export default async function EditTranslations({ params }: {params: {id: string,
     if (isErrorStructure(structureData)) {
         return <></>;
     }
-    if (isErrorEntry(entryData)) {
+    if (isErrorSection(sectionData)) {
         return <></>;
     }
 
     const {structure} = structureData;
-    const {entry, files} = entryData;
+    const {section, files} = sectionData;
 
     const languages = projectData.project.languages.map(c => ({value: c.code, label: c.name}));
 
     const types = ['single_line_text', 'list.single_line_text', 'multi_line_text'];
-    const keys = structure.bricks.filter(b => types.includes(b.type)).map(b => ({key: b.key, name: b.name, type: b.type}));
+    const keys = structure.sections.bricks.filter(b => types.includes(b.type)).map(b => ({key: b.key, name: b.name, type: b.type}));
 
     const typesFiles = ['file_reference', 'list.file_reference'];
-    const keysFiles = structure.bricks.filter(b => typesFiles.includes(b.type)).map(b => ({key: b.key, name: b.name, type: b.type}));
+    const keysFiles = structure.sections.bricks.filter(b => typesFiles.includes(b.type)).map(b => ({key: b.key, name: b.name, type: b.type}));
 
     return (
         <div className='page'>
-            <Topbar title={'Edit translations'} back={`/structures/${structure.id}/entries/${entry.id}`} />
+            <Topbar title={'Edit translations'} back={`/structures/${structure.id}/sections/${section.id}`} />
             <FormEditTranslations structure={structure} languages={languages} 
-                subject='entry' subjectData={entry}
+                subject='section' subjectData={section}
                 fields={keys} fieldsFiles={keysFiles} files={files} />
         </div>
     )

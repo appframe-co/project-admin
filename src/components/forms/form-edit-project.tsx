@@ -87,8 +87,8 @@ export function FormEditProject({project, accessToken, currencies, languages} : 
                 <Card title='Profile'>
                     <Box padding={16}>
                         <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
-                        <TextField value={project.projectNumber} label='Project Number' ronChange={() => {}} disabled />
-                        <TextField value={accessToken} label='Token' ronChange={() => {}} disabled helpText='Use this token for Project API' />
+                        <TextField value={project.projectNumber} label='Project Number' disabled />
+                        <TextField value={accessToken} label='Token' disabled helpText='Use this token for Project API' />
                     </Box>
                 </Card>
 

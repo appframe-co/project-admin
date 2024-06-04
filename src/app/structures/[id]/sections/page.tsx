@@ -1,14 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TStructure, TEntry, TSection } from '@/types';
+import { TStructure, TSection } from '@/types';
 import { getStructure } from '@/services/structures';
-import { getEntries, getEntriesCount } from '@/services/entries';
 import styles from '@/styles/structure.module.css'
-import { DeleteEntry } from '@/components/delete-entry';
 import { Topbar } from '@/components/topbar';
 import { Button } from '@/ui/button';
-import { LinkEntrySection } from '@/components/link-entry-section';
-import { getSections } from '@/services/sections';
+import { getSections, getSectionsCount } from '@/services/sections';
+import { DeleteSection } from '@/components/delete-section';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -20,27 +18,26 @@ type TPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Structures({ params, searchParams }: TPageProps) {
+export default async function StructureSections({ params, searchParams }: TPageProps) {
   const page = searchParams.page ? +searchParams.page : 1;
-  const limit = 10; 
+  const limit = 10;
+  const parentId = searchParams.parent_id?.toString();
 
   const structurePromise = getStructure(params.id);
-  const entriesPromise = getEntries(params.id, {page, limit, sectionId: searchParams.sectionId?.toString()});
-  const entriesCountPromise = getEntriesCount(params.id);
-  const sectionsPromise = getSections(params.id, {page, limit});
+  const sectionsPromise = getSections(params.id, {page, limit, parentId});
+  const sectionsCountPromise = getSectionsCount(params.id);
 
-  const [structureData, entriesData, entriesCountData, sectionsData] = await Promise.all([structurePromise, entriesPromise, entriesCountPromise, sectionsPromise]);
+  const [structureData, sectionsData, sectionsCountData] = await Promise.all([structurePromise, sectionsPromise, sectionsCountPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
-  const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
-  const {sections}: {sections: TSection[]} = sectionsData;
+  const {sections, names, keys, parent}: {sections: TSection[], names: string[], keys: string[], parent: TSection|null} = sectionsData;
 
-  const types = structure.bricks.reduce((acc:{[key:string]:string}, brick) => {
+  const types = structure.sections.bricks.reduce((acc:{[key:string]:string}, brick) => {
     acc[brick.key] = brick.type;
     return acc;
   }, {});
 
-  const rows = entries.map(entry => keys.map(k => ({value: entry.doc[k], type: types[k]})));
+  const rows = sections.map(section => keys.map(k => ({value: section.doc[k], type: types[k]})));
 
   const rowsJSX = rows.map((col, i: number) => {
     const colsJSX = col.map((data, k: number) => {
@@ -51,7 +48,7 @@ export default async function Structures({ params, searchParams }: TPageProps) {
           </td>
         ); 
       }
-  
+
       let dataJSX: JSX.Element|null = <div>{data.value}</div>;
 
       if (data.type === 'file_reference') {
@@ -82,52 +79,32 @@ export default async function Structures({ params, searchParams }: TPageProps) {
       <tr key={i} className={styles.doc}>
         {colsJSX}
         <td className={styles.actions}>
-          <div className={styles.action}>
-            <LinkEntrySection structureId={structure.id} sections={sections} id={entries[i]['id']} _sectionIds={entries[i]['sectionIds']}>
-              <Image width={20} height={20} src='/icons/link.svg' alt='' />
-            </LinkEntrySection>
-          </div>
-          <Link href={`/structures/${structure.id}/entries/${entries[i]['id']}`}><Button>Edit</Button></Link>
-          <DeleteEntry structureId={structure.id} id={entries[i]['id']} />
+          <Link href={`/structures/${structure.id}/entries/?sectionId=${sections[i]['id']}`}><Button>Entries</Button></Link>
+          <Link href={`/structures/${structure.id}/sections/?parent_id=${sections[i]['id']}`}><Button>View</Button></Link>
+          <Link href={`/structures/${structure.id}/sections/${sections[i]['id']}`}><Button>Edit</Button></Link>
+          <DeleteSection structureId={structure.id} id={sections[i]['id']} />
         </td>
       </tr>
     );
   });
 
-  let filter = [];
-  if (searchParams.sectionId) {
-    const section = sections.find(s => s.id === searchParams.sectionId);
-    if (section) {
-      filter.push({
-        type: 'section',
-        name: 'Section: ' + section.name,
-      });
-    }
+  let qs = '?', qe = '?';
+  if (parentId) {
+    qs += `parent_id=${parentId}`;
+    qe += `section_ids=${parentId}`;
   }
 
   return (
     <div className='page'>
-      <Topbar title={structure.name + ' - entries'}>
-        {structure.sections.enabled && <Link href={`/structures/${params.id}/sections/new`}>Add section</Link>}
-        <Link href={`/structures/${params.id}/entries/new`}>Add entry</Link>
+      <Topbar title={`${structure.name} - sections ${parent ? `(${parent.name})` : ''}`}>
+        {structure.sections.enabled && <Link href={`/structures/${params.id}/sections/new${qs}`}>Add section</Link>}
+        <Link href={`/structures/${params.id}/entries/new${qe}`}>Add entry</Link>
       </Topbar>
 
       <div className={styles.structureParts}>
         <Link href={{pathname: `/structures/${structure.id}/entries`}}><Button>Entries</Button></Link>
         <Link href={{pathname: `/structures/${structure.id}/sections`}}><Button>Sections</Button></Link>
       </div>
-
-      {filter.length > 0 && (
-        <div className={styles.filter}>
-          <div className={styles.filterHeading}><span>Filter:</span></div>
-          <div className={styles.filterParams}>
-            {filter.map(f => (
-              <div><span>{f.name}</span></div>
-            ))}
-          </div>
-        </div>
-      )}
-      
 
       <div className={styles.table}>
         <table>
@@ -147,11 +124,11 @@ export default async function Structures({ params, searchParams }: TPageProps) {
 
       <nav className={styles.pagination}>
         {page > 1 ? (
-          <Link href={{pathname: `/structures/${structure.id}/entries`, query: { page: page-1 }}}><Button>Previous</Button></Link>
+          <Link href={{pathname: `/structures/${structure.id}/sections`, query: { page: page-1 }}}><Button>Previous</Button></Link>
         ) : <Button disabled>Previous</Button>}
 
-        {page*limit < entriesCountData.count ? (
-          <Link href={{pathname: `/structures/${structure.id}/entries`, query: { page: page+1 }}}><Button>Next</Button></Link>
+        {page*limit < sectionsCountData.count ? (
+          <Link href={{pathname: `/structures/${structure.id}/sections`, query: { page: page+1 }}}><Button>Next</Button></Link>
         ) : <Button disabled>Next</Button>}
       </nav>
     </div>

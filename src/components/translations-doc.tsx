@@ -1,5 +1,5 @@
 import styles from '@/styles/form-translations.module.css'
-import { TEntry, TTranslation } from '@/types';
+import { TEntry, TSection, TTranslation } from '@/types';
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
 import { useEffect } from 'react';
@@ -8,8 +8,9 @@ import { SubmitHandler, UseControllerProps, useController, useForm } from 'react
 type TProps = {
     lang: string;
     structureId: string;
-    entry: TEntry;
     fields: {key: string, name: string, type: string}[];
+    subject: string;
+    subjectData: TEntry|TSection;
 }
 
 function Input(props: UseControllerProps & {type?: string, label?: string, helpText?: string, multiline?: boolean}) {
@@ -39,9 +40,9 @@ function isError(data: TErrorResponse|{translations: TTranslation[]}): data is T
     return (data as TErrorResponse).error !== undefined;
 }
 
-export function TranslationEntry({lang, entry, structureId, fields}: TProps) {
+export function TranslationDoc({lang, subject, subjectData, structureId, fields}: TProps) {
     const defaultValue = fields.reduce((acc:any, f) => {
-        acc[f.key] = f.type.startsWith('list.') ? Array(entry.doc[f.key].length).fill('') : '';
+        acc[f.key] = f.type.startsWith('list.') ? Array(subjectData.doc[f.key].length).fill('') : '';
         return acc;
     }, {});
 
@@ -61,7 +62,7 @@ export function TranslationEntry({lang, entry, structureId, fields}: TProps) {
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations?structureId=${structureId}&subjectId=${entry.id}&subject=entry&lang=${lang}`, {
+                const res = await fetch(`/internal/api/translations?structureId=${structureId}&subjectId=${subjectData.id}&subject=${subject}&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -98,7 +99,7 @@ export function TranslationEntry({lang, entry, structureId, fields}: TProps) {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: entry.id, ...data})
+                    body: JSON.stringify({structureId, subjectId: subjectData.id, ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');
@@ -123,7 +124,7 @@ export function TranslationEntry({lang, entry, structureId, fields}: TProps) {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: entry.id, subject: 'entry', key: 'doc', ...data})
+                    body: JSON.stringify({structureId, subjectId: subjectData.id, subject, key: 'doc', ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');
@@ -162,15 +163,15 @@ export function TranslationEntry({lang, entry, structureId, fields}: TProps) {
                             <tr key={field.key} className={styles.value}>
                                 <td className={styles.td + ' ' + styles.tdTitle}>{field.name}</td>
                                 <td className={styles.td + ' ' + styles.lineWrapper}>
-                                    {!field.type.startsWith('list.') && <div className={styles.line}>{entry.doc[field.key]}</div>}
-                                    {field.type.startsWith('list.') && entry.doc[field.key].map((v:any, i:number) => (
+                                    {!field.type.startsWith('list.') && <div className={styles.line}>{subjectData.doc[field.key]}</div>}
+                                    {field.type.startsWith('list.') && subjectData.doc[field.key].map((v:any, i:number) => (
                                         <div className={styles.line} key={i}>{v}</div>
                                     ))}
                                 </td>
                                 <td>
                                     {!field.type.startsWith('list.') && 
                                         <Input control={control} name={'value.'+field.key} multiline={field.type === 'multi_line_text'} />}
-                                    {field.type.startsWith('list.') && entry.doc[field.key].map((v:any, i: number) => (
+                                    {field.type.startsWith('list.') && subjectData.doc[field.key].map((v:any, i: number) => (
                                         <Input key={i} control={control} name={'value.'+field.key+'.'+i} />
                                     ))}
                                 </td>

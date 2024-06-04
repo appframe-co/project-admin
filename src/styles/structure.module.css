@@ -32,6 +32,7 @@
     flex-direction: row;
     gap: 10px;
     justify-content: right;
+    align-items: center;
 }
 
 .img {
@@ -61,4 +62,49 @@
     white-space: nowrap;
     max-width: 250px;
     overflow: hidden;
+}
+
+.structureParts {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.actionsLink {
+    cursor: pointer;
+}
+
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+.filterHeading {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.linkSectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+.linkSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.linkSectionAction {
+    cursor: pointer;
+}
+.breadcrumbsLinks {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 15px
+}
+
+.action {
+    cursor: pointer;
 }

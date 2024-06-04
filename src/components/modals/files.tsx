@@ -60,20 +60,24 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
 
         imageRef.current.onchange = async (event: Event) => {
             try {
-                setIsFileProcessing(true);
-
                 const target = event.target as HTMLInputElement;
                 const result = await validateImages(target.files);
-    
                 if (!result) {
-                    return;
+                    throw new Error('Error validate files');
                 }
     
                 const {errors, images} = result;
                 if (errors.length) {
-                    return;
+                    throw new Error('Error');
                 }
-    
+                
+                setIsFileProcessing(true);
+
+                const formData = new FormData();
+                for (let i = 0; i < images.length; i++) {
+                    formData.append(images[i].name, images[i])
+                }
+
                 const files: TStagedUploadFile[] = images.map(image => ({
                     filename: image.name, mimeType: image.type, resource: Resource.IMAGE, fileSize: image.size, httpMethod: 'POST'
                 }));
@@ -120,17 +124,17 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                     const {files}: {files: TFile[]} = await res.json();
 
                     setFiles((prevState: TFile[]) => prevState.concat(files));
-
-                    setIsFileProcessing(false);
                 }
             } catch (e) {
                 return;
+            } finally {
+                setIsFileProcessing(false);
             }
         };
     }, [imageRef]);
 
     const validateImages = async (files: FileList|null): Promise<{errors: TErrorValidateFile[], images: File[]}|void> => {
-        if (!files) {
+        if (!files || !files.length) {
             return;
         }
 
@@ -235,7 +239,10 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
                         {files.map(file => (
                             <div key={file.id} className={styles.file + (selectedFileIds?.includes(file.id) ? ' '+styles.active : '')} 
                                 onClick={() => selectFiles(file.id)}>
-                                    <div className={styles.fileBorder}><div className={styles.fileBG}><img src={file.src} /></div></div>
+                                    <div className={styles.fileBorder}><div className={styles.fileBG}>
+                                        {file.state === 'pending' && <div>This image uploading on background. Select or do another actions</div>}
+                                        {file.state === 'fulfilled' && <img src={file.src} />}
+                                    </div></div>
                             </div>
                         ))}
                     </div>

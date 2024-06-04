@@ -1,6 +1,6 @@
 import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { TStructure, TTranslations } from '@/types'
+import { TStructure } from '@/types'
 import { Button } from '@/ui/button'
 import { TextField } from '@/ui/text-field'
 import { Card } from '@/ui/card'
@@ -17,7 +17,8 @@ type TControllerProps = UseControllerProps<any> & {
 
 type TForm = {
     id: string;
-    translations: TTranslations;
+    name: string;
+    code: string;
 }
 
 function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {structure: TStructure})): data is TErrorResponse {
@@ -56,7 +57,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
             />
 }
 
-export function StructureTranslations({defaultValues}:{defaultValues: TForm}) {
+export function StructureCommon({defaultValues}: {defaultValues: TForm}) {
     const { control, handleSubmit, formState, reset, setError } = useForm<TForm>({defaultValues});
 
     const router = useRouter();
@@ -99,7 +100,8 @@ export function StructureTranslations({defaultValues}:{defaultValues: TForm}) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Card title='General'>
                 <Box padding={16}>
-                    <Input control={control} name='translations.enabled' label='Enable' type='checkbox' />
+                    <Input control={control} name='name' label='Name' />
+                    <Input control={control} name='code' label='Code' helpText={`Code will be used in Project API`} />
                 </Box>
             </Card>
 

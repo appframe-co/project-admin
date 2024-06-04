@@ -29,7 +29,10 @@ function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): da
 }
 
 export function FormEditEntry({structure, entry, files, currencies} : {structure: TStructure, entry: TEntry, files: TFile[], currencies: TCurrencyPreview[]}) {
-    const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: entry.doc});
+    const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: {
+        sectionIds: entry.sectionIds,
+        doc: entry.doc
+    }});
     const router = useRouter();
 
     const onSubmit: SubmitHandler<any> = async (data) => {
@@ -39,7 +42,7 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({doc: data, id: entry.id, structureId: structure.id})
+                body: JSON.stringify({...data, id: entry.id, structureId: structure.id})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
@@ -55,7 +58,7 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
                 return;
             }
 
-            reset(dataJson.entry.doc);
+            reset(dataJson.entry);
             router.refresh();
         } catch (e) {
             console.log(e);
@@ -64,35 +67,38 @@ export function FormEditEntry({structure, entry, files, currencies} : {structure
 
     const watchGlobal = watch();
 
+    const prefixName = 'doc.';
     const bricks = structure.bricks.map((brick, i) => {
+        const key = prefixName+brick.key;
+
         return (
             <div key={i}>
-                {brick.type === 'single_line_text' && <SingleLineText brick={brick} control={control} />}
-                {brick.type === 'multi_line_text' && <MultiLineText brick={brick} control={control} />}
-                {brick.type === 'number_integer' && <NumberInteger brick={brick} control={control} />}
-                {brick.type === 'number_decimal' && <NumberDecimal brick={brick} control={control} />}
-                {brick.type === 'boolean' && <BooleanBrick brick={brick} control={control} />}
-                {brick.type === 'date_time' && <DateTime brick={brick} control={control} />}
-                {brick.type === 'date' && <DateBrick brick={brick} control={control} />}
+                {brick.type === 'single_line_text' && <SingleLineText prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'multi_line_text' && <MultiLineText prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'number_integer' && <NumberInteger prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'number_decimal' && <NumberDecimal prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'boolean' && <BooleanBrick prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'date_time' && <DateTime prefixName={prefixName} brick={brick} control={control} />}
+                {brick.type === 'date' && <DateBrick prefixName={prefixName} brick={brick} control={control} />}
                 {brick.type === 'file_reference' && 
-                    <FileReference filesRef={files.filter(f => f.id === getValues(brick.key))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} />}
+                    <FileReference filesRef={files.filter(f => f.id === getValues(key))} value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} />}
                 {brick.type === 'list.file_reference' && 
-                    <ListFileReference filesRef={files.filter(f => getValues(brick.key)?.includes(f.id))} value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                    <ListFileReference filesRef={files.filter(f => getValues(key)?.includes(f.id))} value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {(brick.type === 'list.single_line_text' || brick.type === 'list.number_integer' || brick.type === 'list.number_decimal') && 
-                    <ListSingleLineText value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                    <ListSingleLineText value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {brick.type === 'list.date_time' && 
-                    <ListDateTime value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                    <ListDateTime value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {brick.type === 'list.date' && 
-                    <ListDate value={getValues(brick.key)} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                    <ListDate value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
                 {brick.type === 'money' && 
-                    <Money value={getValues(brick.key)} currencies={currencies} register={register(brick.key)} error={formState.errors[brick.key]} 
-                    setValue={(v:any) => setValue(brick.key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
-                {brick.type === 'url_handle' && <SingleLineText brick={brick} control={control} />}
+                    <Money value={getValues(key)} currencies={currencies} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} brick={brick} watchGlobal={watchGlobal} />}
+                {brick.type === 'url_handle' && <SingleLineText prefixName={prefixName} brick={brick} control={control} />}
             </div>
         )
     });

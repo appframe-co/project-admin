@@ -2,14 +2,19 @@ import styles from '@/styles/ui/modal.module.css'
 import {Button} from '@/ui/button'
 import Image from 'next/image';
 
+type TAction = {
+    onAction: (s: any) => void;
+    content: string;
+}
+
 type TProps = {
-    activator?: any, 
+    activator?: React.ReactNode, 
     open: boolean, 
     title: string, 
     onClose: any, 
     children: React.ReactNode, 
-    primaryAction?: {onAction: (s: any) => void, content: string},
-    secondaryActions?: any,
+    primaryAction?: TAction,
+    secondaryActions?: TAction[],
     small?: boolean
     large?: boolean
 }

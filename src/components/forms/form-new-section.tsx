@@ -1,9 +1,9 @@
 'use client'
 
-import { useForm, SubmitHandler} from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 
-import { TEntry, TStructure, TCurrencyPreview } from '@/types';
+import { TStructure, TCurrencyPreview, TSection } from '@/types';
 
 import { Button } from '@/ui/button';
 import { Card } from '@/ui/card';
@@ -23,27 +23,31 @@ import { DateBrick } from '../bricks/date';
 import { ListDate } from '../bricks/list-date';
 import { Money } from '../bricks/money';
 
-function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
+function isError(data: {userErrors: TUserErrorResponse[]} | {section: TSection}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-export function FormNewEntry({structure, currencies, sectionIds}: {structure: TStructure, currencies: TCurrencyPreview[], sectionIds: string|undefined}) {
+export function FormNewSection({structure, currencies, parentId}: {structure: TStructure, currencies: TCurrencyPreview[], parentId?: string|undefined}) {
     const router = useRouter();
-    const { control, handleSubmit, formState, setValue, setError, register, watch, getValues } = useForm<any>();
+    const { control, handleSubmit, formState, setValue, setError, register, watch, getValues } = useForm<any>({
+        defaultValues: {
+            doc: {}
+        }
+    });
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/entries', {
+            const res = await fetch('/internal/api/sections', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({...data, structureId: structure.id, sectionIds})
+                body: JSON.stringify({...data, structureId: structure.id, parentId})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
             }
-            const dataJson: {userErrors: TUserErrorResponse[]}|{entry: TEntry} = await res.json();
+            const dataJson: {userErrors: TUserErrorResponse[]}|{section: TSection} = await res.json();
 
             if (isError(dataJson)) {
                 dataJson.userErrors.forEach(d => {
@@ -59,7 +63,7 @@ export function FormNewEntry({structure, currencies, sectionIds}: {structure: TS
             }
 
             router.refresh();
-            router.push(`/structures/${structure.id}/entries/${dataJson.entry.id}`);
+            router.push(`/structures/${structure.id}/sections/${dataJson.section.id}`);
         } catch (e) {
             console.log(e);
         }
@@ -68,7 +72,7 @@ export function FormNewEntry({structure, currencies, sectionIds}: {structure: TS
     const watchGlobal = watch();
 
     const prefixName = 'doc.';
-    const bricks = structure.bricks.map((brick, i) => {
+    const bricks = structure.sections.bricks.map((brick, i) => {
         const key = prefixName+brick.key;
 
         return (

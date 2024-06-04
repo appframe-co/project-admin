@@ -9,7 +9,10 @@
     gap: 20px;
     padding-bottom: 20px;
 }
-.tool a {
+.tool {
+    cursor: pointer;
+}
+.tool a, .tool div {
     display: flex;
     align-items: center;
     gap: 2px;

@@ -32,9 +32,15 @@ function RadioGroup({name, control, ...props}: TProps) {
     )
 }
 
-export function BooleanBrick({brick, control}: {brick: TBrick, control: Control}) {
+type TProp = {
+    brick: TBrick;
+    control: Control;
+    prefixName?: string
+}
+
+export function BooleanBrick({brick, control, prefixName=''}: TProp) {
     return (
-        <RadioGroup control={control} name={brick.key} label={brick.name} helpText={brick.description} 
+        <RadioGroup control={control} name={prefixName+brick.key} label={brick.name} helpText={brick.description} 
         options={ [{label: 'True', value: 'true'}, {label: 'False', value: 'false'}] } />
     )
 }

@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { TCurrency, TCurrencyPreview, TProject, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
 import { Topbar } from '@/components/topbar';
-import { FormNewEntry } from '@/components/forms/form-new-entry';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
+import { FormNewSection } from '@/components/forms/form-new-section';
 
 export const metadata: Metadata = {
     title: 'New Entry | AppFrame'
@@ -25,9 +25,7 @@ type TPageProps = {
     searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function NewEntry({ params, searchParams }: TPageProps) {    
-    const sectionIds = searchParams.section_ids?.toString();
-
+export default async function NewSection({ params, searchParams }: TPageProps) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const structurePromise: Promise<TErrorResponse|{structure: TStructure}> = getStructure(params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
@@ -61,8 +59,8 @@ export default async function NewEntry({ params, searchParams }: TPageProps) {
 
     return (
         <div className='page pageAlignCenter'>
-            <Topbar title='New Entry' back={`/structures/${structureData.structure.id}/entries`} />
-            <FormNewEntry structure={structureData.structure} currencies={currencies} sectionIds={sectionIds} />
+            <Topbar title='New Section' back={`/structures/${structureData.structure.id}/entries`} />
+            <FormNewSection structure={structureData.structure} currencies={currencies} />
         </div>
     )
 }

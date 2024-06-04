@@ -1,19 +1,17 @@
 import type { Metadata } from 'next'
-import { FormEditEntry } from '@/components/forms/form-edit-entry';
-import { TCurrency, TCurrencyPreview, TEntry, TFile, TProject, TSection, TStructure } from '@/types';
+import { TCurrency, TCurrencyPreview, TFile, TProject, TSection, TStructure } from '@/types';
 import { getStructure } from '@/services/structures';
-import { getEntry } from '@/services/entries';
 import { Topbar } from '@/components/topbar';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Toolbar } from '@/components/toolbar';
-import { LinkEntrySection } from '@/components/link-entry-section';
-import { getSections } from '@/services/sections';
+import { getSection } from '@/services/sections';
+import { FormEditSection } from '@/components/forms/form-edit-section';
 
 export const metadata: Metadata = {
-    title: 'Edit entry | AppFrame'
+    title: 'Edit section | AppFrame'
 }
 
 function isErrorProject(data: TErrorResponse|{project: TProject}): data is TErrorResponse {
@@ -25,18 +23,14 @@ function isErrorStructure(data: TErrorResponse|{structure: TStructure}): data is
 function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
-function isErrorSections(data: TErrorResponse|{sections: TSection[]}): data is TErrorResponse {
-    return !!(data as TErrorResponse).error;
-}
 
-export default async function EditEntry({ params }: {params: {id: string, entryId: string}}) {
+export default async function EditSection({ params }: {params: {id: string, sectionId: string}}) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const structurePromise = getStructure(params.id);
-    const entryPromise = getEntry(params.entryId, params.id);
+    const sectionPromise = getSection(params.sectionId, params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
-    const sectionsPromise = getSections(params.id, {page: 1, limit: 10});
 
-    const [projectData, structureData, entryData, currenciesData, sectionsData] = await Promise.all([projectPromise, structurePromise, entryPromise, currenciesPromise, sectionsPromise]);
+    const [projectData, structureData, sectionData, currenciesData] = await Promise.all([projectPromise, structurePromise, sectionPromise, currenciesPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -47,13 +41,9 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     if (isErrorCurrencies(currenciesData)) {
         return <></>;
     }
-    if (isErrorSections(sectionsData)) {
-        return <></>;
-    }
 
     const {structure}: {structure: TStructure} = structureData;
-    const {entry, files}: {entry: TEntry, files: TFile[]} = entryData;
-    const {sections}: {sections: TSection[]} = sectionsData;
+    const {section, files}: {section: TSection, files: TFile[]} = sectionData;
 
     const currencies:TCurrencyPreview[] = [];
     for (const currency of currenciesData.currencies) {
@@ -73,26 +63,18 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     const tools = [];
     if (structure.translations && structure.translations.enabled) {
         tools.push(<>
-            <Link href={entry.id+'/translations'}>
+            <Link href={section.id+'/translations'}>
                 <Image width={20} height={20} src='/icons/language.svg' alt='' />
                 <span>Translations</span>
             </Link>
         </>);
     }
-    if (structure.sections && structure.sections.enabled) {
-        tools.push(<>
-            <LinkEntrySection structureId={structure.id} sections={sections} id={entry.id} _sectionIds={entry.sectionIds}>
-                <Image width={20} height={20} src='/icons/link.svg' alt='' />
-                <span>sections</span>
-            </LinkEntrySection>
-        </>);
-    }
 
     return (
         <div className='page pageAlignCenter'>
-            <Topbar title={'Edit entry of ' + structure.name} back={`/structures/${structure.id}/entries`} />
+            <Topbar title={'Edit section of ' + structure.name} back={`/structures/${structure.id}/sections`} />
             <Toolbar tools={tools} />
-            <FormEditEntry structure={structure} entry={entry} files={files} currencies={currencies} />
+            <FormEditSection structure={structure} section={section} files={files} currencies={currencies} />
         </div>
     )
 }

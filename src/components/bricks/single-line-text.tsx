@@ -38,15 +38,22 @@ function Choices(props: UseControllerProps<any> & {label?: string, helpText?: st
     )
 }
 
-export function SingleLineText({brick, control, name}: {brick: TBrick, control: Control, name?: string}) {
+type TProp = {
+    brick: TBrick;
+    control: Control;
+    name?: string;
+    prefixName?: string
+}
+
+export function SingleLineText({brick, control, name, prefixName=''}: TProp) {
     const validationChoices = brick.validations.find((v:any) => v.code === 'choices');
 
     if (name && name.startsWith('list.')) {
         return (
             <>
                 {validationChoices?.value.length ? (
-                    <Choices control={control} name={name} choices={brick.validations.find((v:any) => v.code==='choices')?.value} />
-                ) : <Input control={control} name={name} />
+                    <Choices control={control} name={prefixName+name} choices={brick.validations.find((v:any) => v.code==='choices')?.value} />
+                ) : <Input control={control} name={prefixName+name} />
                 }
             </>
         );
@@ -55,9 +62,9 @@ export function SingleLineText({brick, control, name}: {brick: TBrick, control: 
     return (
         <>
             {validationChoices?.value.length ? (
-                <Choices control={control} name={brick.key} label={brick.name} helpText={brick.description}
+                <Choices control={control} name={prefixName+brick.key} label={brick.name} helpText={brick.description}
                 choices={brick.validations.find((v:any) => v.code==='choices')?.value} />
-            ) : <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} />
+            ) : <Input control={control} name={prefixName+brick.key} label={brick.name} helpText={brick.description} />
             }
         </>
     )

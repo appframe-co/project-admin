@@ -61,6 +61,8 @@
   display: flex;
   flex-direction: row;
   margin-top: 18px;
+  justify-content: right;
+  gap: 10px;
 }
 .footer button {
   width: 100%;

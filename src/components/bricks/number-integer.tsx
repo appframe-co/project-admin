@@ -20,6 +20,12 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
     )
 }
 
-export function NumberInteger({brick, control}: {brick: TBrick, control: Control}) {
-    return <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} type='number' />;
+type TProp = {
+    brick: TBrick;
+    control: Control;
+    prefixName?: string
+}
+
+export function NumberInteger({brick, control, prefixName=''}: TProp) {
+    return <Input control={control} name={prefixName+brick.key} label={brick.name} helpText={brick.description} type='number' />;
 }

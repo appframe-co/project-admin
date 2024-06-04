@@ -26,12 +26,18 @@ function Input({name, control, ...props}: TControllerProps) {
     )
 }
 
-export function DateTime({brick, control}: {brick: TBrick, control: Control}) {
+type TProp = {
+    brick: TBrick;
+    control: Control;
+    prefixName?: string
+}
+
+export function DateTime({brick, control, prefixName=''}: TProp) {
     return (
         <div>
             <div className={styles.container}>
                 <div className={styles.date}>
-                    <Input control={control} name={brick.key} label={brick.name} helpText={brick.description} type='datetime-local' />
+                    <Input control={control} name={prefixName+brick.key} label={brick.name} helpText={brick.description} type='datetime-local' />
                 </div>
             </div>
         </div>

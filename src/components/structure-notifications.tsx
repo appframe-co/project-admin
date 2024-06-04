@@ -1,9 +1,11 @@
-import { FormValuesEditStructure } from "@/types";
-import { Box } from "@/ui/box";
-import { Card } from "@/ui/card";
-import { Checkbox } from "@/ui/checkbox";
-import { TextField } from "@/ui/text-field";
-import { Control, UseControllerProps, useController } from "react-hook-form";
+import { useController, useForm, SubmitHandler, UseControllerProps} from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import { TNotifications, TStructure } from '@/types'
+import { Button } from '@/ui/button'
+import { TextField } from '@/ui/text-field'
+import { Card } from '@/ui/card'
+import { Box } from '@/ui/box'
+import { Checkbox } from '@/ui/checkbox'
 import styles from '@/styles/form-structure.module.css'
 
 type TControllerProps = UseControllerProps<any> & {
@@ -12,6 +14,19 @@ type TControllerProps = UseControllerProps<any> & {
     helpText?: string;
     multiline?: boolean;
     type?: string;
+}
+
+type TForm = {
+    id: string;
+    notifications: TNotifications;
+}
+
+function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {structure: TStructure})): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
+
+function isUserError(data: {userErrors: TUserErrorResponse[]}|{structure: TStructure}): data is {userErrors: TUserErrorResponse[]} {
+    return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
 function Input({name, control, rules={},  ...props}: TControllerProps) {
@@ -42,23 +57,65 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
             />
 }
 
-export function StructureNotifications({control}:{control: Control<FormValuesEditStructure>}) {
+export function StructureNotifications({defaultValues}: {defaultValues: TForm}) {
+    const { control, handleSubmit, formState, reset, setError } = useForm<TForm>({defaultValues});
+
+    const router = useRouter();
+
+    const onSubmit: SubmitHandler<TForm> = async (data) => {
+        try {
+            const res = await fetch('/internal/api/structures', {
+                method: 'PUT',  
+                headers: {
+                    'Content-Type': 'application/json'
+                }, 
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) {
+                throw new Error('Fetch error');
+            }
+            const dataJson:{userErrors: TUserErrorResponse[]}|{structure: TStructure} = await res.json();
+            if (isError(dataJson)) {
+                setError('root', {type: 'manual', message: dataJson.description ?? ''});
+                return;
+            }
+            if (isUserError(dataJson)) {
+                dataJson.userErrors.forEach(d => {
+                    const field = d.field.join('.') as any;
+                    setError(field, {
+                        message: d.message
+                    });
+                });
+                return;
+            }
+
+            reset(dataJson.structure);
+            router.refresh();
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
-        <Card title='Notifications'>
-            <Box padding={16}>
-                <div className={styles.methods}>
-                    <div className={styles.method}>
-                        <div className={styles.methodHeading}>New entry</div>
-                        <div>
-                            <div className={styles.methodSubHeading}><span>Alert</span></div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Card title='Through Project API'>
+                <Box padding={16}>
+                    <div className={styles.methods}>
+                        <div className={styles.method}>
+                            <div className={styles.methodHeading}>New entry</div>
                             <div>
-                                <Input control={control} name='notifications.new.alert.enabled' label='Enable' type='checkbox' />
-                                <Input control={control} name='notifications.new.alert.message' label='Message' />
+                                <div className={styles.methodSubHeading}><span>Alert</span></div>
+                                <div>
+                                    <Input control={control} name='notifications.new.alert.enabled' label='Enable' type='checkbox' />
+                                    <Input control={control} name='notifications.new.alert.message' label='Message' />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </Box>
-        </Card>
+                </Box>
+            </Card>
+
+            <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
+        </form>
     )
 }
