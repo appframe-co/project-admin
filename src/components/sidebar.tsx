@@ -37,6 +37,14 @@ export function Sidebar() {
                 </li>
                 <li>
                     <div className={styles.container}>
+                        <Link href='/menus' className={pathname === '/menus' ? styles.active : ''}>
+                            <Image width={18} height={18} src='/icons/link.svg' alt='' />
+                            <span>Menus</span>
+                        </Link>
+                    </div>
+                </li>
+                <li>
+                    <div className={styles.container}>
                         <Link href='/settings' className={pathname === '/settings' ? styles.active : ''}>
                             <Image width={18} height={18} src='/icons/settings.svg' alt='' />
                             <span>Settings</span>

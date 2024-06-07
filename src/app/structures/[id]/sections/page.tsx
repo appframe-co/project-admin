@@ -79,7 +79,7 @@ export default async function StructureSections({ params, searchParams }: TPageP
       <tr key={i} className={styles.doc}>
         {colsJSX}
         <td className={styles.actions}>
-          <Link href={`/structures/${structure.id}/entries/?sectionId=${sections[i]['id']}`}><Button>Entries</Button></Link>
+          <Link href={`/structures/${structure.id}/entries/?section_id=${sections[i]['id']}`}><Button>Entries</Button></Link>
           <Link href={`/structures/${structure.id}/sections/?parent_id=${sections[i]['id']}`}><Button>View</Button></Link>
           <Link href={`/structures/${structure.id}/sections/${sections[i]['id']}`}><Button>Edit</Button></Link>
           <DeleteSection structureId={structure.id} id={sections[i]['id']} />
@@ -96,7 +96,7 @@ export default async function StructureSections({ params, searchParams }: TPageP
 
   return (
     <div className='page'>
-      <Topbar title={`${structure.name} - sections ${parent ? `(${parent.name})` : ''}`}>
+      <Topbar title={`${structure.name} - sections ${parent ? `(${parent.doc.name})` : ''}`}>
         {structure.sections.enabled && <Link href={`/structures/${params.id}/sections/new${qs}`}>Add section</Link>}
         <Link href={`/structures/${params.id}/entries/new${qe}`}>Add entry</Link>
       </Topbar>

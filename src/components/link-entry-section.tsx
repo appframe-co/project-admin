@@ -84,7 +84,7 @@ export function LinkEntrySection({children, structureId, sections, id, _sectionI
                             return [...prevState, {
                                 id: section.id,
                                 parentId: section.parentId,
-                                name: section.name
+                                name: section.doc.name
                             }];
                         }
 
@@ -136,7 +136,7 @@ export function LinkEntrySection({children, structureId, sections, id, _sectionI
                                     {sectionList.map(section => (
                                         <li key={section.id} className={styles.linkSection}>
                                             <div>
-                                                <span onClick={() => handleViewSection(section.id)} className={styles.linkSectionAction}>{section.name}</span>
+                                                <span onClick={() => handleViewSection(section.id)} className={styles.linkSectionAction}>{section.doc.name}</span>
                                             </div>
                                             <div>
                                                 <Button onClick={() => handleToggleSection(section.id)}>

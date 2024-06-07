@@ -8,7 +8,7 @@ import { DeleteEntry } from '@/components/delete-entry';
 import { Topbar } from '@/components/topbar';
 import { Button } from '@/ui/button';
 import { LinkEntrySection } from '@/components/link-entry-section';
-import { getSections } from '@/services/sections';
+import { getSections, getSection } from '@/services/sections';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -20,20 +20,25 @@ type TPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Structures({ params, searchParams }: TPageProps) {
+export default async function Entries({ params, searchParams }: TPageProps) {
   const page = searchParams.page ? +searchParams.page : 1;
   const limit = 10; 
 
+  const sectionId = searchParams.section_id ? searchParams.section_id.toString() : null;
+
   const structurePromise = getStructure(params.id);
-  const entriesPromise = getEntries(params.id, {page, limit, sectionId: searchParams.sectionId?.toString()});
+  const entriesPromise = getEntries(params.id, {page, limit, sectionId: searchParams.section_id?.toString()});
   const entriesCountPromise = getEntriesCount(params.id);
   const sectionsPromise = getSections(params.id, {page, limit});
+  const sectionPromise = sectionId ? getSection(sectionId, params.id) : null;
 
-  const [structureData, entriesData, entriesCountData, sectionsData] = await Promise.all([structurePromise, entriesPromise, entriesCountPromise, sectionsPromise]);
+  const [structureData, entriesData, entriesCountData, sectionsData, sectionData] = await Promise.all([structurePromise, entriesPromise, entriesCountPromise, sectionsPromise, sectionPromise]);
 
   const {structure}: {structure: TStructure} = structureData;
   const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
   const {sections}: {sections: TSection[]} = sectionsData;
+
+  // const section: {section: TSection} = sectionData;
 
   const types = structure.bricks.reduce((acc:{[key:string]:string}, brick) => {
     acc[brick.key] = brick.type;
@@ -95,14 +100,11 @@ export default async function Structures({ params, searchParams }: TPageProps) {
   });
 
   let filter = [];
-  if (searchParams.sectionId) {
-    const section = sections.find(s => s.id === searchParams.sectionId);
-    if (section) {
-      filter.push({
-        type: 'section',
-        name: 'Section: ' + section.name,
-      });
-    }
+  if (sectionData) {
+    filter.push({
+      type: 'section',
+      name: 'Section: ' + sectionData.section.doc.name,
+    });
   }
 
   return (
@@ -119,7 +121,6 @@ export default async function Structures({ params, searchParams }: TPageProps) {
 
       {filter.length > 0 && (
         <div className={styles.filter}>
-          <div className={styles.filterHeading}><span>Filter:</span></div>
           <div className={styles.filterParams}>
             {filter.map(f => (
               <div><span>{f.name}</span></div>

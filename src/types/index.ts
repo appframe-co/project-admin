@@ -232,3 +232,15 @@ export type TTranslation = {
     lang: string;
     createdAt?: string;
 }
+
+export type TMenu = {
+    id: string;
+    title: string;
+    handle: string;
+}
+
+export type FormValuesNewMenu = {
+    id?: string;
+    title: string;
+    handle: string;
+}

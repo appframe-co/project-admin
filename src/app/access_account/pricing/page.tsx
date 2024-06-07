@@ -72,12 +72,11 @@ export default async function Pricing() {
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>Menus</span>
-                                <span className={styles.docNameInfo}>Menus / levels</span>
                             </td>
                             <td></td>
-                            <td>1 / 1</td>
-                            <td>2 / 2</td>
-                            <td>3 / 3</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>6</td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>

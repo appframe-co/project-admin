@@ -109,6 +109,7 @@ export function FormNewStructure({groupOfBricks, names}: TProps) {
     const createBrick = (schemaBrick: TSchemaBrick): void => {
         setSchemaBrick(schemaBrick);
         setBrick({
+            system: false,
             type: schemaBrick.type,
             name: '',
             key: '',
