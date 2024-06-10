@@ -1,0 +1,35 @@
+.item {
+    padding: 8px 16px;
+    border-top: 1px solid #ebebeb;
+    min-height: 60px;
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.item:first-child {
+    border-top: none;
+}
+.item:hover {
+    background-color: #fafafa;
+}
+
+.title {
+    font-weight: 500;
+}
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+.controls {
+    display: flex;
+    flex-direction: row;
+    gap: 35px;
+}
+.position span {
+    display: inline-block;
+    padding: 5px;
+    color: #0000ff;
+    cursor: pointer;
+}

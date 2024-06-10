@@ -239,8 +239,21 @@ export type TMenu = {
     handle: string;
 }
 
-export type FormValuesNewMenu = {
+type TItem = {
+    title: string;
+    url: string;
+}
+
+export type TItemForm = {
+    title: string;
+    url: string;
+    type: string;
+    subject: string|null;
+    subjectId: string|null;
+}
+export type FormValuesMenu = {
     id?: string;
     title: string;
     handle: string;
+    items: TItemForm[];
 }
