@@ -1,7 +1,7 @@
 import { Resource, TErrorValidateFile, TFile, TStagedTarget, TStagedUploadFile } from "@/types";
 import { Button } from "@/ui/button";
 import { useEffect, useRef, useState } from "react";
-import styles from '@/styles/bricks/file-reference.module.css'
+import styles from '@/styles/fields/file-reference.module.css'
 import { resizeImg } from "@/utils/resize-img";
 
 function isError(data: TErrorResponse | any): data is TErrorResponse {

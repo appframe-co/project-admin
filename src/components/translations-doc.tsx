@@ -7,7 +7,7 @@ import { SubmitHandler, UseControllerProps, useController, useForm } from 'react
 
 type TProps = {
     lang: string;
-    structureId: string;
+    contentId: string;
     fields: {key: string, name: string, type: string}[];
     subject: string;
     subjectData: TEntry|TSection;
@@ -40,7 +40,7 @@ function isError(data: TErrorResponse|{translations: TTranslation[]}): data is T
     return (data as TErrorResponse).error !== undefined;
 }
 
-export function TranslationDoc({lang, subject, subjectData, structureId, fields}: TProps) {
+export function TranslationDoc({lang, subject, subjectData, contentId, fields}: TProps) {
     const defaultValue = fields.reduce((acc:any, f) => {
         acc[f.key] = f.type.startsWith('list.') ? Array(subjectData.doc[f.key].length).fill('') : '';
         return acc;
@@ -62,7 +62,7 @@ export function TranslationDoc({lang, subject, subjectData, structureId, fields}
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations?structureId=${structureId}&subjectId=${subjectData.id}&subject=${subject}&lang=${lang}`, {
+                const res = await fetch(`/internal/api/translations?contentId=${contentId}&subjectId=${subjectData.id}&subject=${subject}&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ export function TranslationDoc({lang, subject, subjectData, structureId, fields}
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: subjectData.id, ...data})
+                    body: JSON.stringify({contentId, subjectId: subjectData.id, ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');
@@ -124,7 +124,7 @@ export function TranslationDoc({lang, subject, subjectData, structureId, fields}
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: subjectData.id, subject, key: 'doc', ...data})
+                    body: JSON.stringify({contentId, subjectId: subjectData.id, subject, key: 'doc', ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');

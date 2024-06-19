@@ -9,12 +9,12 @@ export async function GET(req: Request) {
         }
 
         const { searchParams } = new URL(req.url);
-        const structureId = searchParams.get('structureId');
+        const contentId = searchParams.get('contentId');
         const parentId = searchParams.get('parentId');
         const page = searchParams.get('page') ?? 1;
         const limit = searchParams.get('limit') ?? 10;
 
-        let url = `${process.env.URL_PROJECT_ADMIN_API}/api/sections?structureId=${structureId}&page=${page}&limit=${limit}`;
+        let url = `${process.env.URL_PROJECT_ADMIN_API}/api/sections?contentId=${contentId}&page=${page}&limit=${limit}`;
         if (parentId) {
             url += `&parentId=${parentId}`;
         }

@@ -1,15 +1,17 @@
-export type TNewStructure = {
+export type TNewContent = {
     id: string;
 }
 
-export type FormValuesNewStructure = {
+export type FormValuesNewContent = {
     id?: string;
     name: string;
     code: string;
-    bricks: TBrick[];
+    entries: {
+        fields: TField[];
+    }
 }
 
-export type TBrick = {
+export type TField = {
     id?: string;
     name: string;
     type: string;
@@ -27,7 +29,10 @@ export type TTranslations = {
 }
 export type TSections = {
     enabled: boolean;
-    bricks: TBrick[];
+    fields: TField[];
+}
+export type TEntries = {
+    fields: TField[];
 }
 export type TNotifications = {
     new: {
@@ -37,38 +42,41 @@ export type TNotifications = {
         }
     }
 }
-export type TStructure = {
+export type TContent = {
     id: string;
     name: string;
     code: string;
-    bricks: TBrick[];
+    entries: TEntries;
     sections: TSections;
     translations: TTranslations;
     notifications: TNotifications;
 }
 
-export type FormValuesEditStructure = {
+export type FormValuesEditContent = {
     id: string;
     name: string;
     code: string;
-    bricks: TBrick[];
+    entries: {
+        fields: TField[];
+    };
     api: {
-        enabled: boolean
+        enabled: boolean;
     };
     translations: {
-        enabled: boolean
+        enabled: boolean;
     };
     sections: {
-        enabled: boolean
+        enabled: boolean;
+        fields: TField[];
     };
 }
 
-export type FormValuesManageBricks = {
+export type FormValuesManageFields = {
     id: string;
-    bricks: TBrick[];
+    fields: TField[];
 };
 
-type TValidationSchemaBrick = {
+type TValidationSchemaField = {
     code: string;
     name: string;
     value: string;
@@ -76,7 +84,7 @@ type TValidationSchemaBrick = {
     type: string;
     presetChoices: {name: string, value: string}[];
 }
-export type TSchemaBrick = {
+export type TSchemaField = {
     id: string;
     name: string;
     type: string;
@@ -84,7 +92,7 @@ export type TSchemaBrick = {
     groupCode: string;
     list: string;
     validationDescHtml: string;
-    validations: TValidationSchemaBrick[];
+    validations: TValidationSchemaField[];
 }
 
 export type TProject = {
@@ -153,7 +161,7 @@ type TDoc = {[key: string]: any}
 export type TEntry = {
     id: string;
     projectId: string;
-    structureId: string;
+    contentId: string;
     createdAt?: string;
     updatedAt?: string;
     createdBy: string;
@@ -165,7 +173,7 @@ export type TEntry = {
 export type TSection = {
     id: string;
     projectId: string;
-    structureId: string;
+    contentId: string;
     parentId: string;
     createdAt?: string;
     updatedAt?: string;
@@ -213,7 +221,7 @@ export type TAlert = {
     message: string;
     createdAt: string;
     read: boolean;
-    structureId: string;
+    contentId: string;
     subjectId: string;
     subjectType: string;
 }
@@ -224,7 +232,7 @@ export type TTranslation = {
     id: string;
 	userId: string; 
     projectId: string;
-    structureId: string;
+    contentId: string;
     subjectId: string;
     subject: string;
     key: string;
@@ -235,14 +243,29 @@ export type TTranslation = {
 
 export type TMenu = {
     id: string;
-    title: string;
-    handle: string;
+    name: string;
+    code: string;
+    items: {
+        fields: TField[];
+    };
+    translations: TTranslations;
 }
 
-type TItem = {
-    title: string;
-    url: string;
-}
+export type TItem = {
+    id: string;
+    projectId: string;
+    userId: string;
+    menuId: string;
+    parentId: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    updatedBy: string;
+    doc: TDoc;
+    subject: string;
+    subjectId: string;
+    items?: TItem[];
+  }
 
 export type TItemForm = {
     title: string;
@@ -253,7 +276,18 @@ export type TItemForm = {
 }
 export type FormValuesMenu = {
     id?: string;
-    title: string;
-    handle: string;
+    name: string;
+    code: string;
     items: TItemForm[];
+}
+export type FormValuesNewMenu = {
+    name: string;
+    code: string;
+    items: {
+        fields: TField[];
+    };
+}
+
+export type TItems = {
+    fields: TField[];
 }

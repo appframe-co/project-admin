@@ -37,17 +37,18 @@ export default async function Links({ searchParams }: TPageProps) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Handle</th>
+                            <th>Name</th>
+                            <th>Code</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {menus.map(menu => (
                             <tr key={menu.id} className={styles.doc}>
-                                <td>{menu.title}</td>
-                                <td>{menu.handle}</td>
+                                <td>{menu.name}</td>
+                                <td>{menu.code}</td>
                                 <td className={styles.actions}>
+                                    <Link href={`menus/${menu.id}/items`}><Button>View</Button></Link>
                                     <Link href={`menus/${menu.id}`}><Button>Edit</Button></Link>
                                     <DeleteMenu menuId={menu.id} />
                                 </td>

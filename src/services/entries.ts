@@ -1,10 +1,10 @@
 import { headers } from 'next/headers'
 
-export async function getEntries(structureId: string, {page=1, limit=10, sectionId}: {page:number, limit:number, sectionId?:string|null}) {
+export async function getEntries(contentId: string, {page=1, limit=10, sectionId}: {page:number, limit:number, sectionId?:string|null}) {
   try {
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
-    let q = `structureId=${structureId}&page=${page}&limit=${limit}`;
+    let q = `contentId=${contentId}&page=${page}&limit=${limit}`;
     if (sectionId) {
       q += `&sectionId=${sectionId}`;
     }
@@ -23,11 +23,11 @@ export async function getEntries(structureId: string, {page=1, limit=10, section
   }
 }
 
-export async function getEntriesCount(structureId: string) {
+export async function getEntriesCount(contentId: string) {
   try {
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
-    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/count?structureId=${structureId}`, {
+    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/count?contentId=${contentId}`, {
       method: 'GET',
       headers: { 'X-AppFrame-Access-Token': accessToken}
     });
@@ -41,11 +41,11 @@ export async function getEntriesCount(structureId: string) {
   }
 }
 
-export async function getEntry(id: string, structureId: string) {
+export async function getEntry(id: string, contentId: string) {
   try {
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 
-    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${id}?structureId=${structureId}`, {
+    const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/entries/${id}?contentId=${contentId}`, {
     method: 'GET',
     headers: { 'X-AppFrame-Access-Token': accessToken}
     });

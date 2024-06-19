@@ -32,7 +32,7 @@ export default async function Pricing() {
                         </tr>
 
                         <tr className={styles.doc}>
-                            <td className={styles.docName}>Structures</td>
+                            <td className={styles.docName}>Contents</td>
                             <td>1</td>
                             <td>2</td>
                             <td>4</td>

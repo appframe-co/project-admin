@@ -1,3 +1,30 @@
+.field, .fieldSystem {
+    padding: 8px 16px;
+    border-top: 1px solid #ebebeb;
+    cursor: pointer;
+    min-height: 60px;
+    word-wrap: break-word;
+}
+.field:first-child {
+    border-top: none;
+}
+.field:hover {
+    background-color: #fafafa;
+}
+
+.fieldSystem {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.name {
+    font-weight: 500;
+}
+.key {
+    color: #616161;
+}
+
+
 .item {
     padding: 8px 16px;
     border-top: 1px solid #ebebeb;
@@ -32,4 +59,19 @@
     padding: 5px;
     color: #0000ff;
     cursor: pointer;
+}
+
+.links ul {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 3px;
+    margin-bottom: 20px;
+}
+.links li {
+    cursor: pointer;
+}
+.links li.active {
+    border-bottom: 2px solid #000000;
+    padding-bottom: 3px;
+    font-weight: 500;
 }

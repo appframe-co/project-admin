@@ -21,9 +21,9 @@ export function Sidebar() {
                 </li>
                 <li>
                    <div className={styles.container}>
-                        <Link href='/structures' className={pathname.startsWith('/structures') ? styles.active : ''}>
+                        <Link href='/contents' className={pathname.startsWith('/contents') ? styles.active : ''}>
                             <Image width={18} height={18} src='/icons/square-stack.svg' alt='' />
-                            <span>Structures</span>
+                            <span>Contents</span>
                         </Link>
                     </div>
                 </li>

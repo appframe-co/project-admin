@@ -1,0 +1,199 @@
+.fields {
+
+}
+
+.field, .fieldSystem {
+    padding: 8px 16px;
+    border-top: 1px solid #ebebeb;
+    cursor: pointer;
+    min-height: 60px;
+    word-wrap: break-word;
+}
+.field:first-child {
+    border-top: none;
+}
+.field:hover {
+    background-color: #fafafa;
+}
+
+.fieldSystem {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.name {
+    font-weight: 500;
+}
+.key {
+    color: #616161;
+}
+
+.infoField {
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 15px;
+}
+.validations {
+    padding-top: 20px;
+}
+.validationText {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 4px;
+    color: #91908D;
+    display: block;
+    margin-bottom: 15px;
+}
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.actionsRight {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.switchValues {
+    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 4px;
+    border-radius: 6px;
+    justify-content: space-between;
+}
+.btnValue {
+    color: #616161;
+    font-weight: 500;
+    height: 51px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.btnValue:hover {
+    background-color: #fafafa;
+    border-radius: 3px;
+}
+.activeValue {
+    color: #303030;
+    background-color: #ffffff;
+    border: 1px solid #e3e3e3;
+    border-radius: 3px;
+}
+.disabledValues .btnValue {
+    cursor: default;
+    color: #cccccc;
+}
+.disabledValues .btnValue:hover {
+    background-color: unset;
+}
+.disabledValues .activeValue {
+    background-color: #ebebeb;
+    color: #b5b5b5;
+}
+.disabledValues .activeValue:hover {
+    background-color: #ebebeb;
+}
+
+.choicesList li {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+.infoField {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.errorMsg {
+    color: #B00020;
+    margin-top: 6px;
+}
+.validationsErrors {
+    background-color: #fee9e8;
+    color: #B00020;
+    padding: 8px;
+    border-radius: 6px;
+}
+.validationsErrorsHeading {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.validationsErrorsList {
+    list-style: disc none inside;
+}
+
+.methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.method:first-child {
+    margin-top: 0;
+}
+.method {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    position: relative;
+    padding: 20px 15px 15px 15px;
+    margin-top: 20px;
+}
+.methodHeading {
+    font-weight: 500;
+    background: #fff;
+    line-height: 21px;
+    position: absolute;
+    top: -12px;
+    padding: 0 5px;
+    left: 10px;
+}
+.methodSubHeading {
+    padding-bottom: 10px;
+    font-weight: 500;
+}
+.wrapperField {
+    position: relative;
+}
+.presetChoices {
+    margin-bottom: 15px;
+}
+.presetChoices ul li {
+    cursor: pointer;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 6px;
+}
+.presetChoices ul li:hover {
+    background-color: #f3f3f3;
+}
+.valuePresetChocie {
+    color: #616161;
+}
+
+.links ul {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 3px;
+    margin-bottom: 20px;
+}
+.links li {
+    cursor: pointer;
+}
+.links li.active {
+    border-bottom: 2px solid #000000;
+    padding-bottom: 3px;
+    font-weight: 500;
+}

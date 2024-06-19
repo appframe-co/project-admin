@@ -7,7 +7,7 @@ function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
 }
 
-export function DeleteEntry({structureId, id}: {structureId: string, id: string}) {
+export function DeleteEntry({contentId, id}: {contentId: string, id: string}) {
     const router = useRouter();
 
     const deleteEntry = async (id: string) => {
@@ -28,7 +28,7 @@ export function DeleteEntry({structureId, id}: {structureId: string, id: string}
             }
 
             router.refresh();
-            router.push(`/structures/${structureId}/entries`);
+            router.push(`/contents/${contentId}/entries`);
         } catch (e) {
             console.log(e);
         }

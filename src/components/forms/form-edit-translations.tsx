@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 
-import { TEntry, TStructure, TLanguageOption, TFile, TSection } from '@/types'
+import { TEntry, TContent, TLanguageOption, TFile, TSection } from '@/types'
 
 import { Select } from '@/ui/select';
 import { TranslationDoc } from '@/components/translations-doc';
 import { TranslationFiles } from '@/components/translations-files';
 
 type TProps = {
-    structure: TStructure;
+    content: TContent;
     languages: TLanguageOption[];
     fields: {key: string, name: string, type: string}[];
     fieldsFiles: {key: string, name: string, type: string}[];
@@ -18,7 +18,7 @@ type TProps = {
     subjectData: TEntry|TSection;
 }
 
-export function FormEditTranslations({structure, subject, subjectData, languages, fields, fieldsFiles, files} : TProps) {
+export function FormEditTranslations({content, subject, subjectData, languages, fields, fieldsFiles, files} : TProps) {
     const [resource, setResource] = useState<string|null>('doc');
     const [lang, setLang] = useState<string|null>();
 
@@ -58,9 +58,9 @@ export function FormEditTranslations({structure, subject, subjectData, languages
                     options={[{value: '', label: 'Select a resource'}, {value: 'doc', label: 'Data'}, {value: 'files', label: 'Files'}]}
                 />
             </div>
-            {resource === 'doc' && <TranslationDoc lang={lang} structureId={structure.id} 
+            {resource === 'doc' && <TranslationDoc lang={lang} contentId={content.id} 
                 subject={subject} subjectData={subjectData} fields={fields}  />}
-            {resource === 'files' && <TranslationFiles lang={lang} structureId={structure.id} subjectData={subjectData} 
+            {resource === 'files' && <TranslationFiles lang={lang} contentId={content.id} subjectData={subjectData} 
                 fieldsFiles={fieldsFiles} files={files} />}
         </>
     )

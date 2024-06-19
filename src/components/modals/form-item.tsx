@@ -90,10 +90,10 @@ export function FormItem({index, item, handleItem, options, handleClose}: TProp)
 
                     {watch('type') === 'ref' && (
                         <div>
-                            <SelectField control={control} name='subject' options={[{value: '', label: 'Select a subject'}, {value: 'structure', label: 'Structure'}]} />
+                            <SelectField control={control} name='subject' options={[{value: '', label: 'Select a subject'}, {value: 'content', label: 'Content'}]} />
 
-                            {watch('subject') === 'structure' && (
-                                <SelectField control={control} name='subjectId' options={[{value: '', label: 'Select a structure'}, ...options]} />
+                            {watch('subject') === 'content' && (
+                                <SelectField control={control} name='subjectId' options={[{value: '', label: 'Select a content'}, ...options]} />
                             )}
                         </div>
                     )}

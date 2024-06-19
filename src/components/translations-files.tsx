@@ -6,14 +6,14 @@ import { createPortal } from 'react-dom';
 import { PreviewAndEditTranslationFile } from './modals/preview-edit-translation-file';
 
 type TProps = {
-    structureId: string;
+    contentId: string;
     lang: string;
     files: TFile[];
     subjectData: TEntry|TSection;
     fieldsFiles: {key: string, name: string, type: string}[];
 }
 
-export function TranslationFiles({structureId, lang, files, fieldsFiles, subjectData}: TProps) {
+export function TranslationFiles({contentId, lang, files, fieldsFiles, subjectData}: TProps) {
     const [fileId, setFileId] = useState<string|null>(null);
     const [fileKey, setFileKey] = useState<string|null>(null);
     const [activeModalEditFile, setActiveModalEditFile] = useState<boolean>(false);
@@ -55,7 +55,7 @@ export function TranslationFiles({structureId, lang, files, fieldsFiles, subject
                         onClose={handleCloseEditFile}
                         title='Preview and edit'
                     >
-                        <PreviewAndEditTranslationFile structureId={structureId} lang={lang} 
+                        <PreviewAndEditTranslationFile contentId={contentId} lang={lang} 
                         fileId={fileId} fileKey={fileKey} file={files.find(f => f.id === fileId)} onClose={handleCloseEditFile}/>
                     </Modal>,
                 document.body

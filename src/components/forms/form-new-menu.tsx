@@ -2,7 +2,7 @@
 
 import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { FormValuesMenu, TItemForm, TMenu } from '@/types'
+import { FormValuesNewMenu, TField, TMenu, TSchemaField } from '@/types'
 import { Button } from '@/ui/button'
 import { TextField } from '@/ui/text-field';
 import { Card } from '@/ui/card'
@@ -11,13 +11,17 @@ import styles from '@/styles/form-menu.module.css'
 import { useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Modal } from '@/ui/modal'
-import { FormItem } from '../modals/form-item'
+import { FormField } from '../modals/form-field'
+import { GroupOfFields } from '../group-of-fields'
 
+function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {menu: TMenu})): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 function isUserError(data: {userErrors: TUserErrorResponse[]}|{menu: TMenu}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-function Input(props: UseControllerProps<FormValuesMenu> & {type?: string, label?: string, helpText?: string, multiline?: boolean}) {
+function Input(props: UseControllerProps<FormValuesNewMenu> & {type?: string, label?: string, helpText?: string, multiline?: boolean}) {
     const { field, fieldState } = useController(props);
 
     return (
@@ -36,39 +40,53 @@ function Input(props: UseControllerProps<FormValuesMenu> & {type?: string, label
 }
 
 type TProps = {
-    structures: {value: string, label: string}[]
+    groupOfFields: {[key: string]: TSchemaField[]}, 
+    names:{[key: string]: string}
 }
-export function FormNewMenu(props: TProps) {
-    const defaultItem = {
-        type: 'http',
-        title: '',
-        url: '',
-        subject: null,
-        subjectId: null,
-    };
 
-    const [index, setIndex] = useState<number>(-1);
-    const [item, setItem] = useState<TItemForm>(defaultItem);
+export function FormNewMenu({groupOfFields, names}: TProps) {
+    const [showGroupOfFields, setShowGroupOfFields] = useState<boolean>(false);
+    const [activeModalField, setActiveModalField] = useState<boolean>(false);
+    const [indexField, setIndexField] = useState<number|null>(null);
+    const [field, setField] = useState<TField>();
+    const [schemaField, setSchemaField] = useState<TSchemaField>();
+
     const router = useRouter();
-    const [activeModalItem, setActiveModalItem] = useState<boolean>(false);
 
-    const handleChangeModalItem = useCallback(() => setActiveModalItem(!activeModalItem), [activeModalItem]);
-
-    const { control, handleSubmit, formState, watch, setError, getValues } = useForm<FormValuesMenu>({
+    const { control, handleSubmit, formState, watch, setError } = useForm<FormValuesNewMenu>({
         defaultValues: {
-            title: '',
-            handle: '',
-            items: []
+            name: '',
+            code: '',
+            items: {
+                fields: [
+                    {
+                        "system": true,
+                        "type": "single_line_text",
+                        "name": "Title",
+                        "key": "title",
+                        "validations": []
+                    },
+                    {
+                        "system": true,
+                        "type": "url_handle",
+                        "name": "URL",
+                        "key": "url",
+                        "validations": []
+                    }
+                ]
+            }
         }
     });
-
-    const { fields, append, remove, update, move } = useFieldArray({
-        name: 'items',
+    const { fields, append, remove, update } = useFieldArray({
+        name: 'items.fields',
         control,
         keyName: 'uuid'
+        
     });
+    
+    const handleChangeModalField = useCallback(() => setActiveModalField(!activeModalField), [activeModalField]);
 
-    const onSubmit: SubmitHandler<FormValuesMenu> = async (data) => {
+    const onSubmit: SubmitHandler<FormValuesNewMenu> = async (data) => {
         try {
             const res = await fetch('/internal/api/menus', {
                 method: 'POST',  
@@ -81,7 +99,10 @@ export function FormNewMenu(props: TProps) {
                 throw new Error('Fetch error');
             }
             const dataJson: {userErrors: TUserErrorResponse[]}|{menu: TMenu} = await res.json();
-
+            if (isError(dataJson)) {
+                setError('root', {type: 'manual', message: dataJson.description ?? ''});
+                return;
+            }
             if (isUserError(dataJson)) {
                 dataJson.userErrors.forEach(d => {
                     const field = d.field.join('.') as any;
@@ -99,42 +120,77 @@ export function FormNewMenu(props: TProps) {
         }
     };
 
-    const handleItem = (item: TItemForm) => {
-        if (index === -1) {
-            append(item);
-        } else {
-            update(index, item);
-        }
+    const createField = (schemaField: TSchemaField): void => {
+        setSchemaField(schemaField);
+        setField({
+            system: false,
+            type: schemaField.type,
+            name: '',
+            key: '',
+            description: '',
+            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value}))
+        });
+        handleChangeModalField();
+        setShowGroupOfFields(false);
     };
-
-    const showModalItem = (item: TItemForm, index: number=-1) => {
-        setItem(item);
-        setIndex(index);
-        handleChangeModalItem();
-    };
-
-    const handleDeleteItem = (index: number):void => {
-        remove(index);
-    };
-
-    const handleMovePostion = (from: number, to: number) => {
-        if (to <= -1 || to >= fields.length) {
+    const updateField = (field: TField, index: number) => {
+        if (field.system) {
             return;
         }
 
-        move(from, to);
+        const type = field.type.startsWith('list.') ? field.type.slice(5) : field.type;
+
+        const schemaFields: TSchemaField[] = [];
+        Object.keys(groupOfFields).forEach(group => {
+            schemaFields.push(...groupOfFields[group]);
+        });
+        const schemaField: TSchemaField|undefined = schemaFields.find(b => b.type === type);
+        if (schemaField) {
+            setSchemaField(schemaField);
+            setField(field);
+            setIndexField(index);
+            handleChangeModalField();
+        }
     };
+
+    const handleAddField = (field: TField): void => {
+        append(field);
+        handleChangeModalField();
+    };
+    const handleEditField = (field: TField): void => {
+        if (indexField !== null) {
+            update(indexField, field);
+            handleChangeModalField();
+            setIndexField(null);
+        }
+    };
+    const handleDeleteField = (field: TField): void => {
+        if (indexField !== null) {
+            remove(indexField);
+            handleChangeModalField();
+            setIndexField(null);
+        }
+    };
+    const handleClose = () => {
+        handleChangeModalField();
+        setIndexField(null);
+    };
+
+    const errorsField: any = formState.errors.items?.fields ?? [];
 
     return (
         <>
-            {activeModalItem && createPortal(
+            {activeModalField && createPortal(
                 <Modal
-                    open={activeModalItem}
-                    onClose={handleChangeModalItem}
-                    title={index === -1 ? 'Add menu item' : 'Edit menu item'}
+                    open={activeModalField}
+                    onClose={handleClose}
+                    title={field?.name || schemaField?.name || ''}
                 >
-                    <FormItem index={index} item={item} handleItem={handleItem} 
-                        options={props.structures} handleClose={handleChangeModalItem} />
+                    {field && schemaField && <FormField 
+                    errors={formState.errors.items?.fields && indexField !== null ? formState.errors.items.fields[indexField]: []} 
+                        field={field} schemaField={schemaField}  fields={fields}
+                        handleClose={handleClose}
+                        handleDeleteField={handleDeleteField} handleSubmitField={indexField !== null ? handleEditField : handleAddField} />}
                 </Modal>,
                 document.body
             )}
@@ -145,33 +201,28 @@ export function FormNewMenu(props: TProps) {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Card>
                     <Box padding={16}>
-                        <Input control={control} name='title' label='Title' />
-                        <Input control={control} name='handle' label='Handle' helpText={`Handle will be used in Project API`} />
+                        <Input control={control} name='name' label='Name' />
+                        <Input control={control} name='code' label='Code' helpText={`Code will be used in Project API`} />
                     </Box>
                 </Card>
-                <Card title='Menu items'>
+                <Card title='Fields'>
+                    <div className={styles.fields}>
+                        <Input control={control} name='items.fields' type='hidden' />
+
+                        {fields.map((field, index: number) => (
+                            <div key={field.key} className={!field.system ? styles.field : styles.fieldSystem} onClick={() => updateField(field, index)}>
+                                <div className={styles.name}>{field.name} {field.system && '(system)'}</div>
+                                <div className={styles.key}>{field.key}</div>
+                                {errorsField[index] && (
+                                    <p className={styles.errorMsg}>{errorsField[index]?.validations?.filter((v: any)=>v).length} changes need to be made</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
                     <Box padding={16}>
-                        {!fields.length && <p>This menu doesn't have any items.</p>}
-
-                        <div className={styles.items}>
-                            {fields.map((item, index: number) => (
-                                <div key={item.uuid} className={styles.item}>
-                                    <div className={styles.title}>{item.title}</div>
-                                    <div className={styles.controls}>
-                                        <div className={styles.position}>
-                                            <span onClick={() => handleMovePostion(index, index-1)}>Up</span>
-                                            <span onClick={() => handleMovePostion(index, index+1)}>Down</span>
-                                        </div>
-                                        <div className={styles.buttons}>
-                                            <Button onClick={() => showModalItem(item, index)}>Edit</Button>
-                                            <Button onClick={() => handleDeleteItem(index)}>Delete</Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                       <Button onClick={() => showModalItem(defaultItem)}>Add menu item</Button>
+                        <GroupOfFields groupOfFields={groupOfFields} names={names} createField={createField} 
+                            showGroupOfFields={showGroupOfFields} setShowGroupOfFields={setShowGroupOfFields} />
                     </Box>
                 </Card>
 

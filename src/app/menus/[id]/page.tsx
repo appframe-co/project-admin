@@ -1,25 +1,35 @@
 import type { Metadata } from 'next'
 import { FormEditMenu } from '@/components/forms/form-edit-menu';
-import { TMenu, TStructure } from '@/types';
+import { TMenu, TSchemaField, TContent } from '@/types';
 import { getMenu } from '@/services/menus';
 import { Topbar } from '@/components/topbar';
-import { getStructures } from '@/services/structures';
+import { getContents } from '@/services/contents';
+import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {
     title: 'Edit menu | AppFrame'
 }
 
-export default async function EditStructure({ params }: {params: {id: string}}) {
+export default async function EditMenu({ params }: {params: {id: string}}) {
     const {menu}: {menu: TMenu} = await getMenu(params.id);
-    
-    const {structures=[]}:{structures: (TStructure & {entriesCount: number})[]} = await getStructures();
 
-    const options = structures.map(s => ({value:s.id, label:s.name}));
+    const {schemaFields}: {schemaFields: TSchemaField[]} = await getSchemaFields();
+
+    const groupOfFields = schemaFields.reduce((acc: {[key: string]: TSchemaField[]}, field) => {
+        if (!acc.hasOwnProperty(field.groupCode)) {
+            acc[field.groupCode] = [];
+        }
+
+        acc[field.groupCode].push(field);
+        return acc;
+    }, {});
+
+    const names: {[key: string]: string} = {text: 'Text', date_time: 'Date and Time', number: 'Number', reference: 'Reference', other: 'Other'};
 
     return (
         <div className='page pageAlignCenter'>
-            <Topbar title={'Edit ' + menu.title} />
-            <FormEditMenu menu={menu} structures={options} />
+            <Topbar title={'Edit ' + menu.name} />
+            <FormEditMenu menu={menu} groupOfFields={groupOfFields} names={names} />
         </div>
     )
 }

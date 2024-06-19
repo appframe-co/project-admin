@@ -18,7 +18,7 @@ type TProp = {
     file: TFile|undefined;
     onClose: any;
     lang: string;
-    structureId: string;
+    contentId: string;
     fileKey: string|null;
 }
 
@@ -48,7 +48,7 @@ type TForm = {
     }
 }
 
-export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, lang, structureId}: TProp) {
+export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, lang, contentId}: TProp) {
     const defaultValue = {
         alt: '',
         caption: ''
@@ -64,7 +64,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations?structureId=${structureId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
+                const res = await fetch(`/internal/api/translations?contentId=${contentId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -101,7 +101,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: fileId, ...data})
+                    body: JSON.stringify({contentId, subjectId: fileId, ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');
@@ -128,7 +128,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({structureId, subjectId: fileId, subject: 'file', key: fileKey, ...data})
+                    body: JSON.stringify({contentId, subjectId: fileId, subject: 'file', key: fileKey, ...data})
                 });
                 if (!res.ok) {
                     throw new Error('Fetch error');

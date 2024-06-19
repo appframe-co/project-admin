@@ -9,12 +9,12 @@ export async function GET(req: Request) {
         }
 
         const { searchParams } = new URL(req.url);
-        const structureId = searchParams.get('structureId');
+        const contentId = searchParams.get('contentId');
         const subjectId = searchParams.get('subjectId');
         const subject = searchParams.get('subject');
         const lang = searchParams.get('lang');
 
-        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/translations?structureId=${structureId}&subjectId=${subjectId}&subject=${subject}&lang=${lang}`, {
+        const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/translations?contentId=${contentId}&subjectId=${subjectId}&subject=${subject}&lang=${lang}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

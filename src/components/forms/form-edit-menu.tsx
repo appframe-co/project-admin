@@ -1,204 +1,36 @@
 'use client'
 
-import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray} from 'react-hook-form'
-import { useRouter } from 'next/navigation'
-import { FormValuesMenu, TItemForm, TMenu } from '@/types'
-import { Button } from '@/ui/button'
-import { TextField } from '@/ui/text-field'
-import { Card } from '@/ui/card'
-import { Box } from '@/ui/box'
-import { Checkbox } from '@/ui/checkbox'
+import { useState } from 'react'
+import { TMenu, TSchemaField } from '@/types'
 import styles from '@/styles/form-menu.module.css'
-import { useCallback, useState } from 'react'
-import { Modal } from '@/ui/modal'
-import { FormItem } from '../modals/form-item'
-import { createPortal } from 'react-dom'
-
-type TControllerProps = UseControllerProps<any> & {
-    error?: string;
-    label?: string;
-    helpText?: string;
-    multiline?: boolean;
-    type?: string;
-}
-
-function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {menu: TMenu})): data is TErrorResponse {
-    return !!(data as TErrorResponse).error;
-}
-
-function isUserError(data: {userErrors: TUserErrorResponse[]}|{menu: TMenu}): data is {userErrors: TUserErrorResponse[]} {
-    return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
-}
-
-function Input({name, control, rules={},  ...props}: TControllerProps) {
-    const { field, fieldState } = useController({name, control, rules});
-
-    if (props.type === 'checkbox') {
-        return <Checkbox 
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    error={fieldState.error || props.error}
-                    label={props.label}
-                    helpText={props.helpText}
-                    innerRef={control?.register(name).ref}
-                />
-    }
-
-    return <TextField 
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                value={field.value ?? ''}
-                name={field.name}
-                error={fieldState.error || props.error}
-                label={props.label}
-                helpText={props.helpText}
-                multiline={props.multiline}
-                type={props.type}
-            />
-}
+import { MenuCommon } from '@/components/menu-common'
+import { MenuTranslations } from '@/components/menu-translations'
+import { MenuItems } from '@/components/menu-items'
 
 type TProps = {
     menu: TMenu;
-    structures: {value: string, label: string}[];
+    groupOfFields: {[key: string]: TSchemaField[]};
+    names:{[key: string]: string};
 }
 
-export function FormEditMenu(props: TProps) {
-    const defaultItem = {
-        type: 'http',
-        title: '',
-        url: '',
-        subject: null,
-        subjectId: null,
-    };
-
-    const [index, setIndex] = useState<number>(-1);
-    const [item, setItem] = useState<TItemForm>(defaultItem);
-    const router = useRouter();
-    const [activeModalItem, setActiveModalItem] = useState<boolean>(false);
-
-    const handleChangeModalItem = useCallback(() => setActiveModalItem(!activeModalItem), [activeModalItem]);
-
-    const { control, handleSubmit, formState, reset, setError } = useForm<FormValuesMenu>({defaultValues: props.menu});
-
-    const { fields, append, remove, update, move } = useFieldArray({
-        name: 'items',
-        control,
-        keyName: 'uuid'
-    });
-
-    const onSubmit: SubmitHandler<FormValuesMenu> = async (data) => {
-        try {
-            const res = await fetch('/internal/api/menus', {
-                method: 'PUT',  
-                headers: {
-                    'Content-Type': 'application/json'
-                }, 
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) {
-                throw new Error('Fetch error');
-            }
-            const dataJson:{userErrors: TUserErrorResponse[]}|{menu: TMenu} = await res.json();
-            if (isError(dataJson)) {
-                setError('root', {type: 'manual', message: dataJson.description ?? ''});
-                return;
-            }
-            if (isUserError(dataJson)) {
-                dataJson.userErrors.forEach(d => {
-                    const field = d.field.join('.') as any;
-                    setError(field, {
-                        message: d.message
-                    });
-                });
-                return;
-            }
-
-            reset(dataJson.menu);
-            router.refresh();
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    const showModalItem = (item: TItemForm, index: number=-1) => {
-        setItem(item);
-        setIndex(index);
-        handleChangeModalItem();
-    };
-
-    const handleItem = (item: TItemForm) => {
-        if (index === -1) {
-            append(item);
-        } else {
-            update(index, item);
-        }
-    };
-
-    const handleDeleteItem = (index: number):void => {
-        remove(index);
-    };
-
-    const handleMovePostion = (from: number, to: number) => {
-        if (to <= -1 || to >= fields.length) {
-            return;
-        }
-
-        move(from, to);
-    };
+export function FormEditMenu({menu, groupOfFields, names}: TProps) {
+    const [link, setLink] = useState<string>('common');
 
     return (
         <>
-            {activeModalItem && createPortal(
-                <Modal
-                    open={activeModalItem}
-                    onClose={handleChangeModalItem}
-                    title={index === -1 ? 'Add menu item' : 'Edit menu item'}
-                >
-                    <FormItem index={index} item={item} handleItem={handleItem} 
-                        options={props.structures} handleClose={handleChangeModalItem} />
-                </Modal>,
-                document.body
-            )}
-
-            <div className='mb20'>
-                {formState.errors.root && <p>{formState.errors.root.message}</p>}
+            <div className={styles.links}>
+                <ul>
+                    <li className={link === 'common' ? styles.active : ''} onClick={() => setLink('common')}>Common</li>
+                    <li className={link === 'items' ? styles.active : ''} onClick={() => setLink('items')}>Items</li>
+                    <li className={link === 'translations' ? styles.active : ''} onClick={() => setLink('translations')}>Translations</li>
+                </ul>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Card>
-                    <Box padding={16}>
-                        <Input control={control} name='title' label='Title' />
-                        <Input control={control} name='handle' label='Handle' helpText={`Handle will be used in Project API`} />
-                    </Box>
-                </Card>
-                <Card title='Menu items'>
-                    <Box padding={16}>
-                        {!fields.length && <p>This menu doesn't have any items.</p>}
 
-                        <div className={styles.items}>
-                            {fields.map((item, index: number) => (
-                                <div key={item.uuid} className={styles.item}>
-                                    <div className={styles.title}>{item.title}</div>
-                                    <div className={styles.controls}>
-                                        <div className={styles.position}>
-                                            <span onClick={() => handleMovePostion(index, index-1)}>Up</span>
-                                            <span onClick={() => handleMovePostion(index, index+1)}>Down</span>
-                                        </div>
-                                        <div className={styles.buttons}>
-                                            <Button onClick={() => showModalItem(item, index)}>Edit</Button>
-                                            <Button onClick={() => handleDeleteItem(index)}>Delete</Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <Button onClick={() => showModalItem(defaultItem)}>Add menu item</Button>
-                    </Box>
-                </Card>
-
-                <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
-            </form>
+            <div>
+                {link === 'common' && <MenuCommon defaultValues={{id: menu.id, name: menu.name, code: menu.code}} />}
+                {link === 'items' && <MenuItems defaultValues={{id: menu.id, items: menu.items}} groupOfFields={groupOfFields} names={names} />}
+                {link === 'translations' && <MenuTranslations defaultValues={{id: menu.id, translations: menu.translations}} />}
+            </div>
         </>
     )
 }

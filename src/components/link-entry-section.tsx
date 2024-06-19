@@ -1,6 +1,6 @@
 'use client'
 
-import styles from '@/styles/structure.module.css'
+import styles from '@/styles/content.module.css'
 import { createPortal } from 'react-dom';
 import { useCallback, useState } from 'react';
 import { Modal } from '@/ui/modal';
@@ -14,14 +14,14 @@ type TParentSection = {
 }
 
 type TProps = {
-    structureId: string;
+    contentId: string;
     sections: TSection[];
     id: string;
     _sectionIds: string[];
     children?: React.ReactNode
 }
 
-export function LinkEntrySection({children, structureId, sections, id, _sectionIds}: TProps) {
+export function LinkEntrySection({children, contentId, sections, id, _sectionIds}: TProps) {
     const [parentSections, setParentSections] = useState<TParentSection[]>([]);
     const [sectionList, setSectionList] = useState<TSection[]>(sections);
     const [sectionIds, setSectionIds] = useState<string[]>(_sectionIds);
@@ -36,7 +36,7 @@ export function LinkEntrySection({children, structureId, sections, id, _sectionI
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({sectionIds, id, structureId})
+                body: JSON.stringify({sectionIds, id, contentId})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
@@ -59,7 +59,7 @@ export function LinkEntrySection({children, structureId, sections, id, _sectionI
     };
     const handleViewSection = async (sectionId: string|null, step?: string) => {
         try {
-            let url = `/internal/api/sections?structureId=${structureId}`;
+            let url = `/internal/api/sections?contentId=${contentId}`;
             if (sectionId) {
                 url += `&parentId=${sectionId}`
             }
