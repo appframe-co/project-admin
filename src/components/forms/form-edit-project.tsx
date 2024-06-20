@@ -1,102 +1,45 @@
 'use client'
 
-import { useController, useForm, SubmitHandler, UseControllerProps, useFieldArray, UseFieldArrayReturn} from 'react-hook-form'
-import { FormValuesEditProject, TProject, TCurrencyOption, TLanguageOption } from '@/types'
-import { useEffect } from 'react';
-import { Button } from '@/ui/button';
-import { TextField } from '@/ui/text-field';
-import { Card } from '@/ui/card';
-import { Box } from '@/ui/box';
-import { ProjectCurrencies } from '@/components/project-currencies';
-import { ProjectLanguages } from '@/components/project-languages';
-import { useRouter } from 'next/navigation'
+import { TProject, TCurrencyOption, TLanguageOption, TFile } from '@/types'
+import { useState } from 'react';
 
-function isProject(data: TErrorResponse | {project: TProject}): data is {project: TProject} {
-    return (data as {project: TProject}).project.id !== undefined;
-}
-
-function Input(props: UseControllerProps<FormValuesEditProject> & {label?: string, helpText?: string, multiline?: boolean}) {
-    const { field, fieldState } = useController(props);
-
-    return (
-        <TextField 
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            name={field.name}
-            error={fieldState.error}
-            label={props.label}
-            helpText={props.helpText}
-            multiline={props.multiline}
-        />
-    )
-}
+import styles from '@/styles/form-project.module.css'
+import { ProjectCommon } from '../settings-project/project-common';
+import { ProjectApi } from '../settings-project/project-api';
+import { ProjectCurrencies } from '../settings-project/project-currencies';
+import { ProjectLanguages } from '../settings-project/project-languages';
+import { ProjectFront } from '../settings-project/project-front';
 
 type TProps = {
-    project: TProject; 
+    project: TProject;
+    files: TFile[];
     accessToken: string; 
     currencies: TCurrencyOption[];
     languages: TLanguageOption[];
 }
 
-export function FormEditProject({project, accessToken, currencies, languages} : TProps) {
-    const router = useRouter();
-    const { control, handleSubmit, formState, getValues, reset } = useForm<FormValuesEditProject>({defaultValues: project});
-
-    useEffect(() => {
-        if (formState.isSubmitSuccessful) {
-          reset(getValues());
-        }
-    }, [formState, project, reset]);
-
-    const onSubmit: SubmitHandler<FormValuesEditProject> = async (data) => {
-        try {
-            const res = await fetch('/internal/api/project', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) {
-                throw new Error('Fetch error');
-            }
-            const dataJson = await res.json();
-            if (!isProject(dataJson)) {
-                throw new Error('Fetch error');
-            }
-
-            router.refresh();
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    const currenciesFieldArray = useFieldArray({
-        name: 'currencies',
-        control
-    });
-    const languagesFieldArray = useFieldArray({
-        name: 'languages',
-        control
-    });
+export function FormEditProject({project, files, accessToken, currencies, languages} : TProps) {
+    const [link, setLink] = useState<string>('common');
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Card title='Profile'>
-                    <Box padding={16}>
-                        <Input control={control} name='name' label='Name' rules={{ required: {message: 'is required', value: true} }} />
-                        <TextField value={project.projectNumber} label='Project Number' disabled />
-                        <TextField value={accessToken} label='Token' disabled helpText='Use this token for Project API' />
-                    </Box>
-                </Card>
+            <div className={styles.links}>
+                <ul>
+                    <li className={link === 'common' ? styles.active : ''} onClick={() => setLink('common')}>Common</li>
+                    <li className={link === 'front' ? styles.active : ''} onClick={() => setLink('front')}>Front</li>
+                    <li className={link === 'projectApi' ? styles.active : ''} onClick={() => setLink('projectApi')}>Project API</li>
+                    <li className={link === 'currencies' ? styles.active : ''} onClick={() => setLink('currencies')}>Currencies</li>
+                    <li className={link === 'languages' ? styles.active : ''} onClick={() => setLink('languages')}>Languages</li>
+                </ul>
+            </div>
 
-                <ProjectCurrencies project={project} currenciesFieldArray={currenciesFieldArray} currencies={currencies} />
-                <ProjectLanguages project={project} languagesFieldArray={languagesFieldArray} languages={languages} />
-
-                <Button disabled={!formState.isDirty} submit={true} primary>Update</Button>
-            </form>
+            <div>
+                {link === 'common' && <ProjectCommon defaultValues={{id: project.id, name: project.name}} projectNumber={project.projectNumber} />}
+                {link === 'front' && <ProjectFront defaultValues={{id: project.id, front: project.front}} files={files} />}
+                {link === 'projectApi' && <ProjectApi accessToken={accessToken} />}
+                {link === 'currencies' && <ProjectCurrencies defaultValues={{id: project.id, currencies: project.currencies}} currencies={currencies} />}
+                {link === 'languages' && <ProjectLanguages defaultValues={{id: project.id, languages: project.languages}} languages={languages} />}
+            </div>
         </>
     )
 }

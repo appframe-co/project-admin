@@ -103,6 +103,10 @@ export type TProject = {
     trialFinishedAt: Date;
     currencies: {code:string, primary:boolean, name: string}[];
     languages: {code:string, primary:boolean, name: string}[];
+    front: {
+        title: string;
+        logo: string;
+    }
 }
 export type FormValuesEditProject = Pick<TProject, 'name'|'currencies'|'languages'>
 

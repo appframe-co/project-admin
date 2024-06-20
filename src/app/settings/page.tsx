@@ -49,7 +49,7 @@ export default async function Settings() {
     return (
         <div className='page pageAlignCenter'>
             <Topbar title={'Settings'} />
-            <FormEditProject project={projectData.project} accessToken={accessTokenProjectData.accessToken} currencies={currencies} languages={languages} />
+            <FormEditProject project={projectData.project} files={projectData.files} accessToken={accessTokenProjectData.accessToken} currencies={currencies} languages={languages} />
         </div>
     )
 }

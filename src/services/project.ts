@@ -1,7 +1,7 @@
-import { TProject } from '@/types';
+import { TFile, TProject } from '@/types';
 import { headers } from 'next/headers'
 
-export async function getProject(requestHeaders?: Headers): Promise<TErrorResponse|{project:TProject}> {
+export async function getProject(requestHeaders?: Headers): Promise<TErrorResponse|{project:TProject, files: TFile[]}> {
   try {
     const headerName = 'X-AppFrame-Access-Token';
     const accessToken = (requestHeaders ?? headers()).get(headerName) as string;

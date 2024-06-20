@@ -24,3 +24,18 @@
     flex-direction: row;
     gap: 10px;
 }
+
+.links ul {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 3px;
+    margin-bottom: 20px;
+}
+.links li {
+    cursor: pointer;
+}
+.links li.active {
+    border-bottom: 2px solid #000000;
+    padding-bottom: 3px;
+    font-weight: 500;
+}

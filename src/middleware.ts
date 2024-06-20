@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getProject } from './services/project';
-import { TProject } from './types';
+import { TFile, TProject } from './types';
 
 export const config = {
     matcher: [
@@ -9,7 +9,7 @@ export const config = {
     ]
 }
 
-function isErrorProject(data: TErrorResponse|{project:TProject}): data is TErrorResponse {
+function isErrorProject(data: TErrorResponse|{project:TProject, files: TFile[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
 

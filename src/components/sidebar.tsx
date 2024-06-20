@@ -29,17 +29,17 @@ export function Sidebar() {
                 </li>
                 <li>
                     <div className={styles.container}>
-                        <Link href='/files' className={pathname === '/files' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/files.svg' alt='' />
-                            <span>Files</span>
+                        <Link href='/menus' className={pathname === '/menus' ? styles.active : ''}>
+                            <Image width={18} height={18} src='/icons/link.svg' alt='' />
+                            <span>Menus</span>
                         </Link>
                     </div>
                 </li>
                 <li>
                     <div className={styles.container}>
-                        <Link href='/menus' className={pathname === '/menus' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/link.svg' alt='' />
-                            <span>Menus</span>
+                        <Link href='/files' className={pathname === '/files' ? styles.active : ''}>
+                            <Image width={18} height={18} src='/icons/files.svg' alt='' />
+                            <span>Files</span>
                         </Link>
                     </div>
                 </li>

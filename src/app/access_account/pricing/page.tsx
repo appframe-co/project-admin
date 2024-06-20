@@ -16,10 +16,9 @@ export default async function Pricing() {
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Site</th>
-                            <th>Village</th>
-                            <th>Town</th>
-                            <th>City</th>
+                            <th>Basic</th>
+                            <th>Standard</th>
+                            <th>Advanced</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,129 +27,51 @@ export default async function Pricing() {
                             <td>? / month</td>
                             <td>? / month</td>
                             <td>soon</td>
-                            <td>soon</td>
                         </tr>
 
                         <tr className={styles.doc}>
                             <td className={styles.docName}>Contents</td>
-                            <td>1</td>
                             <td>2</td>
-                            <td>4</td>
-                            <td>6</td>
+                            <td>5</td>
+                            <td></td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>Files</td>
                             <td>5 MB</td>
                             <td>15 MB</td>
-                            <td>35 MB</td>
-                            <td>55 MB</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>Managers</span>
-                                <span className={styles.docNameInfo}>Stuff members</span>
-                            </td>
                             <td></td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>4</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Dictionary (definitions)</td>
-                            <td></td>
-                            <td>10</td>
-                            <td>20</td>
-                            <td>30</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Pages</td>
-                            <td></td>
-                            <td>2</td>
-                            <td>4</td>
-                            <td>6</td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>Menus</span>
                             </td>
-                            <td></td>
                             <td>2</td>
                             <td>4</td>
-                            <td>6</td>
+                            <td></td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>WebP format</span>
                             </td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
                             <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>Dynamic resize images</span>
                             </td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
                             <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
                         </tr>
                         <tr className={styles.doc}>
                             <td className={styles.docName}>
                                 <span>Translations</span>
                             </td>
+                            <td>&#10003;</td>
+                            <td>&#10003;</td>
                             <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Backups</td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Custom domain</td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Webhooks</td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>Sitemap.xml</td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>Export Data</span>
-                                <span className={styles.docNameInfo}>Entries</span>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
-                        </tr>
-                        <tr className={styles.doc}>
-                            <td className={styles.docName}>
-                                <span>Marketing</span>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>&#10003;</td>
-                            <td>&#10003;</td>
                         </tr>
                     </tbody>
                 </table>
