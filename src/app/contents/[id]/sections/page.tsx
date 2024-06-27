@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TContent, TSection } from '@/types';
+import { TContent, TField, TSection } from '@/types';
 import { getContent } from '@/services/contents';
 import styles from '@/styles/content.module.css'
 import { Topbar } from '@/components/topbar';
@@ -29,14 +29,20 @@ export default async function ContentSections({ params, searchParams }: TPagePro
   const [contentData, sectionsData, sectionsCountData] = await Promise.all([contentPromise, sectionsPromise, sectionsCountPromise]);
 
   const {content}: {content: TContent} = contentData;
-  const {sections, names, keys, parent}: {sections: TSection[], names: string[], keys: string[], parent: TSection|null} = sectionsData;
+  const {sections, fields, parent}: {sections: TSection[], fields: TField[], parent: TSection|null} = sectionsData;
+
+  const hiddenTypes:string[] = ['rich_text'];
 
   const types = content.sections.fields.reduce((acc:{[key:string]:string}, field) => {
     acc[field.key] = field.type;
     return acc;
   }, {});
 
-  const rows = sections.map(section => keys.map(k => ({value: section.doc[k], type: types[k]})));
+  const rows = sections.map(section => 
+    fields
+      .filter(f => !hiddenTypes.includes(f.type))
+      .map(f => ({value: section.doc[f.key], type: types[f.key]}))
+  );
 
   const rowsJSX = rows.map((col, i: number) => {
     const colsJSX = col.map((data, k: number) => {
@@ -109,8 +115,8 @@ export default async function ContentSections({ params, searchParams }: TPagePro
         <table>
           <thead>
             <tr>
-              {names.map((name: string, i: number) => (
-                <th key={i}>{name}</th>
+              {fields.filter(f => !hiddenTypes.includes(f.type)).map((f: TField, i: number) => (
+                <th key={i}>{f.name}</th>
               ))}
               <th></th>
             </tr>

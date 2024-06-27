@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TMenu, TItem } from '@/types';
+import { TMenu, TItem, TField } from '@/types';
 import styles from '@/styles/content.module.css'
 import { Topbar } from '@/components/topbar';
 import { Button } from '@/ui/button';
@@ -29,14 +29,20 @@ export default async function MenuItems({ params, searchParams }: TPageProps) {
   const [menuData, itemsData, itemsCountData] = await Promise.all([menuPromise, itemsPromise, itemsCountPromise]);
 
   const {menu}: {menu: TMenu} = menuData;
-  const {items, names, keys, parent}: {items: TItem[], names: string[], keys: string[], parent: TItem|null} = itemsData;
+  const {items, fields, parent}: {items: TItem[], fields: TField[], parent: TItem|null} = itemsData;
+
+  const hiddenTypes:string[] = ['rich_text'];
 
   const types = menu.items.fields.reduce((acc:{[key:string]:string}, field) => {
     acc[field.key] = field.type;
     return acc;
   }, {});
 
-  const rows = items.map(item => keys.map(k => ({value: item.doc[k], type: types[k]})));
+  const rows = items.map(item => 
+    fields
+      .filter(f => !hiddenTypes.includes(f.type))
+      .map(f => ({value: item.doc[f.key], type: types[f.key]}))
+  );
 
   const rowsJSX = rows.map((col, i: number) => {
     const colsJSX = col.map((data, k: number) => {
@@ -102,8 +108,8 @@ export default async function MenuItems({ params, searchParams }: TPageProps) {
         <table>
           <thead>
             <tr>
-              {names.map((name: string, i: number) => (
-                <th key={i}>{name}</th>
+              {fields.filter(f => !hiddenTypes.includes(f.type)).map((f: TField, i: number) => (
+                <th key={i}>{f.name}</th>
               ))}
               <th></th>
             </tr>

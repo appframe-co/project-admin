@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
-import { TContent, TEntry, TSection } from '@/types';
+import { TContent, TEntry, TField, TSection } from '@/types';
 import { getContent } from '@/services/contents';
 import { getEntries, getEntriesCount } from '@/services/entries';
 import styles from '@/styles/content.module.css'
@@ -35,17 +35,20 @@ export default async function Entries({ params, searchParams }: TPageProps) {
   const [contentData, entriesData, entriesCountData, sectionsData, sectionData] = await Promise.all([contentPromise, entriesPromise, entriesCountPromise, sectionsPromise, sectionPromise]);
 
   const {content}: {content: TContent} = contentData;
-  const {entries, names, keys}: {entries: TEntry[], names: string[], keys: string[]} = entriesData;
+  const {entries, fields}: {entries: TEntry[], fields: TField[]} = entriesData;
   const {sections}: {sections: TSection[]} = sectionsData;
 
-  // const section: {section: TSection} = sectionData;
-
+  const hiddenTypes:string[] = ['rich_text'];
   const types = content.entries.fields.reduce((acc:{[key:string]:string}, field) => {
     acc[field.key] = field.type;
     return acc;
   }, {});
 
-  const rows = entries.map(entry => keys.map(k => ({value: entry.doc[k], type: types[k]})));
+  const rows = entries.map(entry => 
+    fields
+      .filter(f => !hiddenTypes.includes(f.type))
+      .map(f => ({value: entry.doc[f.key], type: types[f.key]}))
+  );
 
   const rowsJSX = rows.map((col, i: number) => {
     const colsJSX = col.map((data, k: number) => {
@@ -134,8 +137,8 @@ export default async function Entries({ params, searchParams }: TPageProps) {
         <table>
           <thead>
             <tr>
-              {names.map((name: string, i: number) => (
-                <th key={i}>{name}</th>
+              {fields.filter(f => !hiddenTypes.includes(f.type)).map((f: TField, i: number) => (
+                <th key={i}>{f.name}</th>
               ))}
               <th></th>
             </tr>

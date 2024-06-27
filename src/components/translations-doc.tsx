@@ -4,6 +4,7 @@ import { Button } from '@/ui/button';
 import { TextField } from '@/ui/text-field';
 import { useEffect } from 'react';
 import { SubmitHandler, UseControllerProps, useController, useForm } from 'react-hook-form';
+import { RichTextEditor } from '@/ui/rich-text-editor';
 
 type TProps = {
     lang: string;
@@ -32,6 +33,23 @@ function Input(props: UseControllerProps & {type?: string, label?: string, helpT
     )
 }
 
+function InputRT(props: UseControllerProps & {label?: string, helpText?: string, setValue: any}) {
+    const { field, fieldState } = useController(props);
+
+    return (
+        <RichTextEditor
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value ?? ''}
+            name={field.name}
+            error={fieldState.error}
+            label={props.label}
+            helpText={props.helpText}
+            setValue={props.setValue}
+        />
+    )
+}
+
 function isErrorTranslation(data: {userErrors: TUserErrorResponse[]} | {translation: TTranslation}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
@@ -46,7 +64,7 @@ export function TranslationDoc({lang, subject, subjectData, contentId, fields}: 
         return acc;
     }, {});
 
-    const { control, handleSubmit, formState, getValues, reset, setError, setValue } = useForm<any>({
+    const { control, handleSubmit, formState, getValues, reset, setError, setValue, watch } = useForm<any>({
         defaultValues: {
             lang: null, 
             value: defaultValue
@@ -163,14 +181,20 @@ export function TranslationDoc({lang, subject, subjectData, contentId, fields}: 
                             <tr key={field.key} className={styles.value}>
                                 <td className={styles.td + ' ' + styles.tdTitle}>{field.name}</td>
                                 <td className={styles.td + ' ' + styles.lineWrapper}>
-                                    {!field.type.startsWith('list.') && <div className={styles.line}>{subjectData.doc[field.key]}</div>}
+                                    {!field.type.startsWith('list.') && field.type !== 'rich_text' && <div className={styles.line}>{subjectData.doc[field.key]}</div>}
+                                    {!field.type.startsWith('list.') && field.type === 'rich_text' && <div dangerouslySetInnerHTML={{__html: subjectData.doc[field.key]}} className={styles.line}></div>}
                                     {field.type.startsWith('list.') && subjectData.doc[field.key].map((v:any, i:number) => (
                                         <div className={styles.line} key={i}>{v}</div>
                                     ))}
                                 </td>
                                 <td>
-                                    {!field.type.startsWith('list.') && 
+                                    {!field.type.startsWith('list.') && field.type !== 'rich_text' && 
                                         <Input control={control} name={'value.'+field.key} multiline={field.type === 'multi_line_text'} />}
+
+                                    {!field.type.startsWith('list.') && field.type === 'rich_text' && 
+                                        <InputRT control={control} name={'value.'+field.key} 
+                                            setValue={(v:any) => setValue('value.'+field.key, v, {shouldDirty: true})} />}
+
                                     {field.type.startsWith('list.') && subjectData.doc[field.key].map((v:any, i: number) => (
                                         <Input key={i} control={control} name={'value.'+field.key+'.'+i} />
                                     ))}

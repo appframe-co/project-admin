@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { FormEditMenu } from '@/components/forms/form-edit-menu';
-import { TMenu, TSchemaField, TContent } from '@/types';
+import { TMenu, TSchemaField } from '@/types';
 import { getMenu } from '@/services/menus';
 import { Topbar } from '@/components/topbar';
-import { getContents } from '@/services/contents';
 import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {

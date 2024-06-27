@@ -41,7 +41,7 @@ export default async function EditTranslations({ params }: {params: {id: string,
 
     const languages = projectData.project.languages.map(c => ({value: c.code, label: c.name}));
 
-    const types = ['single_line_text', 'list.single_line_text', 'multi_line_text'];
+    const types = ['single_line_text', 'list.single_line_text', 'multi_line_text', 'rich_text'];
     const keys = menu.items.fields.filter(b => types.includes(b.type)).map(b => ({key: b.key, name: b.name, type: b.type}));
 
     const typesFiles = ['file_reference', 'list.file_reference'];

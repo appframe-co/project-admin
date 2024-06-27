@@ -1,0 +1,116 @@
+.richtext {
+  padding: 10px 0; 
+}
+
+.richtext.error .editor {
+  border-color: #B00020;
+  background-color: rgba(176, 0, 32, 0.03); 
+}
+.richtext.error .msg {
+  height: auto;
+  color: #B00020;
+  visibility: visible; 
+}
+
+.richtext .name {
+  font-size: 13px;
+  margin-bottom: 7px;
+  display: block;
+  color: rgb(48, 48, 48);
+}
+
+.richtext .editor {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  width: 100%;
+  min-height: 150px;
+  max-height: 350px;
+  border-radius: 6px;
+  background-color: #f6f8fa;
+  border: 1px solid rgb(208, 215, 222);
+  color: #37352F;
+  padding: 12px;
+  display: block;
+  overflow-y: auto;
+
+  position: relative;
+  outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.richtext .editor:focus {
+  background-color: #ffffff;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 2px rgb(9, 105, 218);
+}
+
+.richtext .editor:disabled {
+  border-color: #C8C7C6;
+  color: #C8C7C6; 
+}
+
+.richtext .msg {
+  font-size: 12px;
+  font-weight: 400;
+  height: 0;
+  margin-top: 5px;
+  visibility: hidden;
+  display: block; 
+}
+
+.richtext .info {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-top: 4px;
+  color: #91908D;
+  display: block;
+}
+
+.richtext .editor p {
+  margin-top: 8px;
+  line-height: 1.42;
+}
+.richtext .editor h1, .richtext .editor h2, .richtext .editor h3, .richtext .editor h4, .richtext .editor h5, .richtext .editor h6 {
+  margin-bottom: 8px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  background-color: #ffffff;
+  align-items: center;
+}
+
+.textButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.textButton {
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+.options {
+  min-width: 120px;
+}

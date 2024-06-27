@@ -1,12 +1,12 @@
 import { TField } from "@/types";
-import { TextField } from "@/ui/text-field";
+import { RichTextEditor } from "@/ui/rich-text-editor";
 import { Control, UseControllerProps, useController } from "react-hook-form";
 
-function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean}) {
+function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, setValue: any}) {
     const { field, fieldState } = useController(props);
 
     return (
-        <TextField 
+        <RichTextEditor 
             onChange={field.onChange}
             onBlur={field.onBlur}
             value={field.value ?? ''}
@@ -14,7 +14,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
             error={fieldState.error}
             label={props.label}
             helpText={props.helpText}
-            multiline={props.multiline}
+            setValue={props.setValue}
         />
     )
 }
@@ -22,9 +22,11 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
 type TProp = {
     field: TField;
     control: Control;
-    prefixName?: string
+    prefixName?: string;
+    setValue: any;
 }
 
-export function RichText({field, control, prefixName=''}: TProp) {
-    return <Input control={control} name={prefixName+field.key} multiline={true} label={field.name} helpText={field.description} />
+export function RichText({field, control, prefixName='', setValue}: TProp) {
+    return <Input control={control} name={prefixName+field.key} label={field.name} helpText={field.description} 
+        setValue={setValue} />
 }

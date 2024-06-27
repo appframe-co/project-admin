@@ -1,6 +1,7 @@
 import styles from '@/styles/form-translations.module.css'
 import { TItem, TTranslation } from '@/types';
 import { Button } from '@/ui/button';
+import { RichTextEditor } from '@/ui/rich-text-editor';
 import { TextField } from '@/ui/text-field';
 import { useEffect } from 'react';
 import { SubmitHandler, UseControllerProps, useController, useForm } from 'react-hook-form';
@@ -27,6 +28,23 @@ function Input(props: UseControllerProps & {type?: string, label?: string, helpT
             multiline={props.multiline}
             type={props.type}
             style={'td'}
+        />
+    )
+}
+
+function InputRT(props: UseControllerProps & {label?: string, helpText?: string, setValue: any}) {
+    const { field, fieldState } = useController(props);
+
+    return (
+        <RichTextEditor
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value ?? ''}
+            name={field.name}
+            error={fieldState.error}
+            label={props.label}
+            helpText={props.helpText}
+            setValue={props.setValue}
         />
     )
 }
@@ -162,14 +180,20 @@ export function TranslationDocMenuItem({lang, item, menuId, fields}: TProps) {
                             <tr key={field.key} className={styles.value}>
                                 <td className={styles.td + ' ' + styles.tdTitle}>{field.name}</td>
                                 <td className={styles.td + ' ' + styles.lineWrapper}>
-                                    {!field.type.startsWith('list.') && <div className={styles.line}>{item.doc[field.key]}</div>}
+                                    {!field.type.startsWith('list.') && field.type !== 'rich_text' && <div className={styles.line}>{item.doc[field.key]}</div>}
+                                    {!field.type.startsWith('list.') && field.type === 'rich_text' && <div dangerouslySetInnerHTML={{__html: item.doc[field.key]}} className={styles.line}></div>}
                                     {field.type.startsWith('list.') && item.doc[field.key].map((v:any, i:number) => (
                                         <div className={styles.line} key={i}>{v}</div>
                                     ))}
                                 </td>
                                 <td>
-                                    {!field.type.startsWith('list.') && 
+                                    {!field.type.startsWith('list.') && field.type !== 'rich_text' && 
                                         <Input control={control} name={'value.'+field.key} multiline={field.type === 'multi_line_text'} />}
+
+                                    {!field.type.startsWith('list.') && field.type === 'rich_text' && 
+                                        <InputRT control={control} name={'value.'+field.key} 
+                                            setValue={(v:any) => setValue('value.'+field.key, v, {shouldDirty: true})} />}
+
                                     {field.type.startsWith('list.') && item.doc[field.key].map((v:any, i: number) => (
                                         <Input key={i} control={control} name={'value.'+field.key+'.'+i} />
                                     ))}

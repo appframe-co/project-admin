@@ -76,7 +76,8 @@ export function FormNewEntry({content, currencies, sectionIds}: {content: TConte
             <div key={i}>
                 {field.type === 'single_line_text' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'multi_line_text' && <MultiLineText prefixName={prefixName} field={field} control={control} />}
-                {field.type === 'rich_text' && <RichText prefixName={prefixName} field={field} control={control} />}
+                {field.type === 'rich_text' && <RichText prefixName={prefixName} field={field} control={control} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} />}
                 {field.type === 'number_integer' && <NumberInteger prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'number_decimal' && <NumberDecimal prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'boolean' && <BooleanField prefixName={prefixName} field={field} control={control} />}
