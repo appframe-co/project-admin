@@ -1,4 +1,4 @@
-import { TField, TSchemaField, TContent } from "@/types";
+import { TField, TSchemaField, TSections, TContent } from "@/types";
 import { Box } from "@/ui/box";
 import { Card } from "@/ui/card";
 import { Checkbox } from "@/ui/checkbox";
@@ -9,8 +9,8 @@ import { useCallback, useState } from "react";
 import { useRouter } from 'next/navigation'
 import { createPortal } from "react-dom";
 import { Modal } from "@/ui/modal";
-import { FormField } from "./modals/form-field";
-import { GroupOfFields } from "./group-of-fields";
+import { FormField } from "@/components/modals/form-field";
+import { GroupOfFields } from "@/components/group-of-fields";
 import { Button } from "@/ui/button";
 
 type TControllerProps = UseControllerProps<any> & {
@@ -23,9 +23,7 @@ type TControllerProps = UseControllerProps<any> & {
 
 type TForm = {
     id: string;
-    entries: {
-        fields: TField[];
-    }
+    sections: TSections;
 }
 
 type TProps = {
@@ -70,7 +68,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
             />
 }
 
-export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
+export function ContentSections({defaultValues, groupOfFields, names}: TProps) {
     const [showGroupOfFields, setShowGroupOfFields] = useState<boolean>(false);
     const [activeModalField, setActiveModalField] = useState<boolean>(false);
     const [indexField, setIndexField] = useState<number|null>(null);
@@ -78,10 +76,10 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
     const [schemaField, setSchemaField] = useState<TSchemaField>();
 
     const router = useRouter();
-
-    const { control, handleSubmit, formState, reset, setError } = useForm<TForm>({defaultValues});
+    
+    const { control, handleSubmit, formState, reset, setError, watch } = useForm<TForm>({defaultValues});
     const { fields, append, remove, update } = useFieldArray({
-        name: 'entries.fields',
+        name: 'sections.fields',
         control,
         keyName: 'uuid'
     });
@@ -125,17 +123,21 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
     const createField = (schemaField: TSchemaField): void => {
         setSchemaField(schemaField);
         setField({
-            system: false,
             type: schemaField.type,
             name: '',
             key: '',
             description: '',
-            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value}))
+            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value})),
+            system: false
         });
         handleChangeModalField();
         setShowGroupOfFields(false);
     };
     const updateField = (field: TField, index: number) => {
+        if (field.system) {
+            return;
+        }
+
         const type = field.type.startsWith('list.') ? field.type.slice(5) : field.type;
 
         const schemaFields: TSchemaField[] = [];
@@ -175,7 +177,7 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
         setIndexField(null);
     };
 
-    const errorsField: any = formState.errors.entries?.fields ?? [];
+    const errorsField: any = formState.errors.sections?.fields ?? [];
 
     return (
         <>
@@ -186,7 +188,7 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
                     title={field?.name || schemaField?.name || ''}
                 >
                     {field && schemaField && <FormField 
-                        errors={formState.errors.entries?.fields && indexField !== null ? formState.errors.entries.fields[indexField]: []}  
+                        errors={formState.errors.sections?.fields && indexField !== null ? formState.errors.sections?.fields[indexField]: []}  
                         field={field} schemaField={schemaField} fields={fields}
                         handleClose={handleClose}
                         handleDeleteField={handleDeleteField} handleSubmitField={indexField !== null ? handleEditField : handleAddField} />}
@@ -195,13 +197,19 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
+                <Card title='General'>
+                    <Box padding={16}>
+                        <Input control={control} name='sections.enabled' label='Enable' type='checkbox' />
+                    </Box>
+                </Card>
+
                 <Card title='Fields'>
                     <div className={styles.fields}>
-                        <Input control={control} name='entries.fields' type='hidden' />
+                        <Input control={control} name='sections.fields' type='hidden' />
 
                         {fields.map((field, index: number) => (
-                            <div key={field.key} className={styles.field} onClick={() => updateField(field, index)}>
-                                <div className={styles.name}>{field.name}</div>
+                            <div key={field.key} className={!field.system ? styles.field : styles.fieldSystem} onClick={() => updateField(field, index)}>
+                                <div className={styles.name}>{field.name} {field.system && '(system)'}</div>
                                 <div className={styles.key}>{field.key}</div>
                                 {errorsField[index]?.name && (
                                     <p className={styles.errorMsg}>{errorsField[index]?.name.message} (changes need to be made)</p>

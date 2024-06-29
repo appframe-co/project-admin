@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { TContent, TSchemaField } from '@/types'
 import styles from '@/styles/form-content.module.css'
-import { ContentCommon } from '@/components/content-common'
-import { ContentEntries } from '@/components/content-entries'
-import { ContentTranslations } from '@/components/content-translations'
-import { ContentNotifications } from '@/components/content-notifications'
-import { ContentSections } from '@/components/content-sections'
+import { ContentCommon } from '@/components/content/content-common'
+import { ContentEntries } from '@/components/content/content-entries'
+import { ContentTranslations } from '@/components/content/content-translations'
+import { ContentNotifications } from '@/components/content/content-notifications'
+import { ContentSections } from '@/components/content/content-sections'
 
 type TProps = {
     content: TContent;
