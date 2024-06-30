@@ -23,6 +23,8 @@ import { DateField } from '@/components/fields/date';
 import { ListDate } from '@/components/fields/list-date';
 import { Money } from '@/components/fields/money';
 import { RichText } from '@/components/fields/rich-text'
+import { ColorPicker } from '../fields/color-picker'
+import { ListColorPicker } from '../fields/list-color-picker'
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
@@ -101,6 +103,10 @@ export function FormEditEntry({content, entry, files, currencies} : {content: TC
                     <Money value={getValues(key)} currencies={currencies} register={register(key)} error={formState.errors[key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'url_handle' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
+                {field.type === 'color' && <ColorPicker prefixName={prefixName} field={field} control={control} />}
+                {(field.type === 'list.color') && 
+                    <ListColorPicker value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
             </div>
         )
     });
