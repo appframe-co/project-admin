@@ -19,6 +19,7 @@ type TProp = {
 type TRect = {
     top: number, left: number, width: number
 }
+type TValue = {value: string, id?: string};
 
 export function ListSingleLineText({watchGlobal, register, error, setValue, field, value=[]}: TProp) {
     const divInputListRef = useRef<null|HTMLDivElement>(null);
@@ -26,9 +27,9 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, fiel
     const [showFields, setShowFields] = useState<boolean>(false);
     const [rect, setRect] = useState<TRect>();
 
-    const { control, watch, formState } = useForm<any>({
+    const { control, watch, formState } = useForm<{list: TValue[]}>({
         defaultValues: {
-            list: value
+            list: value ? value.map((v:string) => ({value:v})) : []
         }
     });
     const { fields, append, remove } = useFieldArray({
@@ -46,7 +47,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, fiel
                 !event.composedPath().includes(divInputListRef.current as HTMLDivElement)
             ) {
                 if (formState.isDirty) {
-                    setValue(watch('list'));
+                    setValue(watch('list').map((v) => v.value));
                 }
                 setShowFields(false);
             }
@@ -75,7 +76,7 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, fiel
                 <div className={styles.input + (error ? ' '+styles.errorInput : '')}>
                     {watch('list') && (
                         <>
-                            <div>{watch('list').join(' • ')}</div>
+                            <div>{watch('list').map((v) => v.value).join(' • ')}</div>
                             <div>{watch('list').length} {watch('list').length > 1 ? 'items' : 'item'}</div>
                         </>
                     )}
@@ -92,14 +93,14 @@ export function ListSingleLineText({watchGlobal, register, error, setValue, fiel
                                     {fields.map((item, index) => (
                                         <li key={item.id} className={styles.fieldList}>
                                             <div className={styles.infoField}>
-                                                <SingleLineText field={field} control={control} name={`list.${index}`} />
+                                                <SingleLineText field={field} control={control as any} name={`list.${index}.value`} />
                                                 {error && Array.isArray(error) && <div className={styles.error}>{error[index]?.message}</div>}
                                             </div>
                                             <div><Button onClick={() => remove(index)}>Delete</Button></div>
                                         </li>
                                     ))}
                                 </ul>
-                                <Button onClick={() => append('')}>Add item</Button>
+                                <Button onClick={() => append({value: ''})}>Add item</Button>
                             </form>
                         </div>
                     </div>

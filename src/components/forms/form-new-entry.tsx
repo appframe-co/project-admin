@@ -108,6 +108,10 @@ export function FormNewEntry({content, currencies, sectionIds}: {content: TConte
                 {(field.type === 'list.color') && 
                     <ListColorPicker value={getValues(key)} register={register(key)} error={formState.errors[key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
+                {field.type === 'url' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
+                {(field.type === 'list.url') && 
+                    <ListSingleLineText value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
             </div>
         )
     });

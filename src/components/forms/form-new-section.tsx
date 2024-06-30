@@ -90,27 +90,31 @@ export function FormNewSection({content, currencies, parentId}: {content: TConte
                 {field.type === 'date_time' && <DateTime prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'date' && <DateField prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'file_reference' && 
-                    <FileReference value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <FileReference value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} />}
                 {field.type === 'list.file_reference' && 
-                    <ListFileReference value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListFileReference value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {(field.type === 'list.single_line_text' || field.type === 'list.number_integer' || field.type === 'list.number_decimal') && 
-                    <ListSingleLineText register={register(key)} error={formState.errors[key]} 
+                    <ListSingleLineText register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'list.date_time' && 
-                    <ListDateTime value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListDateTime value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'list.date' && 
-                    <ListDate value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListDate value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'money' && 
-                    <Money currencies={currencies} register={register(key)} error={formState.errors[key]} 
+                    <Money currencies={currencies} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'url_handle' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'color' && <ColorPicker prefixName={prefixName} field={field} control={control} />}
                 {(field.type === 'list.color') && 
-                    <ListColorPicker value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListColorPicker value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
+                {field.type === 'url' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
+                {(field.type === 'list.url') && 
+                    <ListSingleLineText value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
             </div>
         )

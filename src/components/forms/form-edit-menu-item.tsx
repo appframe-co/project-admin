@@ -120,27 +120,31 @@ export function FormEditMenuItem({menu, item, files, currencies, options} : TPro
                 {field.type === 'date_time' && <DateTime prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'date' && <DateField prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'file_reference' && 
-                    <FileReference filesRef={files.filter(f => f.id === getValues(key))} value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <FileReference filesRef={files.filter(f => f.id === getValues(key))} value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} />}
                 {field.type === 'list.file_reference' && 
                     <ListFileReference filesRef={files.filter(f => getValues(key)?.includes(f.id))} value={getValues(key)} register={register(key)} error={formState.errors[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {(field.type === 'list.single_line_text' || field.type === 'list.number_integer' || field.type === 'list.number_decimal') && 
-                    <ListSingleLineText value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListSingleLineText value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'list.date_time' && 
-                    <ListDateTime value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListDateTime value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'list.date' && 
-                    <ListDate value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListDate value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'money' && 
-                    <Money value={getValues(key)} currencies={currencies} register={register(key)} error={formState.errors[key]} 
+                    <Money value={getValues(key)} currencies={currencies} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {field.type === 'url_handle' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'color' && <ColorPicker prefixName={prefixName} field={field} control={control} />}
                 {(field.type === 'list.color') && 
-                    <ListColorPicker value={getValues(key)} register={register(key)} error={formState.errors[key]} 
+                    <ListColorPicker value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
+                {field.type === 'url' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
+                {(field.type === 'list.url') && 
+                    <ListSingleLineText value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
             </div>
         )
