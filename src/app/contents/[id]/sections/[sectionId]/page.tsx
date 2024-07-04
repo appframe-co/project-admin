@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { TCurrency, TCurrencyPreview, TFile, TProject, TSection, TContent } from '@/types';
+import { TCurrency, TCurrencyPreview, TFile, TProject, TSection, TContent, TSchemaField } from '@/types';
 import { getContent } from '@/services/contents';
 import { Topbar } from '@/components/topbar';
 import { getCurrencies } from '@/services/system';
@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Toolbar } from '@/components/toolbar';
 import { getSection } from '@/services/sections';
 import { FormEditSection } from '@/components/forms/form-edit-section';
+import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {
     title: 'Edit section | AppFrame'
@@ -23,14 +24,18 @@ function isErrorContent(data: TErrorResponse|{content: TContent}): data is TErro
 function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
+function isErrorSchemaFields(data: TErrorResponse|{schemaFields: TSchemaField[]}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 export default async function EditSection({ params }: {params: {id: string, sectionId: string}}) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const contentPromise = getContent(params.id);
     const sectionPromise = getSection(params.sectionId, params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
+    const schemaFieldsPromise: Promise<TErrorResponse|{schemaFields: TSchemaField[]}> = getSchemaFields();
 
-    const [projectData, contentData, sectionData, currenciesData] = await Promise.all([projectPromise, contentPromise, sectionPromise, currenciesPromise]);
+    const [projectData, contentData, sectionData, currenciesData, schemaFieldsData] = await Promise.all([projectPromise, contentPromise, sectionPromise, currenciesPromise, schemaFieldsPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -39,6 +44,9 @@ export default async function EditSection({ params }: {params: {id: string, sect
         return <></>;
     }
     if (isErrorCurrencies(currenciesData)) {
+        return <></>;
+    }
+    if (isErrorSchemaFields(schemaFieldsData)) {
         return <></>;
     }
 
@@ -74,7 +82,7 @@ export default async function EditSection({ params }: {params: {id: string, sect
         <div className='page pageAlignCenter'>
             <Topbar title={'Edit section of ' + content.name} back={`/contents/${content.id}/sections`} />
             <Toolbar tools={tools} />
-            <FormEditSection content={content} section={section} files={files} currencies={currencies} />
+            <FormEditSection content={content} section={section} files={files} currencies={currencies} schemaFields={schemaFieldsData.schemaFields} />
         </div>
     )
 }

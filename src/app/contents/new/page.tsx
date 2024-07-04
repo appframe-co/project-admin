@@ -19,7 +19,7 @@ export default async function NewContent() {
         return acc;
     }, {});
 
-    const names: {[key: string]: string} = {text: 'Text', date_time: 'Date and Time', number: 'Number', reference: 'Reference', other: 'Other'};
+    const names: {[key: string]: string} = {text: 'Text', date_time: 'Date and Time', measurement: 'Measurement', number: 'Number', reference: 'Reference', other: 'Other'};
 
     return (
         <div className='page pageAlignCenter'>

@@ -2,7 +2,7 @@ import { TField } from "@/types";
 import { TextField } from "@/ui/text-field";
 import { Control, UseControllerProps, useController } from "react-hook-form";
 
-function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, type: string}) {
+function Input(props: UseControllerProps<any> & {label?: string, helpText?: string, multiline?: boolean, type: string, suffix: string}) {
     const { field, fieldState } = useController(props);
 
     return (
@@ -16,6 +16,7 @@ function Input(props: UseControllerProps<any> & {label?: string, helpText?: stri
             helpText={props.helpText}
             multiline={props.multiline}
             type={props.type}
+            suffix={props.suffix}
         />
     )
 }
@@ -27,5 +28,5 @@ type TProp = {
 }
 
 export function NumberDecimal({field, control, prefixName=''}: TProp) {
-    return <Input control={control} name={prefixName+field.key} label={field.name} helpText={field.description} type='number' />;
+    return <Input control={control} name={prefixName+field.key} label={field.name} helpText={field.description} type='number' suffix={field.unit} />;
 }

@@ -123,15 +123,20 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
     };
 
     const createField = (schemaField: TSchemaField): void => {
-        setSchemaField(schemaField);
-        setField({
-            system: false,
+        const field: TField = {
             type: schemaField.type,
             name: '',
             key: '',
             description: '',
-            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value}))
-        });
+            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value})),
+            system: false,
+        };
+        if (schemaField.units && schemaField.units.length) {
+            field.unit = schemaField.units[0].code;
+        }
+
+        setSchemaField(schemaField);
+        setField(field);
         handleChangeModalField();
         setShowGroupOfFields(false);
     };

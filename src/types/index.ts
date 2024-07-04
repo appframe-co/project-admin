@@ -23,6 +23,7 @@ export type TField = {
         value: any;
     }[];
     system: boolean;
+    unit?: string;
 }
 export type TTranslations = {
     enabled: boolean;
@@ -84,6 +85,10 @@ type TValidationSchemaField = {
     type: string;
     presetChoices: {name: string, value: string}[];
 }
+type TUnitField = {
+    code: string;
+    name: string;
+}
 export type TSchemaField = {
     id: string;
     name: string;
@@ -93,6 +98,7 @@ export type TSchemaField = {
     list: string;
     validationDescHtml: string;
     validations: TValidationSchemaField[];
+    units: TUnitField[];
 }
 
 export type TProject = {

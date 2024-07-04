@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler} from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 
-import { TEntry, TContent, TFile, TCurrencyPreview } from '@/types'
+import { TEntry, TContent, TFile, TCurrencyPreview, TSchemaField } from '@/types'
 
 import { Button } from '@/ui/button'
 import { Card } from '@/ui/card';
@@ -23,14 +23,16 @@ import { DateField } from '@/components/fields/date';
 import { ListDate } from '@/components/fields/list-date';
 import { Money } from '@/components/fields/money';
 import { RichText } from '@/components/fields/rich-text'
-import { ColorPicker } from '../fields/color-picker'
-import { ListColorPicker } from '../fields/list-color-picker'
+import { ColorPicker } from '@/components/fields/color-picker'
+import { ListColorPicker } from '@/components/fields/list-color-picker'
+import { Dimension } from '@/components/fields/dimension'
+import { ListDimension } from '@/components/fields/list-dimension'
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-export function FormEditEntry({content, entry, files, currencies} : {content: TContent, entry: TEntry, files: TFile[], currencies: TCurrencyPreview[]}) {
+export function FormEditEntry({content, entry, files, currencies, schemaFields} : {content: TContent, entry: TEntry, files: TFile[], currencies: TCurrencyPreview[], schemaFields: TSchemaField[]}) {
     const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: {
         sectionIds: entry.sectionIds,
         doc: entry.doc
@@ -73,6 +75,8 @@ export function FormEditEntry({content, entry, files, currencies} : {content: TC
     const fields = content.entries.fields.map((field, i) => {
         const key = prefixName+field.key;
 
+        const type = field.type.startsWith('list.') ?  field.type.substring(5) : field.type;
+
         return (
             <div key={i}>
                 {field.type === 'single_line_text' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
@@ -111,6 +115,12 @@ export function FormEditEntry({content, entry, files, currencies} : {content: TC
                 {(field.type === 'list.url') && 
                     <ListSingleLineText value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
+                {(field.type === 'dimension' || field.type === 'volume' || field.type === 'weight') && <Dimension prefixName={prefixName} 
+                    field={field} control={control} schemaField={schemaFields.find(f => f.type === type)} />}
+                {(field.type === 'list.dimension' || field.type === 'list.volume' || field.type === 'list.weight') && 
+                    <ListDimension value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} watchGlobal={watchGlobal}
+                    field={field} schemaField={schemaFields.find(f => f.type === type)} />}
             </div>
         )
     });

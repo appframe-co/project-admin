@@ -285,6 +285,9 @@ export function FormField({fields:fieldsContent, errors, field, schemaField, han
                     <Input error={errors?.key} control={control} name='key' label='Key' rules={{ required: {message: "Value can't be blank", value: true}}} />
                     <Input error={errors?.description} control={control} name='description' label='Description' />
 
+                    {schemaField.units && schemaField.units.length > 0 &&
+                        <SelectField error={errors?.unit} control={control} name='unit' options={[...schemaField.units.map(u => ({value: u.code, label: u.name}))]} />}
+
                     {schemaField.list && (
                         <div className={styles.switchValues + (field.id ? ' ' + styles.disabledValues : '') }>
                             <div className={styles.btnValue + (!watch('type').startsWith('list.') ? ' ' + styles.activeValue : '')} 

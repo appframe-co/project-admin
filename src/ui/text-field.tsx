@@ -7,7 +7,7 @@ export function TextField(props: any) {
         onChange, onBlur,
         name, label, value, type='text',
         error,
-        multiline, helpText, disabled, innerRef, prefix, placeholder,
+        multiline, helpText, disabled, innerRef, prefix, suffix, placeholder,
         style=''
     } = props;
 
@@ -52,6 +52,7 @@ export function TextField(props: any) {
                         placeholder={placeholder}
                         {...fields}
                     />
+                    {suffix && <div className={styles.suffix}>{suffix}</div>}
                 </div>
             )}
             {error && <div className={styles.msg}>{error.message}</div>}

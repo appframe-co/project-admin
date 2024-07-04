@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import { TCurrency, TCurrencyPreview, TProject, TContent } from '@/types';
+import { TCurrency, TCurrencyPreview, TProject, TContent, TSchemaField } from '@/types';
 import { getContent } from '@/services/contents';
 import { Topbar } from '@/components/topbar';
 import { FormNewEntry } from '@/components/forms/form-new-entry';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
+import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {
     title: 'New Entry | AppFrame'
@@ -19,6 +20,9 @@ function isErrorContent(data: TErrorResponse|{content: TContent}): data is TErro
 function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
+function isErrorSchemaFields(data: TErrorResponse|{schemaFields: TSchemaField[]}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 type TPageProps = { 
     params: { id: string };
@@ -31,8 +35,9 @@ export default async function NewEntry({ params, searchParams }: TPageProps) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
     const contentPromise: Promise<TErrorResponse|{content: TContent}> = getContent(params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
+    const schemaFieldsPromise: Promise<TErrorResponse|{schemaFields: TSchemaField[]}> = getSchemaFields();
 
-    const [projectData, contentData, currenciesData] = await Promise.all([projectPromise, contentPromise, currenciesPromise]);
+    const [projectData, contentData, currenciesData, schemaFieldsData] = await Promise.all([projectPromise, contentPromise, currenciesPromise, schemaFieldsPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -41,6 +46,9 @@ export default async function NewEntry({ params, searchParams }: TPageProps) {
         return <></>;
     }
     if (isErrorCurrencies(currenciesData)) {
+        return <></>;
+    }
+    if (isErrorSchemaFields(schemaFieldsData)) {
         return <></>;
     }
 
@@ -62,7 +70,7 @@ export default async function NewEntry({ params, searchParams }: TPageProps) {
     return (
         <div className='page pageAlignCenter'>
             <Topbar title='New Entry' back={`/contents/${contentData.content.id}/entries`} />
-            <FormNewEntry content={contentData.content} currencies={currencies} sectionIds={sectionIds} />
+            <FormNewEntry content={contentData.content} currencies={currencies} sectionIds={sectionIds} schemaFields={schemaFieldsData.schemaFields} />
         </div>
     )
 }

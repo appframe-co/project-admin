@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { TCurrency, TCurrencyPreview, TFile, TItem, TMenu, TProject, TContent } from '@/types';
+import { TCurrency, TCurrencyPreview, TFile, TItem, TMenu, TProject, TContent, TSchemaField } from '@/types';
 import { Topbar } from '@/components/topbar';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
@@ -10,6 +10,7 @@ import { getMenu } from '@/services/menus';
 import { getMenuItem } from '@/services/menu-items';
 import { FormEditMenuItem } from '@/components/forms/form-edit-menu-item';
 import { getContents } from '@/services/contents';
+import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {
     title: 'Edit item | AppFrame'
@@ -27,6 +28,9 @@ function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data
 function isErrorContents(data: TErrorResponse|{contents: TContent[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
+function isErrorSchemaFields(data: TErrorResponse|{schemaFields: TSchemaField[]}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 export default async function EditItem({ params }: {params: {id: string, itemId: string}}) {
     const projectPromise: Promise<TErrorResponse|{project: TProject}> = getProject();
@@ -34,8 +38,9 @@ export default async function EditItem({ params }: {params: {id: string, itemId:
     const itemPromise = getMenuItem(params.itemId, params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
     const contentsPromise: Promise<TErrorResponse|{contents: TContent[]}> = getContents();
+    const schemaFieldsPromise: Promise<TErrorResponse|{schemaFields: TSchemaField[]}> = getSchemaFields();
 
-    const [projectData, menuData, itemData, currenciesData, contentsData] = await Promise.all([projectPromise, menuPromise, itemPromise, currenciesPromise, contentsPromise]);
+    const [projectData, menuData, itemData, currenciesData, contentsData, schemaFieldsData] = await Promise.all([projectPromise, menuPromise, itemPromise, currenciesPromise, contentsPromise, schemaFieldsPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -47,6 +52,9 @@ export default async function EditItem({ params }: {params: {id: string, itemId:
         return <></>;
     }
     if (isErrorContents(contentsData)) {
+        return <></>;
+    }
+    if (isErrorSchemaFields(schemaFieldsData)) {
         return <></>;
     }
 
@@ -84,7 +92,7 @@ export default async function EditItem({ params }: {params: {id: string, itemId:
         <div className='page pageAlignCenter'>
             <Topbar title={'Edit item of ' + menu.name} back={`/menus/${menu.id}/items`} />
             <Toolbar tools={tools} />
-            <FormEditMenuItem menu={menu} item={item} files={files} currencies={currencies} options={options}/>
+            <FormEditMenuItem menu={menu} item={item} files={files} currencies={currencies} options={options} schemaFields={schemaFieldsData.schemaFields} />
         </div>
     )
 }

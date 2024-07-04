@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import { TCurrency, TCurrencyPreview, TMenu, TProject, TContent } from '@/types';
+import { TCurrency, TCurrencyPreview, TMenu, TProject, TContent, TSchemaField } from '@/types';
 import { Topbar } from '@/components/topbar';
 import { getCurrencies } from '@/services/system';
 import { getProject } from '@/services/project';
 import { getMenu } from '@/services/menus';
 import { FormNewMenuItem } from '@/components/forms/form-new-menu-item';
 import { getContents } from '@/services/contents';
+import { getSchemaFields } from '@/services/schema-fields';
 
 export const metadata: Metadata = {
     title: 'New Item | AppFrame'
@@ -23,6 +24,9 @@ function isErrorCurrencies(data: TErrorResponse|{currencies: TCurrency[]}): data
 function isErrorContents(data: TErrorResponse|{contents: TContent[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
 }
+function isErrorSchemaFields(data: TErrorResponse|{schemaFields: TSchemaField[]}): data is TErrorResponse {
+    return !!(data as TErrorResponse).error;
+}
 
 type TPageProps = { 
     params: { id: string };
@@ -36,8 +40,9 @@ export default async function NewItem({ params, searchParams }: TPageProps) {
     const menuPromise: Promise<TErrorResponse|{menu: TMenu}> = getMenu(params.id);
     const currenciesPromise: Promise<TErrorResponse|{currencies: TCurrency[]}> = getCurrencies();
     const contentsPromise: Promise<TErrorResponse|{contents: TContent[]}> = getContents();
+    const schemaFieldsPromise: Promise<TErrorResponse|{schemaFields: TSchemaField[]}> = getSchemaFields();
 
-    const [projectData, menuData, currenciesData, contentsData] = await Promise.all([projectPromise, menuPromise, currenciesPromise, contentsPromise]);
+    const [projectData, menuData, currenciesData, contentsData, schemaFieldsData] = await Promise.all([projectPromise, menuPromise, currenciesPromise, contentsPromise, schemaFieldsPromise]);
 
     if (isErrorProject(projectData)) {
         return <></>;
@@ -49,6 +54,9 @@ export default async function NewItem({ params, searchParams }: TPageProps) {
         return <></>;
     }
     if (isErrorContents(contentsData)) {
+        return <></>;
+    }
+    if (isErrorSchemaFields(schemaFieldsData)) {
         return <></>;
     }
 
@@ -72,7 +80,7 @@ export default async function NewItem({ params, searchParams }: TPageProps) {
     return (
         <div className='page pageAlignCenter'>
             <Topbar title='New Item' back={`/menus/${menuData.menu.id}/items`} />
-            <FormNewMenuItem menu={menuData.menu} currencies={currencies} parentId={parentId} options={options}/>
+            <FormNewMenuItem menu={menuData.menu} currencies={currencies} parentId={parentId} options={options} schemaFields={schemaFieldsData.schemaFields} />
         </div>
     )
 }
