@@ -1,4 +1,4 @@
-import { TField } from "@/types";
+import { TField, TFile } from "@/types";
 import { RichTextEditor } from "@/ui/rich-text-editor";
 import { Control, UseControllerProps, useController } from "react-hook-form";
 

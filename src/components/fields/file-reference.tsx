@@ -39,6 +39,13 @@ export function FileReference({register, error, setValue, field, value, filesRef
         handleChangeModalEditFile();
     };
 
+    const handleApplyFiles = (files: TFile[], selectedFileIds: string|string[]) => {
+        setValue(selectedFileIds);
+        setFiles(() => files.filter(f => selectedFileIds.includes(f.id)));
+
+        handleClose();
+    };
+
     return (
         <>
             {activeModalFiles && createPortal(
@@ -48,7 +55,7 @@ export function FileReference({register, error, setValue, field, value, filesRef
                         onClose={handleClose}
                         title='Select file'
                     >
-                        <Files setFilesRef={setFiles} value={value} setValue={setValue} onClose={handleClose} />
+                        <Files selectedFileIds={value} handleApplyFiles={handleApplyFiles} onClose={handleClose} />
                     </Modal>,
                 document.body
             )}

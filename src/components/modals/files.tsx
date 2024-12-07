@@ -2,7 +2,6 @@ import { Resource, TErrorValidateFile, TFile, TStagedTarget, TStagedUploadFile }
 import { Button } from "@/ui/button";
 import { useEffect, useRef, useState } from "react";
 import styles from '@/styles/fields/file-reference.module.css'
-import { resizeImg } from "@/utils/resize-img";
 
 function isError(data: TErrorResponse | any): data is TErrorResponse {
     return (data as TErrorResponse).error !== undefined;
@@ -10,15 +9,14 @@ function isError(data: TErrorResponse | any): data is TErrorResponse {
 
 type TProp = {
     multiple?: boolean;
-    value: string|string[];
-    setValue: any;
+    selectedFileIds: string|string[];
+    handleApplyFiles: (files: TFile[], selectedFileIds:string|string[])=>void;
     onClose: any;
-    setFilesRef: any;
 }
 
-export function Files({setFilesRef, multiple=false, value, setValue, onClose}: TProp) {
+export function Files({multiple=false, selectedFileIds:_selectedFileIds, onClose, handleApplyFiles}: TProp) {
     const [page, setPage] = useState<number>(1);
-    const [selectedFileIds, setSelectedFileIds] = useState<string|string[]>(value);
+    const [selectedFileIds, setSelectedFileIds] = useState<string|string[]>(_selectedFileIds);
     const [files, setFiles] = useState<TFile[]>([]);
     const imageRef = useRef<HTMLInputElement>(null);
     const [errorUploading, setErrorUploading] = useState<string>();
@@ -208,13 +206,7 @@ export function Files({setFilesRef, multiple=false, value, setValue, onClose}: T
     };
 
     const applyFiles = () => {
-        setValue(selectedFileIds);
-
-        setFilesRef((prevState: TFile[]) => {
-            return files.filter(f => selectedFileIds.includes(f.id));
-        });
-
-        onClose();
+        handleApplyFiles(files, selectedFileIds);
     };
 
     return (

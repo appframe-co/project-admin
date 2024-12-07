@@ -20,7 +20,6 @@
 }
 
 .richtext .editor {
-  font-family: inherit;
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
@@ -70,14 +69,24 @@
   display: block;
 }
 
+.richtext .editor img.image {
+  cursor: pointer;
+}
 .richtext .editor p {
   margin-top: 8px;
   line-height: 1.42;
 }
 .richtext .editor h1, .richtext .editor h2, .richtext .editor h3, .richtext .editor h4, .richtext .editor h5, .richtext .editor h6 {
+  margin-top: 16px;
   margin-bottom: 8px;
   line-height: 1.3;
   font-weight: 700;
+}
+.richtext .editor figure {
+  margin-top: 8px;
+  margin-right: 8px;
+  display: block;
+  clear: both;
 }
 
 .wrapper {

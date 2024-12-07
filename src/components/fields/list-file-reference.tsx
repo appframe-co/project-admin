@@ -7,7 +7,6 @@ import styles from '@/styles/fields/file-reference.module.css'
 import { Modal } from "@/ui/modal";
 import { createPortal } from "react-dom";
 import { Files } from "../modals/files";
-import { resizeImg } from "@/utils/resize-img";
 import { PreviewAndEditFile } from "../modals/preview-edit-file";
 
 type TProp = {
@@ -75,6 +74,14 @@ export function ListFileReference({watchGlobal, register, error, setValue, field
         setFileIndex(i);
         handleChangeModalEditFile();
     };
+
+    const handleApplyFiles = (files: TFile[], selectedFileIds: string|string[]) => {
+        setValue(selectedFileIds);
+        setFiles(() => files.filter(f => selectedFileIds.includes(f.id)));
+
+        handleClose();
+    };
+
     return (
         <>
             {activeModalFiles && createPortal(
@@ -84,7 +91,7 @@ export function ListFileReference({watchGlobal, register, error, setValue, field
                         onClose={handleClose}
                         title='Select file'
                     >
-                        <Files setFilesRef={setFiles} value={value} multiple={true} setValue={setValue} onClose={handleClose} />
+                        <Files multiple={true} selectedFileIds={value} handleApplyFiles={handleApplyFiles} onClose={handleClose} />
                     </Modal>,
                 document.body
             )}

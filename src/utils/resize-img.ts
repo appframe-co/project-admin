@@ -1,5 +1,6 @@
-export function resizeImg(src: string, {w, h}:  {w: number, h: number}) {
-    const arSrc = src.split('/');
-    arSrc.splice(arSrc.length-1, 0, w+'x'+h);
-    return arSrc.join('/')
+export function resizeImg(src: string, width: number) {
+    const arSrc = src.split('.');
+    const ext = arSrc.pop();
+
+    return arSrc.join('.') + '_' + width+'x' + '.'+ext;
 }
