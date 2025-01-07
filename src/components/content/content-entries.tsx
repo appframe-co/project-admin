@@ -32,6 +32,7 @@ type TProps = {
     defaultValues: TForm;
     groupOfFields: {[key: string]: TSchemaField[]};
     names:{[key: string]: string};
+    contents: TContent[];
 }
 
 function isError(data: TErrorResponse|({userErrors: TUserErrorResponse[]} | {content: TContent})): data is TErrorResponse {
@@ -70,7 +71,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
             />
 }
 
-export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
+export function ContentEntries({defaultValues, groupOfFields, names, contents}: TProps) {
     const [showGroupOfFields, setShowGroupOfFields] = useState<boolean>(false);
     const [activeModalField, setActiveModalField] = useState<boolean>(false);
     const [indexField, setIndexField] = useState<number|null>(null);
@@ -193,6 +194,7 @@ export function ContentEntries({defaultValues, groupOfFields, names}: TProps) {
                     {field && schemaField && <FormField 
                         errors={formState.errors.entries?.fields && indexField !== null ? formState.errors.entries.fields[indexField]: []}  
                         field={field} schemaField={schemaField} fields={fields}
+                        contents={contents}
                         handleClose={handleClose}
                         handleDeleteField={handleDeleteField} handleSubmitField={indexField !== null ? handleEditField : handleAddField} />}
                 </Modal>,

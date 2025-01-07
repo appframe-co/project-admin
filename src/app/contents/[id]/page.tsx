@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { FormEditContent } from '@/components/forms/form-edit-content';
 import { TSchemaField, TContent } from '@/types';
-import { getContent } from '@/services/contents';
+import { getContents } from '@/services/contents';
 import { Topbar } from '@/components/topbar';
 import { getSchemaFields } from '@/services/schema-fields';
 
@@ -10,8 +10,12 @@ export const metadata: Metadata = {
 }
 
 export default async function EditContent({ params }: {params: {id: string}}) {
-    const {content}: {content: TContent} = await getContent(params.id);
     const {schemaFields}: {schemaFields: TSchemaField[]} = await getSchemaFields();
+    const {contents}: {contents: TContent[]} = await getContents();
+    const content = contents.find(c => c.id === params.id);
+    if (!content) {
+        return;
+    }
 
     const groupOfFields = schemaFields.reduce((acc: {[key: string]: TSchemaField[]}, field) => {
         if (!acc.hasOwnProperty(field.groupCode)) {
@@ -27,7 +31,7 @@ export default async function EditContent({ params }: {params: {id: string}}) {
     return (
         <div className='page pageAlignCenter'>
             <Topbar title={'Edit ' + content.name} />
-            <FormEditContent content={content} groupOfFields={groupOfFields} names={names} />
+            <FormEditContent content={content} contents={contents} groupOfFields={groupOfFields} names={names} />
         </div>
     )
 }

@@ -11,11 +11,12 @@ import { ContentSections } from '@/components/content/content-sections'
 
 type TProps = {
     content: TContent;
+    contents: TContent[];
     groupOfFields: {[key: string]: TSchemaField[]}; 
     names:{[key: string]: string};
 }
 
-export function FormEditContent({content, groupOfFields, names} : TProps) {
+export function FormEditContent({content, contents, groupOfFields, names} : TProps) {
     const [link, setLink] = useState<string>('common');
 
     return (
@@ -32,7 +33,9 @@ export function FormEditContent({content, groupOfFields, names} : TProps) {
 
             <div>
                 {link === 'common' && <ContentCommon defaultValues={{id: content.id, name: content.name, code: content.code}} />}
-                {link === 'entries' && <ContentEntries defaultValues={{id: content.id, entries: content.entries}} groupOfFields={groupOfFields} names={names} />}
+                {link === 'entries' && <ContentEntries defaultValues={{id: content.id, entries: content.entries}} 
+                    groupOfFields={groupOfFields} names={names} 
+                    contents={contents.filter(c => c.id !== content.id)} />}
                 {link === 'sections' && <ContentSections defaultValues={{id: content.id, sections: content.sections}} groupOfFields={groupOfFields} names={names} />}
                 {link === 'translations' && <ContentTranslations defaultValues={{id: content.id, translations: content.translations}} />}
                 {link === 'notifications' && <ContentNotifications defaultValues={{id: content.id, notifications: content.notifications}} />}

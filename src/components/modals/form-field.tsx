@@ -1,6 +1,6 @@
 import { TextField } from '@/ui/text-field';
 import { Checkbox } from '@/ui/checkbox';
-import { TField, TSchemaField } from '@/types';
+import { TContent, TField, TSchemaField } from '@/types';
 import { RegisterOptions, SubmitHandler, UseControllerProps, useController, useFieldArray, useForm } from 'react-hook-form';
 import { Button } from '@/ui/button';
 import styles from '@/styles/form-content.module.css';
@@ -64,6 +64,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
 
 type TProps = {
     fields: TField[];
+    contents: TContent[];
     errors: any;
     field: TField;
     handleSubmitField: any;
@@ -77,7 +78,7 @@ type TOption = {
     label: string;
 }
 
-export function FormField({fields:fieldsContent, errors, field, schemaField, handleSubmitField, handleClose, handleDeleteField}: TProps) {
+export function FormField({fields:fieldsContent, contents, errors, field, schemaField, handleSubmitField, handleClose, handleDeleteField}: TProps) {
     const [choicesEnabled, setChoicesEnabled] = useState<boolean>(!!field.validations.find(v => v.code === 'choices')?.value.length ?? false);
 
     const { control, handleSubmit, formState, setValue, getValues, watch } = useForm<TField>({
@@ -249,6 +250,22 @@ export function FormField({fields:fieldsContent, errors, field, schemaField, han
                             control={control} name={`validations.${index}.value`}
                             label={schemaValidation.name} helpText={schemaValidation.desc}
                             options={[{value: '', label: 'Select a field'}, ...options]}
+                        />
+                    </div>
+                );
+            }
+            if (item.code === 'content_reference') {
+                const options = contents.reduce((acc: TOption[], content): TOption[] => {
+                    acc.push({value: content.id, label: content.name});
+                    return acc;
+                }, []);
+
+                return (
+                    <div key={item.id} className={styles.wrapperField}>
+                        <SelectField 
+                            control={control} name={`validations.${index}.value`}
+                            label={schemaValidation.name} helpText={schemaValidation.desc}
+                            options={[{value: '', label: 'Select a content'}, ...options]}
                         />
                     </div>
                 );

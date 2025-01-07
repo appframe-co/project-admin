@@ -108,21 +108,21 @@ export function Files({multiple=false, selectedFileIds:_selectedFileIds, onClose
                     formData.append('file', images[+i]);
 
                     await fetch(stagedTarget.url, {method: 'POST', body: formData});
-
-                    const res = await fetch('/internal/api/files', {
-                        method: 'POST',  
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }, 
-                        body: JSON.stringify({files: data.stagedTargets.map(stagedTargetHandler)})
-                    });
-                    if (!res.ok) {
-                        throw new Error('Fetch error');
-                    }
-                    const {files}: {files: TFile[]} = await res.json();
-
-                    setFiles((prevState: TFile[]) => prevState.concat(files));
                 }
+
+                const resPostFiles = await fetch('/internal/api/files', {
+                    method: 'POST',  
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, 
+                    body: JSON.stringify({files: data.stagedTargets.map(stagedTargetHandler)})
+                });
+                if (!resPostFiles.ok) {
+                    throw new Error('Fetch error');
+                }
+                const {files:filesData}: {files: TFile[]} = await resPostFiles.json();
+
+                setFiles((prevState: TFile[]) => prevState.concat(filesData));
             } catch (e) {
                 return;
             } finally {

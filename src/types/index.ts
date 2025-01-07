@@ -11,6 +11,11 @@ export type FormValuesNewContent = {
     }
 }
 
+export type TFContent = {
+    id?: string;
+    name: string;
+}
+
 export type TField = {
     id?: string;
     name: string;

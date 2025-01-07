@@ -121,6 +121,8 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
                     <ListDimension value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} watchGlobal={watchGlobal}
                     field={field} schemaField={schemaFields.find(f => f.type === type)} />}
+
+                {field.type === 'content_reference' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
             </div>
         )
     });
