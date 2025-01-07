@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }
 
@@ -46,7 +46,7 @@ export async function PUT(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }
 
@@ -69,6 +69,6 @@ export async function DELETE(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch entries' }, { status: 500 });
     }
 }

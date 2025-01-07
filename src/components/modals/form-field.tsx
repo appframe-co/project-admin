@@ -64,7 +64,7 @@ function Input({name, control, rules={},  ...props}: TControllerProps) {
 
 type TProps = {
     fields: TField[];
-    contents: TContent[];
+    contents?: TContent[];
     errors: any;
     field: TField;
     handleSubmitField: any;
@@ -253,7 +253,7 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
                         />
                     </div>
                 );
-            }
+            }/*
             if (item.code === 'content_reference') {
                 const options = contents.reduce((acc: TOption[], content): TOption[] => {
                     acc.push({value: content.id, label: content.name});
@@ -269,7 +269,7 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
                         />
                     </div>
                 );
-            }
+            }*/
             if (item.code === 'transliteration') {
                 return (
                     <div key={item.id}>

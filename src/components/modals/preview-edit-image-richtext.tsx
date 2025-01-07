@@ -1,6 +1,5 @@
 import { Button } from "@/ui/button";
 import styles from '@/styles/preview-edit-file.module.css'
-import { TFile } from "@/types";
 import { TextField } from "@/ui/text-field";
 import { SubmitHandler, UseControllerProps, useController, useForm } from "react-hook-form";
 import { RadioButton } from "@/ui/radio-button";
@@ -33,6 +32,12 @@ type TProp = {
     } | undefined
 }
 
+type TPropsRadioGroup = {
+    label: string;
+    helpText?: string;
+    options: {label: string, value: string}[]
+}
+
 function Input(props: UseControllerProps<any> & {label?: string, type?: string, helpText?: string, multiline?: boolean}) {
     const { field, fieldState } = useController(props);
 
@@ -48,6 +53,28 @@ function Input(props: UseControllerProps<any> & {label?: string, type?: string, 
             multiline={props.multiline}
             type={props.type}
         />
+    )
+}
+function RadioGroup(props: UseControllerProps<any> & TPropsRadioGroup) {
+    const { field, fieldState } = useController(props);
+    
+    return (
+        <div className={styles.container}>
+            <p className={styles.name}>{props.label}</p>
+            {props.options.map((option) => (
+                <RadioButton 
+                    key={option.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    innerRef={props.control?.register(props.name).ref}
+                    value={option.value}
+                    label={option.label}
+                />
+            ))}
+            <p className={styles.error}>{fieldState.error?.message}</p>
+            <p className={styles.info}>{props.helpText}</p>
+        </div>
     )
 }
 
@@ -83,7 +110,6 @@ export function PreviewAndEditImageRichText({onClose, image, handleApplyEditImag
     }
 
     const floatOptions = [{label: 'None', value: ''}, {label: 'Left', value: 'left'},{label: 'Right', value: 'right'}];
-    const { field, fieldState } = useController({name: 'styles.float', control});
 
     return (
         <div className={styles.wrapper}>
@@ -104,17 +130,7 @@ export function PreviewAndEditImageRichText({onClose, image, handleApplyEditImag
                         <div>
                             <div>
                                 <label>Float</label>
-                                {floatOptions.map((option) => (
-                                    <RadioButton 
-                                        key={option.value}
-                                        onChange={field.onChange}
-                                        onBlur={field.onBlur}
-                                        name={'styles.float'}
-                                        innerRef={control?.register('styles.float').ref}
-                                        value={option.value}
-                                        label={option.label}
-                                    />
-                                ))}
+                                <RadioGroup control={control} name={'styles.float'} label={'Style'} options={ floatOptions } />                              
                             </div>
                         </div>
                     </div>

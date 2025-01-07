@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
     }
 }
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
     }
 }
 
@@ -72,7 +72,7 @@ export async function PUT(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to update file' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to update file' }, { status: 500 });
     }
 }
 
@@ -95,6 +95,6 @@ export async function DELETE(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
     }
 }

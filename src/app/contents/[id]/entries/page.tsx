@@ -125,8 +125,8 @@ export default async function Entries({ params, searchParams }: TPageProps) {
       {filter.length > 0 && (
         <div className={styles.filter}>
           <div className={styles.filterParams}>
-            {filter.map(f => (
-              <div><span>{f.name}</span></div>
+            {filter.map((f, i) => (
+              <div key={i}><span>{f.name}</span></div>
             ))}
           </div>
         </div>

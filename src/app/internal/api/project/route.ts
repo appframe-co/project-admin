@@ -21,6 +21,6 @@ export async function PUT(req: Request) {
 
         return NextResponse.json(data);
     } catch (e) {
-        NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ error: 'failed to fetch data' }, { status: 500 });
     }
 }
