@@ -40,7 +40,7 @@ export function FormEditSection({content, section, files, currencies, schemaFiel
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/sections', {
+            const res = await fetch('/admin/internal/api/sections', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

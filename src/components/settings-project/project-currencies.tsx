@@ -84,7 +84,7 @@ export function ProjectCurrencies({defaultValues, currencies}: TProps) {
 
     const onSubmit: SubmitHandler<TForm> = async (data) => {
         try {
-            const res = await fetch('/internal/api/project', {
+            const res = await fetch('/admin/internal/api/project', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

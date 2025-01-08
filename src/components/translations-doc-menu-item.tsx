@@ -111,7 +111,7 @@ export function TranslationDocMenuItem({lang, item, menuId, fields}: TProps) {
 
         if (translationId) {
             try {
-                const res = await fetch('/internal/api/translations_menu_item/', {
+                const res = await fetch('/admin/internal/api/translations_menu_item/', {
                     method: 'PUT',  
                     headers: {
                         'Content-Type': 'application/json'
@@ -136,7 +136,7 @@ export function TranslationDocMenuItem({lang, item, menuId, fields}: TProps) {
             }
         } else {
             try {
-                const res = await fetch('/internal/api/translations_menu_item', {
+                const res = await fetch('/admin/internal/api/translations_menu_item', {
                     method: 'POST',  
                     headers: {
                         'Content-Type': 'application/json'

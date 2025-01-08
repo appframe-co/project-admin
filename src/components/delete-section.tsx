@@ -12,7 +12,7 @@ export function DeleteSection({contentId, id}: {contentId: string, id: string}) 
 
     const deleteSection = async (id: string) => {
         try {
-            const res = await fetch('/internal/api/sections', {
+            const res = await fetch('/admin/internal/api/sections', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'

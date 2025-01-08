@@ -5,7 +5,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 const nextConfig = (phase, { defaultConfig }) => {
     if (phase === PHASE_DEVELOPMENT_SERVER) {
         return {
-            basePath: ''
+            basePath: '/admin'
         }
       }
 

@@ -85,7 +85,7 @@ export function Files({multiple=false, selectedFileIds:_selectedFileIds, onClose
                     contentType: 'image'
                 });
 
-                const res = await fetch('/internal/api/staged_uploads_create', {
+                const res = await fetch('/admin/internal/api/staged_uploads_create', {
                     method: 'POST',  
                     headers: {
                         'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ export function Files({multiple=false, selectedFileIds:_selectedFileIds, onClose
                     await fetch(stagedTarget.url, {method: 'POST', body: formData});
                 }
 
-                const resPostFiles = await fetch('/internal/api/files', {
+                const resPostFiles = await fetch('/admin/internal/api/files', {
                     method: 'POST',  
                     headers: {
                         'Content-Type': 'application/json'

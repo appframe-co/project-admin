@@ -12,7 +12,7 @@ export function DeleteEntry({contentId, id}: {contentId: string, id: string}) {
 
     const deleteEntry = async (id: string) => {
         try {
-            const res = await fetch('/internal/api/entries', {
+            const res = await fetch('/admin/internal/api/entries', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'

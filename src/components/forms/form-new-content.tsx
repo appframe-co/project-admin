@@ -74,7 +74,7 @@ export function FormNewContent({groupOfFields, names}: TProps) {
 
     const onSubmit: SubmitHandler<FormValuesNewContent> = async (data) => {
         try {
-            const res = await fetch('/internal/api/contents', {
+            const res = await fetch('/admin/internal/api/contents', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

@@ -42,7 +42,7 @@ export function FormNewSection({content, currencies, schemaFields, parentId}: {c
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/sections', {
+            const res = await fetch('/admin/internal/api/sections', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

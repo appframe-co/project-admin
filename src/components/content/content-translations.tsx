@@ -63,7 +63,7 @@ export function ContentTranslations({defaultValues}:{defaultValues: TForm}) {
 
     const onSubmit: SubmitHandler<TForm> = async (data) => {
         try {
-            const res = await fetch('/internal/api/contents', {
+            const res = await fetch('/admin/internal/api/contents', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

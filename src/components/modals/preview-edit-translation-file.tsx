@@ -96,7 +96,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
 
         if (translationId) {
             try {
-                const res = await fetch('/internal/api/translations/', {
+                const res = await fetch('/admin/internal/api/translations/', {
                     method: 'PUT',  
                     headers: {
                         'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
             }
         } else {
             try {
-                const res = await fetch('/internal/api/translations', {
+                const res = await fetch('/admin/internal/api/translations', {
                     method: 'POST',  
                     headers: {
                         'Content-Type': 'application/json'

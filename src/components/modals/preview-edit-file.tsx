@@ -43,7 +43,7 @@ export function PreviewAndEditFile({fileIndex, files, setFiles,  onClose}: TProp
 
     const onSubmit: SubmitHandler<{id:string,alt:string,caption:string}> = async (data) => {
         try {
-            const res = await fetch('/internal/api/files', {
+            const res = await fetch('/admin/internal/api/files', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

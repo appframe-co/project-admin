@@ -64,7 +64,7 @@ export function MenuCommon({defaultValues}: {defaultValues: TForm}) {
 
     const onSubmit: SubmitHandler<TForm> = async (data) => {
         try {
-            const res = await fetch('/internal/api/menus', {
+            const res = await fetch('/admin/internal/api/menus', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

@@ -31,7 +31,7 @@ export function LinkEntrySection({children, contentId, sections, id, _sectionIds
 
     const handleSave = async () => {
         try {
-            const res = await fetch('/internal/api/entries', {
+            const res = await fetch('/admin/internal/api/entries', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

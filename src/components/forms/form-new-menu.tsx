@@ -88,7 +88,7 @@ export function FormNewMenu({groupOfFields, names}: TProps) {
 
     const onSubmit: SubmitHandler<FormValuesNewMenu> = async (data) => {
         try {
-            const res = await fetch('/internal/api/menus', {
+            const res = await fetch('/admin/internal/api/menus', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

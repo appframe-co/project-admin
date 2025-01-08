@@ -41,7 +41,7 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/entries', {
+            const res = await fetch('/admin/internal/api/entries', {
                 method: 'PUT',  
                 headers: {
                     'Content-Type': 'application/json'

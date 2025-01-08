@@ -78,7 +78,7 @@ export function FormNewMenuItem({menu, currencies, parentId, options, schemaFiel
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/menu_items', {
+            const res = await fetch('/admin/internal/api/menu_items', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

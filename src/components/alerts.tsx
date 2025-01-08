@@ -51,7 +51,7 @@ export function Alerts() {
     useEffect(() => {
         async function fetchAlerts() {
             try {
-                const res = await fetch('/internal/api/alerts', {
+                const res = await fetch('/admin/internal/api/alerts', {
                     method: 'GET',  
                     headers: {
                         'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export function Alerts() {
     const handleClick = async (alert: TAlert) => {
         if (!alert.read) {
             try {
-                const res = await fetch('/internal/api/alerts', {
+                const res = await fetch('/admin/internal/api/alerts', {
                     method: 'PUT',  
                     headers: {
                         'Content-Type': 'application/json'

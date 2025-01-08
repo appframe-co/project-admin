@@ -38,7 +38,7 @@ export function FormNewEntry({content, currencies, sectionIds, schemaFields}: {c
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
-            const res = await fetch('/internal/api/entries', {
+            const res = await fetch('/admin/internal/api/entries', {
                 method: 'POST',  
                 headers: {
                     'Content-Type': 'application/json'

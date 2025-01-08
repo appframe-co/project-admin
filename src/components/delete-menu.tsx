@@ -12,7 +12,7 @@ export function DeleteMenu({menuId}: {menuId: string}) {
 
     const deleteMenu = async (id: string) => {
         try {
-            const res = await fetch('/internal/api/menus/', {
+            const res = await fetch('/admin/internal/api/menus/', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'

@@ -12,7 +12,7 @@ export function DeleteFile({fileId}: {fileId: string}) {
 
     const deleteFile = async (id: string) => {
         try {
-            const res = await fetch('/internal/api/files/', {
+            const res = await fetch('/admin/internal/api/files/', {
                 method: 'DELETE',  
                 headers: {
                     'Content-Type': 'application/json'
