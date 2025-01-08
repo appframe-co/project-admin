@@ -1,5 +1,6 @@
 import styles from '@/styles/ui/modal.module.css'
 import {Button} from '@/ui/button'
+import CloseSVG from '@public/icons/close';
 import Image from 'next/image';
 
 type TAction = {
@@ -33,7 +34,7 @@ export function Modal(props: TProps) {
                         <div className={styles.container + (large ? ' '+styles.large : '')+ (small ? ' '+styles.small : '')}>
                             <div className={styles.header}>
                                 <div className={styles.containerHeading}>{title && <h2>{title}</h2>}</div>
-                                <Button plain onClick={onClose} size="small"><Image width={24} height={24} src='/icons/close.svg' alt='' /></Button>
+                                <Button plain onClick={onClose} size="small"><CloseSVG width={24} height={24} /></Button>
                             </div>
                             {children && (
                                 <div className={styles.content}>{children}</div>

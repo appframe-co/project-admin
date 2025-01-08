@@ -28,7 +28,7 @@
     border-radius: 6px;
     font-weight: 600;
 }
-.links li a img {
+.links li a svg {
     width: 18px;
     height: 18px;
     margin-right: 10px;

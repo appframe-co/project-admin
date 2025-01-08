@@ -5,6 +5,8 @@ import { createPortal } from "react-dom"
 import styles from '@/styles/header.module.css'
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import BellAlertSVG from "@public/icons/bell-alert"
+import BellSVG from "@public/icons/bell"
 
 function isError(data: TErrorResponse|{alerts: TAlert[]}): data is TErrorResponse {
     return !!(data as TErrorResponse).error;
@@ -120,8 +122,7 @@ export function Alerts() {
     return (
         <>
             <div ref={divAlertsRef} className={styles.alerts} onClick={() => setShowAlertMenu((prevState: any) => !prevState)}>
-                {alerts.some(a => !a.read) ? 
-                    <Image width={18} height={18} src='/icons/bell-alert.svg' alt='' /> : <Image width={18} height={18} src='/icons/bell.svg' alt='' />}
+                {alerts.some(a => !a.read) ? <BellAlertSVG width={18} height={18} /> : <BellSVG width={18} height={18} />}
             </div>
 
             {showAlertMenu && createPortal(

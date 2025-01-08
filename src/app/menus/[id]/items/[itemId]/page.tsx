@@ -11,6 +11,7 @@ import { getMenuItem } from '@/services/menu-items';
 import { FormEditMenuItem } from '@/components/forms/form-edit-menu-item';
 import { getContents } from '@/services/contents';
 import { getSchemaFields } from '@/services/schema-fields';
+import TranslationsSVG from '@public/icons/translations';
 
 export const metadata: Metadata = {
     title: 'Edit item | AppFrame'
@@ -80,7 +81,7 @@ export default async function EditItem({ params }: {params: {id: string, itemId:
     if (menu.translations && menu.translations.enabled) {
         tools.push(<>
             <Link href={item.id+'/translations'}>
-                <Image width={20} height={20} src='/icons/language.svg' alt='' />
+                <TranslationsSVG width={20} height={20} />
                 <span>Translations</span>
             </Link>
         </>);

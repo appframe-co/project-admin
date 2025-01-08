@@ -10,6 +10,7 @@ import { Toolbar } from '@/components/toolbar';
 import { getSection } from '@/services/sections';
 import { FormEditSection } from '@/components/forms/form-edit-section';
 import { getSchemaFields } from '@/services/schema-fields';
+import TranslationsSVG from '@public/icons/translations';
 
 export const metadata: Metadata = {
     title: 'Edit section | AppFrame'
@@ -72,7 +73,7 @@ export default async function EditSection({ params }: {params: {id: string, sect
     if (content.translations && content.translations.enabled) {
         tools.push(<>
             <Link href={section.id+'/translations'}>
-                <Image width={20} height={20} src='/icons/language.svg' alt='' />
+                <TranslationsSVG width={20} height={20} />
                 <span>Translations</span>
             </Link>
         </>);

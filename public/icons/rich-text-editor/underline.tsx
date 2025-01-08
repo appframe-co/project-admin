@@ -1,0 +1,11 @@
+type TProps = {
+    width?: number;
+    height?: number;
+  }
+  export default function StyleUnderlineSVG({width=18, height=18}:TProps) {
+    return (
+        <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width={width} height={height}>
+            <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" x2="20" y1="21" y2="21"/>
+        </svg>
+    )
+  }

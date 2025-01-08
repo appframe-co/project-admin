@@ -10,6 +10,7 @@ import { Button } from '@/ui/button';
 import { LinkEntrySection } from '@/components/link-entry-section';
 import { getSections, getSection } from '@/services/sections';
 import Image from 'next/image';
+import SectionsSVG from '@public/icons/sections';
 
 export const metadata: Metadata = {
   title: 'Content | AppFrame'
@@ -92,7 +93,7 @@ export default async function Entries({ params, searchParams }: TPageProps) {
         <td className={styles.actions}>
           <div className={styles.action}>
             <LinkEntrySection contentId={content.id} sections={sections} id={entries[i]['id']} _sectionIds={entries[i]['sectionIds']}>
-              <Image width={20} height={20} src='/icons/link.svg' alt='' />
+              <SectionsSVG width={20} height={20} />
             </LinkEntrySection>
           </div>
           <Link href={`/contents/${content.id}/entries/${entries[i]['id']}`}><Button>Edit</Button></Link>

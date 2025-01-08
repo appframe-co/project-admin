@@ -4,6 +4,11 @@ import { usePathname } from 'next/navigation'
 import Link from "next/link"
 import Image from 'next/image';
 import styles from '@/styles/sidebar.module.css'
+import HomeSVG from '@public/icons/home';
+import ContentsSVG from '@public/icons/contents';
+import MenusSVG from '@public/icons/menus';
+import FilesSVG from '@public/icons/files';
+import SettingsSVG from '@public/icons/settings';
 
 export function Sidebar() {
     const pathname = usePathname();
@@ -14,7 +19,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/' className={pathname === '/' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/home.svg' alt='' />
+                            <HomeSVG width={18} height={18} />
                             <span>Home</span>
                         </Link>
                     </div>
@@ -22,7 +27,7 @@ export function Sidebar() {
                 <li>
                    <div className={styles.container}>
                         <Link href='/contents' className={pathname.startsWith('/contents') ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/square-stack.svg' alt='' />
+                            <ContentsSVG width={18} height={18} />
                             <span>Contents</span>
                         </Link>
                     </div>
@@ -30,7 +35,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/menus' className={pathname === '/menus' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/link.svg' alt='' />
+                            <MenusSVG width={18} height={18} />
                             <span>Menus</span>
                         </Link>
                     </div>
@@ -38,7 +43,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/files' className={pathname === '/files' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/files.svg' alt='' />
+                            <FilesSVG width={18} height={18} />
                             <span>Files</span>
                         </Link>
                     </div>
@@ -46,7 +51,7 @@ export function Sidebar() {
                 <li>
                     <div className={styles.container}>
                         <Link href='/settings' className={pathname === '/settings' ? styles.active : ''}>
-                            <Image width={18} height={18} src='/icons/settings.svg' alt='' />
+                            <SettingsSVG width={18} height={18} />
                             <span>Settings</span>
                         </Link>
                     </div>

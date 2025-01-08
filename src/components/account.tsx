@@ -5,6 +5,7 @@ import { createPortal } from "react-dom"
 import styles from '@/styles/header.module.css'
 import Image from "next/image"
 import Link from "next/link"
+import AccountSVG from "@public/icons/account"
 
 export function Account() {
     const divAccountRef = useRef<null|HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export function Account() {
     return (
         <>
             <div ref={divAccountRef} className={styles.account} onClick={() => setShowAccountMenu((prevState: any) => !prevState)}>
-                <Image width={18} height={18} src='/icons/account.svg' alt='' />
+                <AccountSVG width={18} height={18} />
             </div>
 
             {showAccountMenu && createPortal(

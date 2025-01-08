@@ -12,6 +12,8 @@ import { Toolbar } from '@/components/toolbar';
 import { LinkEntrySection } from '@/components/link-entry-section';
 import { getSections } from '@/services/sections';
 import { getSchemaFields } from '@/services/schema-fields';
+import SectionsSVG from '@public/icons/sections';
+import TranslationsSVG from '@public/icons/translations';
 
 export const metadata: Metadata = {
     title: 'Edit entry | AppFrame'
@@ -82,7 +84,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     if (content.translations && content.translations.enabled) {
         tools.push(<>
             <Link href={entry.id+'/translations'}>
-                <Image width={20} height={20} src='/icons/language.svg' alt='' />
+                <TranslationsSVG width={20} height={20} />
                 <span>Translations</span>
             </Link>
         </>);
@@ -90,7 +92,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     if (content.sections && content.sections.enabled) {
         tools.push(<>
             <LinkEntrySection contentId={content.id} sections={sections} id={entry.id} _sectionIds={entry.sectionIds}>
-                <Image width={20} height={20} src='/icons/link.svg' alt='' />
+                <SectionsSVG width={20} height={20} />
                 <span>sections</span>
             </LinkEntrySection>
         </>);

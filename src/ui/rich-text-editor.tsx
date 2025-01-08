@@ -10,6 +10,11 @@ import { Files } from '@/components/modals/files';
 import { createPortal } from 'react-dom';
 import { resizeImg } from "@/utils/resize-img";
 import { PreviewAndEditImageRichText } from '@/components/modals/preview-edit-image-richtext';
+import StyleBoldSVG from '@public/icons/rich-text-editor/bold';
+import StyleItalicSVG from '@public/icons/rich-text-editor/italic';
+import StyleUnderlineSVG from '@public/icons/rich-text-editor/underline';
+import FullscreenSVG from '@public/icons/rich-text-editor/fullscreen';
+import ImageSVG from '@public/icons/rich-text-editor/image';
 
 
 type TImage = {
@@ -409,23 +414,23 @@ export function RichTextEditor(props: any) {
                             </div>
                             <div className={styles.textButtons}>
                                 <div className={styles.textButton} onClick={(e) => handleClickTextButton('bold')}>
-                                    <Image width={18} height={18} src='/icons/rich-text-editor/bold.svg' alt='' />
+                                    <StyleBoldSVG width={18} height={18} />
                                 </div>
                                 <div className={styles.textButton} onClick={(e) => handleClickTextButton('italic')}>
-                                    <Image width={18} height={18} src='/icons/rich-text-editor/italic.svg' alt='' />
+                                    <StyleItalicSVG width={18} height={18} />
                                 </div>
                                 <div className={styles.textButton} onClick={(e) => handleClickTextButton('underline')}>
-                                    <Image width={18} height={18} src='/icons/rich-text-editor/underline.svg' alt='' />
+                                    <StyleUnderlineSVG width={18} height={18} />
                                 </div>
                             </div>
                             <div>
                                 <div className={styles.textButton} onClick={handleChangeModalFiles}>
-                                    <Image width={18} height={18} src='/icons/rich-text-editor/image.svg' alt='' />
+                                    <ImageSVG width={18} height={18} />
                                 </div>
                             </div>
                         </div>
                         <div className={styles.fullscreen} onClick={handleToggleFullscreen}>
-                            <Image width={18} height={18} src='/icons/rich-text-editor/fullscreen.svg' alt='' />
+                            <FullscreenSVG width={18} height={18} />
                         </div>
                     </div>
                     <div className={styles.editor + ' ' + classNameEditor} contentEditable='true'
