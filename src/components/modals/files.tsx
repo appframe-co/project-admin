@@ -29,7 +29,7 @@ export function Files({multiple=false, selectedFileIds:_selectedFileIds, onClose
 
         async function getFiles() {
             try {
-                const res = await fetch(`/internal/api/files?page=${page}`, {
+                const res = await fetch(`/admin/internal/api/files?page=${page}`, {
                     method: 'GET', 
                     headers: {
                         'Content-Type': 'application/json'

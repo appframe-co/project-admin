@@ -59,7 +59,7 @@ export function LinkEntrySection({children, contentId, sections, id, _sectionIds
     };
     const handleViewSection = async (sectionId: string|null, step?: string) => {
         try {
-            let url = `/internal/api/sections?contentId=${contentId}`;
+            let url = `/admin/internal/api/sections?contentId=${contentId}`;
             if (sectionId) {
                 url += `&parentId=${sectionId}`
             }

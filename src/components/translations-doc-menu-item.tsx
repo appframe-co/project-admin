@@ -79,7 +79,7 @@ export function TranslationDocMenuItem({lang, item, menuId, fields}: TProps) {
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations_menu_item?menuId=${menuId}&subjectId=${item.id}&subject=item&lang=${lang}`, {
+                const res = await fetch(`/admin/internal/api/translations_menu_item?menuId=${menuId}&subjectId=${item.id}&subject=item&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'

@@ -64,7 +64,7 @@ export function PreviewAndEditTranslationFileMenuItem({fileId, fileKey, file, on
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations_menu_item?menuId=${menuId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
+                const res = await fetch(`/admin/internal/api/translations_menu_item?menuId=${menuId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'

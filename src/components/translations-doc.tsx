@@ -80,7 +80,7 @@ export function TranslationDoc({lang, subject, subjectData, contentId, fields}: 
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations?contentId=${contentId}&subjectId=${subjectData.id}&subject=${subject}&lang=${lang}`, {
+                const res = await fetch(`/admin/internal/api/translations?contentId=${contentId}&subjectId=${subjectData.id}&subject=${subject}&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'

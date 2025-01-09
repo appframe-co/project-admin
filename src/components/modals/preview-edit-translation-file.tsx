@@ -64,7 +64,7 @@ export function PreviewAndEditTranslationFile({fileId, fileKey, file, onClose, l
     useEffect(() => {
         const fetchTranslationByLang = async () => {
             try {
-                const res = await fetch(`/internal/api/translations?contentId=${contentId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
+                const res = await fetch(`/admin/internal/api/translations?contentId=${contentId}&subjectId=${fileId}&subject=file&lang=${lang}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
