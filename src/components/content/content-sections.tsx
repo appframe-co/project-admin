@@ -213,7 +213,7 @@ export function ContentSections({defaultValues, groupOfFields, names}: TProps) {
                         <Input control={control} name='sections.fields' type='hidden' />
 
                         {fields.map((field, index: number) => (
-                            <div key={field.key} className={!field.system ? styles.field : styles.fieldSystem} onClick={() => updateField(field, index)}>
+                            <div key={field.key+index} className={!field.system ? styles.field : styles.fieldSystem} onClick={() => updateField(field, index)}>
                                 <div className={styles.name}>{field.name} {field.system && '(system)'}</div>
                                 <div className={styles.key}>{field.key}</div>
                                 {errorsField[index]?.name && (

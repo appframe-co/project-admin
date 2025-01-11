@@ -207,7 +207,7 @@ export function ContentEntries({defaultValues, groupOfFields, names, contents}: 
                         <Input control={control} name='entries.fields' type='hidden' />
 
                         {fields.map((field, index: number) => (
-                            <div key={field.key} className={styles.field} onClick={() => updateField(field, index)}>
+                            <div key={field.key+index} className={styles.field} onClick={() => updateField(field, index)}>
                                 <div className={styles.name}>{field.name}</div>
                                 <div className={styles.key}>{field.key}</div>
                                 {errorsField[index]?.name && (
