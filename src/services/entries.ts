@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 
-export async function getEntries(contentId: string, {page=1, limit=10, sectionId}: {page:number, limit:number, sectionId?:string|null}) {
+export async function getEntries(contentId: string, {page=1, limit=20, sectionId}: {page:number, limit:number, sectionId?:string|null}) {
   try {
     const accessToken = headers().get('X-AppFrame-Access-Token') as string;
 

@@ -23,7 +23,7 @@ type TPageProps = {
 
 export default async function Entries({ params, searchParams }: TPageProps) {
   const page = searchParams.page ? +searchParams.page : 1;
-  const limit = 10; 
+  const limit = 20; 
 
   const sectionId = searchParams.section_id ? searchParams.section_id.toString() : null;
 
