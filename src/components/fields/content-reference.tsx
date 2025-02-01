@@ -115,7 +115,7 @@ export function ContentReference({register, error, setValue, field, entryList=[]
 
         setValue(entryId);
         setSelectedEntries([entry]);
-        setEntries(prevState => prevState.filter(e => entryId !== e.id));
+        setEntries([]);
     };
 
     const removeEntry = (): void => {

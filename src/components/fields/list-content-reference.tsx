@@ -121,7 +121,7 @@ export function ListContentReference({register, error, setValue, field, entryLis
 
         setValue([...value, entryId]);
         setSelectedEntries(prevState => [...prevState, entry]);
-        setEntries(prevState => prevState.filter(e => entryId !== e.id));
+        setEntries([]);
     };
 
     const removeEntry = (entryId: string): void => {
