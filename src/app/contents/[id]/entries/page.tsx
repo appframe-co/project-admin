@@ -48,7 +48,7 @@ export default async function Entries({ params, searchParams }: TPageProps) {
   const rows = entries.map(entry => 
     fields
       .filter(f => !hiddenTypes.includes(f.type))
-      .map(f => ({value: entry.doc[f.key], type: types[f.key]}))
+      .map(f => ({value: entry.doc[f.key], type: types[f.key], params: f.params}))
   );
 
   const rowsJSX = rows.map((col, i: number) => {
@@ -61,6 +61,9 @@ export default async function Entries({ params, searchParams }: TPageProps) {
         ); 
       }
   
+
+      
+
       let dataJSX: JSX.Element|null = <div>{data.value}</div>;
 
       if (data.type === 'file_reference') {
@@ -69,6 +72,8 @@ export default async function Entries({ params, searchParams }: TPageProps) {
       if (data.type.startsWith('list.')) {
         if (data.type === 'list.file_reference') {
           dataJSX = data.value.length ? <div className={styles.img}><img src={data.value[0].src} /></div> : null;
+        } else if (data.type === 'list.content_reference') {
+          dataJSX = data.value ? <div>{data.value.map((v: TEntry)=>v.doc[data.params[1].value]).join(' • ')}</div> : null;
         } else {
           dataJSX = <div>{data.value.join(' • ')}</div>;
         }
@@ -78,6 +83,10 @@ export default async function Entries({ params, searchParams }: TPageProps) {
           return `${k ? ' • ' : ''} ${v.amount} ${v.currencyCode}`;
         })
         dataJSX = <div>{money}</div>;
+      }
+
+      if (data.type === 'content_reference') {
+        dataJSX = data.value ? <div>{data.value.doc[data.params[1].value]}</div> : null;
       }
 
       return (

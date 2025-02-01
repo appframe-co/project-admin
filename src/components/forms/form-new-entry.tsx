@@ -27,6 +27,8 @@ import { ColorPicker } from '@/components/fields/color-picker';
 import { ListColorPicker } from '@/components/fields/list-color-picker';
 import { Dimension } from '@/components/fields/dimension';
 import { ListDimension } from '@/components/fields/list-dimension';
+import { ContentReference } from '@/components/fields/content-reference';
+import { ListContentReference } from '@/components/fields/list-content-reference';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
@@ -122,6 +124,20 @@ export function FormNewEntry({content, currencies, sectionIds, schemaFields}: {c
                     <ListDimension value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} watchGlobal={watchGlobal}
                     field={field} schemaField={schemaFields.find(f => f.type === type)} />}
+                {field.type === 'content_reference' && 
+                    <ContentReference 
+                    setValue={(v:any) => setValue(key, v, {shouldDirty: true})} value={getValues(key)}
+                    error={(formState.errors['doc'] as any)?.[field.key]} 
+                    register={register(key)}
+                    prefixName={prefixName} field={field} control={control}
+                />}
+                {field.type === 'list.content_reference' && 
+                    <ListContentReference 
+                        setValue={(v:any) => setValue(key, v, {shouldDirty: true})} value={getValues(key)}
+                        error={(formState.errors['doc'] as any)?.[field.key]} 
+                        register={register(key)}
+                        prefixName={prefixName} field={field} control={control}
+                />}
             </div>
         )
     });

@@ -78,8 +78,13 @@ type TOption = {
     label: string;
 }
 
-export function FormField({fields:fieldsContent, contents, errors, field, schemaField, handleSubmitField, handleClose, handleDeleteField}: TProps) {
-    const [choicesEnabled, setChoicesEnabled] = useState<boolean>(!!field.validations.find(v => v.code === 'choices')?.value.length ?? false);
+export function FormField({
+    fields: fieldsContent, contents=[], 
+    errors, 
+    field, schemaField, 
+    handleSubmitField, handleClose, handleDeleteField
+}: TProps) {
+    const [choicesEnabled, setChoicesEnabled] = useState<boolean>(!!field.validations.find(v => v.code === 'choices')?.value.length);
 
     const { control, handleSubmit, formState, setValue, getValues, watch } = useForm<TField>({
         defaultValues: field
@@ -87,6 +92,11 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
 
     const { fields } = useFieldArray({
         name: 'validations',
+        control
+    });
+    
+    const { fields: fieldsParams } = useFieldArray({
+        name: 'params',
         control
     });
 
@@ -131,6 +141,59 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
         }
     };
 
+    const paramFields = fieldsParams.map((item, index: number) => {
+        const schemaParam = schemaField.params.find(v => v.code === item.code);
+        if (!schemaParam) {
+            return <div key={item.id}></div>;
+        }
+
+        if (item.code === 'content_id') {
+            const options = contents.reduce((acc: TOption[], content): TOption[] => {
+                acc.push({value: content.id, label: content.name});
+                return acc;
+            }, []);
+
+            return (
+                <div key={item.id} className={styles.wrapperField}>
+                    <SelectField 
+                        control={control} name={`params.${index}.value`}
+                        label={schemaParam.name} helpText={schemaParam.desc}
+                        options={[{value: '', label: 'Select a content'}, ...options]}
+                    />
+                </div>
+            );
+        }
+        if (item.code === 'entry_field_key') {
+            if (!watch('params.0.value')) {
+                return <div key={item.id}></div>
+            }
+
+            const content = contents.find(c => c.id === watch('params.0.value'));
+            if (!content) {
+                return <div key={item.id}></div>
+            }
+
+            const options = content.entries.fields.reduce((acc: TOption[], field): TOption[] => {
+                if (field.type === 'single_line_text') {
+                    acc.push({value: field.key, label: field.name});
+                }
+                return acc;
+            }, []);
+
+            return (
+                <div key={item.id} className={styles.wrapperField}>
+                    <SelectField 
+                        control={control} name={`params.${index}.value`}
+                        label={schemaParam.name} helpText={schemaParam.desc}
+                        options={[{value: '', label: 'Select a field'}, ...options]}
+                    />
+                </div>
+            );
+        }
+
+        return <div key={item.id}></div>;
+    });
+    
     const validationFields = fields.map((item, index: number) => {
         const schemaValidation = schemaField.validations.find(v => v.code === item.code);
         if (!schemaValidation) {
@@ -253,10 +316,10 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
                         />
                     </div>
                 );
-            }/*
+            }
             if (item.code === 'content_reference') {
                 const options = contents.reduce((acc: TOption[], content): TOption[] => {
-                    acc.push({value: content.id, label: content.name});
+                    acc.push({value: content.code, label: content.name});
                     return acc;
                 }, []);
 
@@ -269,7 +332,7 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
                         />
                     </div>
                 );
-            }*/
+            }
             if (item.code === 'transliteration') {
                 return (
                     <div key={item.id}>
@@ -313,6 +376,11 @@ export function FormField({fields:fieldsContent, contents, errors, field, schema
                             onClick={() => !field.id && toggleSwitchType(true)}>List of values</div>
                         </div>
                     )}
+                </div>
+
+                <div className={styles.validations}>
+                    <p className={styles.validationText}>{schemaField.validationDescHtml}</p>
+                    <div>{paramFields}</div>
                 </div>
 
                 <div className={styles.validations}>

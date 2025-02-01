@@ -62,7 +62,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
     }
 
     const {content}: {content: TContent} = contentData;
-    const {entry, files}: {entry: TEntry, files: TFile[]} = entryData;
+    const {entry, files, entries}: {entry: TEntry, files: TFile[], entries: TEntry[]} = entryData;
     const {sections}: {sections: TSection[]} = sectionsData;
 
     const currencies:TCurrencyPreview[] = [];
@@ -102,7 +102,7 @@ export default async function EditEntry({ params }: {params: {id: string, entryI
         <div className='page pageAlignCenter'>
             <Topbar title={'Edit entry of ' + content.name} back={`/contents/${content.id}/entries`} />
             <Toolbar tools={tools} />
-            <FormEditEntry content={content} entry={entry} files={files} currencies={currencies} schemaFields={schemaFieldsData.schemaFields} />
+            <FormEditEntry content={content} entry={entry} files={files} entries={entries} currencies={currencies} schemaFields={schemaFieldsData.schemaFields} />
         </div>
     )
 }

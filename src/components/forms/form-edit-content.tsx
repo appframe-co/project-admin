@@ -35,7 +35,7 @@ export function FormEditContent({content, contents, groupOfFields, names} : TPro
                 {link === 'common' && <ContentCommon defaultValues={{id: content.id, name: content.name, code: content.code}} />}
                 {link === 'entries' && <ContentEntries defaultValues={{id: content.id, entries: content.entries}} 
                     groupOfFields={groupOfFields} names={names} 
-                    contents={contents.filter(c => c.id !== content.id)} />}
+                    contents={contents.filter(c => c.code !== content.code)} />}
                 {link === 'sections' && <ContentSections defaultValues={{id: content.id, sections: content.sections}} groupOfFields={groupOfFields} names={names} />}
                 {link === 'translations' && <ContentTranslations defaultValues={{id: content.id, translations: content.translations}} />}
                 {link === 'notifications' && <ContentNotifications defaultValues={{id: content.id, notifications: content.notifications}} />}

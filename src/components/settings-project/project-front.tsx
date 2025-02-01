@@ -71,6 +71,7 @@ export function ProjectFront({defaultValues, files}: {defaultValues: TForm, file
         key: 'logo',
         description: '',
         validations: [],
+        params: [],
         system: false
     };
 

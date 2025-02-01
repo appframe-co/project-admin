@@ -27,12 +27,14 @@ import { ColorPicker } from '@/components/fields/color-picker'
 import { ListColorPicker } from '@/components/fields/list-color-picker'
 import { Dimension } from '@/components/fields/dimension'
 import { ListDimension } from '@/components/fields/list-dimension'
+import { ContentReference } from '@/components/fields/content-reference';
+import { ListContentReference } from '@/components/fields/list-content-reference';
 
 function isError(data: {userErrors: TUserErrorResponse[]} | {entry: TEntry}): data is {userErrors: TUserErrorResponse[]} {
     return !!(data as {userErrors: TUserErrorResponse[]}).userErrors.length;
 }
 
-export function FormEditEntry({content, entry, files, currencies, schemaFields} : {content: TContent, entry: TEntry, files: TFile[], currencies: TCurrencyPreview[], schemaFields: TSchemaField[]}) {
+export function FormEditEntry({content, entry, files, entries, currencies, schemaFields} : {content: TContent, entry: TEntry, files: TFile[], entries: TEntry[], currencies: TCurrencyPreview[], schemaFields: TSchemaField[]}) {
     const { control, handleSubmit, formState, setValue, setError, register, watch, getValues, reset } = useForm<any>({defaultValues: {
         sectionIds: entry.sectionIds,
         doc: entry.doc
@@ -52,7 +54,6 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
                 throw new Error('Fetch error');
             }
             const dataJson: {userErrors: TUserErrorResponse[]}|{entry: TEntry} = await res.json();
-
             if (isError(dataJson)) {
                 dataJson.userErrors.forEach(d => {
                     setError(d.field.join('.'), {
@@ -70,7 +71,7 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
     }
 
     const watchGlobal = watch();
-    
+
     const prefixName = 'doc.';
     const fields = content.entries.fields.map((field, i) => {
         const key = prefixName+field.key;
@@ -89,10 +90,12 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
                 {field.type === 'date_time' && <DateTime prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'date' && <DateField prefixName={prefixName} field={field} control={control} />}
                 {field.type === 'file_reference' && 
-                    <FileReference filesRef={files.filter(f => f.id === getValues(key))} value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
+                    <FileReference filesRef={files.filter(f => f.id === getValues(key))} value={getValues(key)} 
+                    register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} />}
                 {field.type === 'list.file_reference' && 
-                    <ListFileReference filesRef={files.filter(f => getValues(key)?.includes(f.id))} value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
+                    <ListFileReference filesRef={files.filter(f => getValues(key)?.includes(f.id))} value={getValues(key)} 
+                    register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} field={field} watchGlobal={watchGlobal} />}
                 {(field.type === 'list.single_line_text' || field.type === 'list.number_integer' || field.type === 'list.number_decimal') && 
                     <ListSingleLineText value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
@@ -121,8 +124,22 @@ export function FormEditEntry({content, entry, files, currencies, schemaFields} 
                     <ListDimension value={getValues(key)} register={register(key)} error={(formState.errors['doc'] as any)?.[field.key]} 
                     setValue={(v:any) => setValue(key, v, {shouldDirty: true})} watchGlobal={watchGlobal}
                     field={field} schemaField={schemaFields.find(f => f.type === type)} />}
-
-                {field.type === 'content_reference' && <SingleLineText prefixName={prefixName} field={field} control={control} />}
+                {field.type === 'content_reference' && 
+                    <ContentReference 
+                        setValue={(v:any) => setValue(key, v, {shouldDirty: true})} value={getValues(key)}
+                        error={(formState.errors['doc'] as any)?.[field.key]} 
+                        register={register(key)}
+                        prefixName={prefixName} field={field} control={control} 
+                        entryList={entries} 
+                />}
+                {field.type === 'list.content_reference' && 
+                    <ListContentReference 
+                        setValue={(v:any) => setValue(key, v, {shouldDirty: true})}  value={getValues(key)}
+                        error={(formState.errors['doc'] as any)?.[field.key]} 
+                        register={register(key)}
+                        prefixName={prefixName} field={field} control={control}
+                        entryList={entries} 
+                />}
             </div>
         )
     });

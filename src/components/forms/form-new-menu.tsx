@@ -128,7 +128,8 @@ export function FormNewMenu({groupOfFields, names}: TProps) {
             name: '',
             key: '',
             description: '',
-            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value}))
+            validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value})),
+            params: schemaField.params.map(v => ({type: v.type, code: v.code, value: v.value}))
         });
         handleChangeModalField();
         setShowGroupOfFields(false);

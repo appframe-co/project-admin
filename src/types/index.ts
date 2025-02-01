@@ -27,6 +27,11 @@ export type TField = {
         type: string;
         value: any;
     }[];
+    params: {
+        code: string;
+        type: string;
+        value: any;
+    }[];
     system: boolean;
     unit?: string;
 }
@@ -90,6 +95,14 @@ type TValidationSchemaField = {
     type: string;
     presetChoices: {name: string, value: string}[];
 }
+type TParamSchemaField = {
+    code: string;
+    name: string;
+    value: string;
+    desc: string;
+    type: string;
+    presetChoices: {name: string, value: string}[];
+}
 type TUnitField = {
     code: string;
     name: string;
@@ -102,6 +115,7 @@ export type TSchemaField = {
     groupCode: string;
     list: string;
     validationDescHtml: string;
+    params: TParamSchemaField[];
     validations: TValidationSchemaField[];
     units: TUnitField[];
 }

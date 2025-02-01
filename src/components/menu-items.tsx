@@ -127,6 +127,7 @@ export function MenuItems({defaultValues, groupOfFields, names}: TProps) {
             key: '',
             description: '',
             validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value})),
+            params: schemaField.params.map(v => ({type: v.type, code: v.code, value: v.value})),
             system: false,
         };
         if (schemaField.units && schemaField.units.length) {

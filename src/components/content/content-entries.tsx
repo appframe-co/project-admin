@@ -130,6 +130,7 @@ export function ContentEntries({defaultValues, groupOfFields, names, contents}: 
             key: '',
             description: '',
             validations: schemaField.validations.map(v => ({type: v.type, code: v.code, value: v.value})),
+            params: schemaField.params.map(v => ({type: v.type, code: v.code, value: v.value})),
             system: false,
         };
         if (schemaField.units && schemaField.units.length) {
