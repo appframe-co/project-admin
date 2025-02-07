@@ -1,22 +1,27 @@
 'use client'
 
 import styles from '@/styles/ui/rich-text-editor.module.css'
-import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { Select } from './select';
 import { TFile } from '@/types';
 import { Modal } from './modal';
 import { Files } from '@/components/modals/files';
 import { createPortal } from 'react-dom';
-import { resizeImg } from "@/utils/resize-img";
 import { PreviewAndEditImageRichText } from '@/components/modals/preview-edit-image-richtext';
 import StyleBoldSVG from '@public/icons/rich-text-editor/bold';
 import StyleItalicSVG from '@public/icons/rich-text-editor/italic';
 import StyleUnderlineSVG from '@public/icons/rich-text-editor/underline';
 import FullscreenSVG from '@public/icons/rich-text-editor/fullscreen';
 import ImageSVG from '@public/icons/rich-text-editor/image';
+import LinkSVG from '@public/icons/rich-text-editor/link';
+import { LinkRichText } from '@/components/modals/link-richtext';
 
-
+type TLink = {
+    href: string;
+    target: string;
+    title: string;
+    rel: {[key: string]: boolean};
+}
 type TImage = {
     id: string;
     src: string;
@@ -34,17 +39,28 @@ type TSelection = {
     focusNode: Node|null;
     focusOffset: number;
 }
+type TDataLink = {
+    href: string;
+    target: string;
+    title: string;
+    rel: {[key: string]: boolean};
+}
 
 export function RichTextEditor(props: any) {
     const [activeModalFiles, setActiveModalFiles] = useState<boolean>(false);
     const [activeModalEditFile, setActiveModalEditFile] = useState<boolean>(false);
+    const [activeModalLink, setActiveModalLink] = useState<boolean>(false);
     const [image, setImage] = useState<TImage>();
+    const [selectingText, setSelectingText] = useState<boolean>(false);
+    const [dataLink, setDataLink] = useState<TDataLink>({href: '', target: '_self', title: '', rel: {nofollow: false, noopener: false, noreferrer: false}});
 
     const handleChangeModalFiles = useCallback(() => setActiveModalFiles(!activeModalFiles), [activeModalFiles]);
     const handleChangeModalEditFile = useCallback(() => setActiveModalEditFile(!activeModalEditFile), [activeModalEditFile]);
+    const handleChangeModalLink = useCallback(() => setActiveModalLink(!activeModalLink), [activeModalLink]);
 
     const handleClose = () => handleChangeModalFiles();
     const handleCloseEditFile = () => handleChangeModalEditFile();
+    const handleCloseLink = () => handleChangeModalLink();
 
     const [editorSelection, setEditorSelection] = useState<TSelection>();
 
@@ -61,63 +77,28 @@ export function RichTextEditor(props: any) {
         tagP: {
             classList: ['rt-p']
         },
+        tagA: {
+            classList: ['rt-a']
+        },
         tagFigure: {
             classList: ['rt-figure']
         }
     };
 
     useEffect(() => {
-        const handleEditor = (e: MouseEvent) => {
-            if (!e.target) {
-                e.preventDefault();
-            }
-
-            const element = e.target as HTMLElement;
-            const tagName = element.tagName;
-
-            if (tagName === 'DIV') {
-                if (!element.hasChildNodes()) {
-                    element.append(createTagP());
-                }
-            }
-            if (tagName === 'IMG') {
-                const elFigure = element.parentElement as HTMLElement;
-                if (elFigure.dataset.id) {
-                    const {src, width, height, alt} = element as HTMLImageElement;
-
-                    const elFigcaption: HTMLElement|null  = elFigure.querySelector('figcaption');
-                    const caption = elFigcaption ? elFigcaption.innerText : '';
-
-                    setImage({src, width, height, alt, caption, id: elFigure.dataset.id, styles: {float:elFigure.style.float}});
-                    handleChangeModalEditFile();
-                }
-            }
-
-            const selection = window.getSelection();
-            if (selection) {
-                setEditorSelection({
-                    anchorNode: selection.anchorNode, 
-                    anchorOffset: selection.anchorOffset, 
-                    focusNode: selection.focusNode,
-                    focusOffset: selection.focusOffset
-                });
-            }
-        };
-
-        const el: HTMLDivElement|null = document.querySelector('.'+classNameEditor);
+        const el: Element|null = document.querySelector('.'+classNameEditor);
         if (!el) {
             return;
         }
 
-        el.addEventListener('click', handleEditor);
+        if (el.hasChildNodes()) {
+            return;
+        }
 
-        return () => el?.removeEventListener('click', handleEditor);
-    }, []);
-
-    useEffect(() => {
-        const el: Element|null = document.querySelector('.'+classNameEditor);
-        if (el && !el.textContent) {
+        if (value) {
             el.innerHTML = value;
+        } else {
+            el.appendChild(createTagP());   
         }
     }, [value]);
 
@@ -159,6 +140,23 @@ export function RichTextEditor(props: any) {
 
         return p;
     };
+    const createTagA = (href='', target='_self', title='', text='', rel:{[key: string]: boolean}): HTMLAnchorElement => {
+        const a = document.createElement('a');
+        a.classList.add(...tagsProps.tagA.classList);
+
+        const r = [];
+        if (rel.nofollow) r.push('nofollow');
+        if (rel.noopener) r.push('noopener');
+        if (rel.noreferrer) r.push('noreferrer');
+
+        a.href = href;
+        a.target = target;
+        a.title = title;
+        a.innerText = text;
+        a.rel = r.join(' ');
+
+        return a;
+    };
 
     const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -174,7 +172,6 @@ export function RichTextEditor(props: any) {
         }
 
         const textList = text.split('\n\n');
-
         const textHTML = textList.map(t => createTagP(t).outerHTML).join('');
 
         document.execCommand('insertHTML', false, textHTML);
@@ -184,11 +181,6 @@ export function RichTextEditor(props: any) {
     };
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         const target = e.target as HTMLDivElement;
-
-        if (!target.textContent && e.code === 'Backspace') {
-            e.preventDefault();
-            return;
-        }
 
         const selection = window.getSelection();
         if (!selection) {
@@ -227,6 +219,10 @@ export function RichTextEditor(props: any) {
             }
             if (focusNode.nodeName.startsWith('P') || focusNode?.parentNode?.nodeName.startsWith('P')) {
                 if (focusOffset === 0 && anchorOffset === 0) {
+                    if(focusNode.nodeName === 'P' && !focusNode?.previousSibling) {
+                        e.preventDefault();
+                        return;
+                    }
                     if(focusNode.nodeName === '#text' && focusNode?.parentNode?.previousSibling?.nodeName !== 'P') {
                         e.preventDefault();
                         return;
@@ -281,6 +277,55 @@ export function RichTextEditor(props: any) {
         const target = e.target as HTMLDivElement;
         updateRichText(target.innerHTML);
     };
+    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+
+        const target = e.target as HTMLElement;
+        const tagName = target.tagName;
+
+        const selection = window.getSelection();
+        if (!selection) {
+            return;
+        }
+
+        setEditorSelection({
+            anchorNode: selection.anchorNode,
+            anchorOffset: selection.anchorOffset,
+            focusNode: selection.focusNode,
+            focusOffset: selection.focusOffset,
+        });
+
+        setDataLink({href: '', target: '_self', title: '', rel: {nofollow: false, noreferrer: false, noopener: false}});
+
+        let str = selection.getRangeAt(0).cloneContents().textContent ?? '';
+        str = str.trim();
+        setSelectingText(!!str);
+
+        if (tagName === 'A') {
+            const link = target as HTMLAnchorElement;
+            const rel:{[key: string]: boolean} = {};
+            link.rel.split(' ').forEach(r => rel[r] = true);
+            setDataLink({
+                href: link.getAttribute('href') ?? '', 
+                target: link.target, title: link.title,
+                rel
+            });
+            setSelectingText(true);
+        }
+        if (tagName === 'IMG') {
+            const elFigure = target.parentElement as HTMLElement;
+            if (elFigure.dataset.id) {
+                const {src, width, height, alt} = target as HTMLImageElement;
+
+                const elFigcaption: HTMLElement|null  = elFigure.querySelector('figcaption');
+                const caption = elFigcaption ? elFigcaption.innerText : '';
+
+                setImage({src, width, height, alt, caption, id: elFigure.dataset.id, styles: {float:elFigure.style.float}});
+                handleChangeModalEditFile();
+            }
+        }        
+    };
+
     const handleClickTextButton = (v:string) => {
         document.execCommand(v);
         updateRichText();
@@ -377,6 +422,93 @@ export function RichTextEditor(props: any) {
         }
     };
 
+    const handleLink = (data: TLink) => {
+        const el:HTMLDivElement|null = document.querySelector('.'+classNameEditor);
+        if (!el) {
+            return;
+        }
+
+        const selection = window.getSelection();
+        if (!selection || !editorSelection) {
+            return;
+        }
+
+        let {anchorNode, anchorOffset, focusNode, focusOffset} = editorSelection;
+        if (!anchorNode || !focusNode) {
+            return;
+        }
+
+        const textContent = focusNode.textContent;
+        if (!textContent) {
+            return;
+        }
+
+        let {href, target, title, rel} = data;
+
+        href = href.trim();
+        if (!href) {
+            return;
+        }
+
+        const r = [];
+        if (rel.nofollow) r.push('nofollow');
+        if (rel.noopener) r.push('noopener');
+        if (rel.noreferrer) r.push('noreferrer');
+
+        const parentNode = focusNode.parentNode as HTMLAnchorElement;
+        if (focusNode.parentNode?.nodeName === 'A') {
+            parentNode.href = href;
+            parentNode.target = target;
+            parentNode.title = title;
+            parentNode.rel = r.join(' ');
+        } else {
+            let text = textContent.substring(anchorOffset, focusOffset);
+            text = text?.trim();
+            if (!text) {
+                return;
+            }
+
+            const link = createTagA(href, target, title, text, rel);
+
+            const range = document.createRange();
+            range.setStart(focusNode, anchorOffset < focusOffset ? anchorOffset : focusOffset);
+            range.setEnd(focusNode, anchorOffset > focusOffset ? anchorOffset : focusOffset);
+            range.surroundContents(link);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        setSelectingText(false);
+        setDataLink({href: '', target: '_self', title: '', rel: {nofollow: false, noreferrer: false, noopener: false}});
+    };
+    const handleRemoveLink = () => {
+        const el:HTMLDivElement|null = document.querySelector('.'+classNameEditor);
+        if (!el) {
+            return;
+        }
+
+        const selection = window.getSelection();
+        if (!selection || !editorSelection) {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        const link = range.commonAncestorContainer.parentElement;
+        if (!link) {
+            return;
+        }
+
+        const text = range.commonAncestorContainer.textContent;
+        if (!text) {
+            return;
+        }
+
+        link.replaceWith(document.createTextNode(text));
+
+        handleCloseLink();
+    };
+
     return (
         <>
             {activeModalFiles && createPortal(
@@ -397,6 +529,16 @@ export function RichTextEditor(props: any) {
                     title='Preview and edit'
                 >
                     <PreviewAndEditImageRichText image={image} handleApplyEditImage={handleApplyEditImage} onClose={handleCloseEditFile}/>
+                </Modal>,
+                document.body
+            )}
+            {activeModalLink && createPortal(
+                <Modal
+                    open={activeModalLink}
+                    onClose={handleCloseLink}
+                    title={!dataLink.href ? 'Insert link' : 'Edit link'}
+                >
+                    <LinkRichText data={dataLink} handleLink={handleLink} handleRemoveLink={handleRemoveLink} onClose={handleCloseLink} />
                 </Modal>,
                 document.body
             )}
@@ -423,7 +565,14 @@ export function RichTextEditor(props: any) {
                                     <StyleUnderlineSVG width={18} height={18} />
                                 </div>
                             </div>
-                            <div>
+                            <div className={styles.textButtons}>
+                                {selectingText ? 
+                                    <div className={styles.textButton} onClick={handleChangeModalLink}>
+                                        <LinkSVG width={18} height={18} color='#4a4a4a' />
+                                    </div> : 
+                                    <div className={styles.textButton + ' ' + styles.textButtonDisabled}>
+                                        <LinkSVG width={18} height={18} color='#cccccc' />
+                                    </div>}
                                 <div className={styles.textButton} onClick={handleChangeModalFiles}>
                                     <ImageSVG width={18} height={18} />
                                 </div>
@@ -434,6 +583,7 @@ export function RichTextEditor(props: any) {
                         </div>
                     </div>
                     <div className={styles.editor + ' ' + classNameEditor} contentEditable='true'
+                        onMouseUp={(e) => handleMouseUp(e)}
                         onKeyDown={(e) => handleKeyDown(e)}
                         onKeyUp={(e) => handleKeyUp(e)}
                         onPaste={(e) => handlePaste(e)}
