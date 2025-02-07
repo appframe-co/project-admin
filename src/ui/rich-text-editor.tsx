@@ -461,6 +461,8 @@ export function RichTextEditor(props: any) {
             parentNode.target = target;
             parentNode.title = title;
             parentNode.rel = r.join(' ');
+
+            updateRichText(el.innerHTML);
         } else {
             let text = textContent.substring(anchorOffset, focusOffset);
             text = text?.trim();
@@ -477,6 +479,8 @@ export function RichTextEditor(props: any) {
             range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
+
+            updateRichText(el.innerHTML);
         }
 
         setSelectingText(false);
@@ -506,6 +510,7 @@ export function RichTextEditor(props: any) {
 
         link.replaceWith(document.createTextNode(text));
 
+        updateRichText(el.innerHTML);
         handleCloseLink();
     };
 
