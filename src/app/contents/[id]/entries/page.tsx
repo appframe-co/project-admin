@@ -58,11 +58,8 @@ export default async function Entries({ params, searchParams }: TPageProps) {
           <td key={k}>
             <div className={styles.docContainer}></div>
           </td>
-        ); 
+        );
       }
-  
-
-      
 
       let dataJSX: JSX.Element|null = <div>{data.value}</div>;
 
