@@ -89,13 +89,14 @@ export async function DELETE(req: Request) {
             return NextResponse.json({ error: 'Invalid access token' }, { status: 401 });
         }
 
-        const {id} = await req.json();
+        const {id, menuId} = await req.json();
         const res = await fetch(`${process.env.URL_PROJECT_ADMIN_API}/api/menu_items/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'X-AppFrame-Access-Token': token
-            }
+            }, 
+            body: JSON.stringify({menuId})
         });
         const data = await res.json();
 

@@ -88,7 +88,6 @@ export function FormEditMenuItem({menu, item, files, currencies, options, schema
                 throw new Error('Fetch error');
             }
             const dataJson: {userErrors: TUserErrorResponse[]}|{item: TItem} = await res.json();
-
             if (isError(dataJson)) {
                 dataJson.userErrors.forEach(d => {
                     setError(d.field.join('.'), {

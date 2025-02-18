@@ -17,7 +17,7 @@ export function DeleteMenuItem({menuId, id}: {menuId: string, id: string}) {
                 headers: {
                     'Content-Type': 'application/json'
                 }, 
-                body: JSON.stringify({id})
+                body: JSON.stringify({id, menuId})
             });
             if (!res.ok) {
                 throw new Error('Fetch error');
